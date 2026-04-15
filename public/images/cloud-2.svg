@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 280">
+  <!-- base -->
+  <rect x="40" y="195" width="600" height="85" fill="white"/>
+  <!-- lower body -->
+  <ellipse cx="115" cy="198" rx="85" ry="65" fill="white"/>
+  <ellipse cx="238" cy="188" rx="105" ry="78" fill="white"/>
+  <ellipse cx="368" cy="182" rx="112" ry="84" fill="white"/>
+  <ellipse cx="496" cy="190" rx="98" ry="72" fill="white"/>
+  <ellipse cx="602" cy="200" rx="80" ry="60" fill="white"/>
+  <!-- mid puffs -->
+  <ellipse cx="185" cy="148" rx="80" ry="70" fill="white"/>
+  <ellipse cx="308" cy="125" rx="95" ry="85" fill="white"/>
+  <ellipse cx="430" cy="128" rx="90" ry="80" fill="white"/>
+  <ellipse cx="540" cy="148" rx="78" ry="65" fill="white"/>
+  <!-- upper puffs -->
+  <ellipse cx="258" cy="90" rx="70" ry="62" fill="white"/>
+  <ellipse cx="370" cy="75" rx="78" ry="68" fill="white"/>
+  <ellipse cx="476" cy="92" rx="65" ry="56" fill="white"/>
+  <!-- top peaks -->
+  <ellipse cx="318" cy="52" rx="52" ry="46" fill="white"/>
+  <ellipse cx="408" cy="42" rx="58" ry="50" fill="white"/>
+  <ellipse cx="450" cy="60" rx="44" ry="38" fill="white"/>
+</svg>
