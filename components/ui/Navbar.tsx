@@ -42,8 +42,8 @@ export default function Navbar() {
                 <img
                   src="/images/logo.svg"
                   alt="Tenerife Weather Forum"
-                  className="h-8 sm:h-10 md:h-11 w-auto"
-                  style={{ maxWidth: "240px" }}
+                  className="h-10 sm:h-11 md:h-12 w-auto"
+                  style={{ maxWidth: "260px" }}
                 />
               </Link>
 
