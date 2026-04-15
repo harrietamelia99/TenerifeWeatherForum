@@ -124,9 +124,20 @@ export default function Footer() {
           <p className="text-white/40 text-xs">
             © {new Date().getFullYear()} Tenerife Weather Forum. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <span className="text-white/40 text-xs">
               Weather data is indicative only. Always check official forecasts before travelling.
+            </span>
+            <span className="text-white/30 text-xs">
+              Like this site?{" "}
+              <a
+                href="https://www.collectivstudio.uk/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/50 hover:text-white underline underline-offset-2 transition-colors"
+              >
+                Designed by Collectiv. Studio
+              </a>
             </span>
           </div>
         </div>
