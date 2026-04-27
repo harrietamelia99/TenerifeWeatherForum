@@ -6,28 +6,27 @@ import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
-// Build the formatted Facebook post text from the structured data
+// Build the formatted Facebook post text — matches Kevin's exact posting format
 function buildFacebookPost(update: DailyUpdate): string {
+  // Forecast paragraphs use a single newline between them (no blank lines)
+  const forecast = update.forecast.replace(/\n\n+/g, "\n");
+
   return `Tenerife Weather Update
 ${update.date}
-
 ${update.south.emoji} ${update.south.label}
 • Temperature: ${update.south.temperature} °C
 • High: ${update.south.high} °C
 • Conditions: ${update.south.conditions}
 • Wind: ${update.south.wind}
-
 ${update.north.emoji} ${update.north.label}
 • Temperature: ${update.north.temperature} °C
 • High: ${update.north.high} °C
 • Conditions: ${update.north.conditions}
 • Wind: ${update.north.wind}
-
 ⚠️ Weather Warnings
 ${update.warnings}
-
 Forecast
-${update.forecast}`;
+${forecast}`;
 }
 
 export default function ForecastModal() {
