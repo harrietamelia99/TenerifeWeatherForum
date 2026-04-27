@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/generate-forecast",
+      "path": "/api/daily-update",
       "schedule": "0 6 * * *"
     }
   ]

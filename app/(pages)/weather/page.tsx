@@ -6,7 +6,7 @@ import {
   getSeaTemp,
   WEATHER_LOCATIONS,
 } from "@/lib/getWeather";
-import { getDailyUpdate } from "@/lib/getDailyUpdate";
+import { getForecast } from "@/lib/getForecast";
 import type { WeatherAlert } from "@/types/weather";
 
 export const revalidate = 1800; // ISR: refresh every 30 minutes
@@ -14,13 +14,12 @@ export const revalidate = 1800; // ISR: refresh every 30 minutes
 export default async function WeatherPage() {
   const loc = WEATHER_LOCATIONS.playaAmericas;
 
-  const [currentWeather, weeklyForecast, seaTemp] = await Promise.all([
+  const [currentWeather, weeklyForecast, seaTemp, dailyUpdate] = await Promise.all([
     getLocationWeather(loc.lat, loc.lon, `South Tenerife — ${loc.name}`),
     getWeeklyForecast(loc.lat, loc.lon),
     getSeaTemp(loc.lat, loc.lon),
+    getForecast(),
   ]);
-
-  const dailyUpdate = getDailyUpdate();
 
   // Active alerts — add entries here when needed
   const alerts: WeatherAlert[] = [];
