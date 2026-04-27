@@ -1,0 +1,24 @@
+{
+  "date": "Monday 27 April 2026",
+  "south": {
+    "emoji": "🌤️",
+    "label": "Tenerife South (Costa Adeje / Playa de las Américas)",
+    "temperature": 15,
+    "high": 22,
+    "conditions": "Mostly dry with a mix of sunshine and cloud developing through the morning. Some southern areas will see lots of sun, though a brief light shower cannot be ruled out in isolated spots.",
+    "wind": "14–27 km/h"
+  },
+  "north": {
+    "emoji": "🌤️",
+    "label": "Tenerife North (Santa Cruz / Puerto de la Cruz)",
+    "temperature": 9,
+    "high": 17,
+    "conditions": "Cloudy with light rain or drizzle at times early on, becoming brighter with sunny intervals developing later.",
+    "wind": "16–34 km/h"
+  },
+  "warnings": "There are no active weather warnings for Tenerife today.",
+  "hasWarnings": false,
+  "forecast": "Temperatures will remain steady across the island today with the typical north–south split continuing. The south is expected to stay largely dry with a mix of sunshine and cloud through the day. The north looks more unsettled to begin with, with light rain or drizzle possible this morning before gradually improving into the afternoon with brighter spells developing.\n\nConditions can vary significantly across different parts of the island due to Tenerife's microclimates, and weather can be completely different just 15 minutes away from one location to another.",
+  "postedAt": "2026-04-27T08:00:00Z",
+  "source": "Kevin's Daily Update"
+}

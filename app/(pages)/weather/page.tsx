@@ -1,10 +1,12 @@
 import WeatherTabsClient from "./WeatherTabsClient";
+import DailyUpdate from "@/components/ui/DailyUpdate";
 import {
   getLocationWeather,
   getWeeklyForecast,
   getSeaTemp,
   WEATHER_LOCATIONS,
 } from "@/lib/getWeather";
+import { getDailyUpdate } from "@/lib/getDailyUpdate";
 import type { WeatherAlert } from "@/types/weather";
 
 export const revalidate = 1800; // ISR: refresh every 30 minutes
@@ -17,6 +19,8 @@ export default async function WeatherPage() {
     getWeeklyForecast(loc.lat, loc.lon),
     getSeaTemp(loc.lat, loc.lon),
   ]);
+
+  const dailyUpdate = getDailyUpdate();
 
   // Active alerts — add entries here when needed
   const alerts: WeatherAlert[] = [];
@@ -50,6 +54,12 @@ export default async function WeatherPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Kevin's daily update — auto-populated from his Facebook posts */}
+        <div className="mb-10">
+          <DailyUpdate update={dailyUpdate} />
+        </div>
+
+        {/* Live sensor data tabs */}
         <WeatherTabsClient
           currentWeather={currentWeather}
           weeklyForecast={weeklyForecast}
