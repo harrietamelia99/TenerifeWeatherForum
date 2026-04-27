@@ -360,7 +360,7 @@ export default async function HomePage() {
 
                 {/* TikTok */}
                 <a
-                  href="https://tiktok.com"
+                  href="https://www.tiktok.com/@tenerifeweatherforum"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex flex-col items-center gap-3 px-7 py-6 rounded-2xl transition-all duration-200 hover:scale-105 hover:-translate-y-1"

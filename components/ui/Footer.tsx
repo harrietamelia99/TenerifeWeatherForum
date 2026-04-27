@@ -48,7 +48,7 @@ export default function Footer() {
                 <Facebook size={18} />
               </a>
               <a
-                href="https://tiktok.com"
+                href="https://www.tiktok.com/@tenerifeweatherforum"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Tenerife Weather Forum on TikTok"

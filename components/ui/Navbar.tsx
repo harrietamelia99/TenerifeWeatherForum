@@ -80,7 +80,7 @@ export default function Navbar() {
                   <Facebook size={15} />
                 </a>
                 <a
-                  href="https://tiktok.com"
+                  href="https://www.tiktok.com/@tenerifeweatherforum"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Tenerife Weather Forum on TikTok"
@@ -152,7 +152,7 @@ export default function Navbar() {
               <Facebook size={16} />
             </a>
             <a
-              href="https://tiktok.com"
+              href="https://www.tiktok.com/@tenerifeweatherforum"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
