@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseFacebookPost } from "@/lib/getDailyUpdate";
+import { parseFacebookPost, getDailyUpdate } from "@/lib/getDailyUpdate";
 
 /**
  * POST /api/daily-update
@@ -112,7 +112,14 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ ok: true, date: update.date });
 }
 
-// Health check — useful for testing the endpoint is reachable
+// Returns the current daily update JSON — used by the forecast modal
 export async function GET() {
-  return NextResponse.json({ status: "Daily update webhook is active" });
+  try {
+    const update = getDailyUpdate();
+    return NextResponse.json(update, {
+      headers: { "Cache-Control": "no-store" },
+    });
+  } catch {
+    return NextResponse.json({ error: "No daily update available" }, { status: 404 });
+  }
 }
