@@ -8,6 +8,10 @@ const nextConfig = {
       },
     ],
   },
+  // Disable incremental compilation cache to ensure clean builds on Vercel
+  experimental: {
+    turbotrace: undefined,
+  },
 };
 
 export default nextConfig;

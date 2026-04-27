@@ -9,7 +9,9 @@ import {
 import { getForecast } from "@/lib/getForecast";
 import type { WeatherAlert } from "@/types/weather";
 
-export const revalidate = 1800; // ISR: refresh every 30 minutes
+// Never prerender at build time — this page needs live API data.
+// Vercel's edge cache handles freshness after first render.
+export const dynamic = "force-dynamic";
 
 export default async function WeatherPage() {
   const loc = WEATHER_LOCATIONS.playaAmericas;

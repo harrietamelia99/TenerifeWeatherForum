@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import WeatherCard from "@/components/ui/WeatherCard";
 import MicroclimateStrip from "@/components/ui/MicroclimateStrip";
