@@ -1,4 +1,3 @@
-import { cache } from "react";
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
 // ─── WMO code helpers ─────────────────────────────────────────────────────────
@@ -196,8 +195,8 @@ async function generate(): Promise<DailyUpdate> {
   };
 }
 
-// ─── Exported cached version ─────────────────────────────────────────────────
-// React cache() deduplicates calls within a single render pass.
-// The page-level revalidate controls how often the whole page re-renders.
+// ─── Exported function ────────────────────────────────────────────────────────
+// Called directly from the weather page. The page is force-dynamic so this
+// runs fresh on each request. Results are cached at Vercel's edge layer.
 
-export const getForecast = cache(generate);
+export const getForecast = generate;

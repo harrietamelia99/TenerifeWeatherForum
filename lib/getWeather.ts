@@ -205,12 +205,16 @@ export async function getTickerData(): Promise<TickerData[]> {
 
 // ─── Convenience: get homepage weather (south + sea temp) ────────────────────
 export async function getHomepageWeather(): Promise<WeatherData> {
-  const loc = WEATHER_LOCATIONS.playaAmericas;
-  const [weather, seaTemp] = await Promise.all([
-    getLocationWeather(loc.lat, loc.lon, loc.name),
-    getSeaTemp(loc.lat, loc.lon),
-  ]);
-  return { ...weather, seaTemp: seaTemp ?? undefined };
+  try {
+    const loc = WEATHER_LOCATIONS.playaAmericas;
+    const [weather, seaTemp] = await Promise.all([
+      getLocationWeather(loc.lat, loc.lon, loc.name),
+      getSeaTemp(loc.lat, loc.lon),
+    ]);
+    return { ...weather, seaTemp: seaTemp ?? undefined };
+  } catch {
+    return weatherFallback("Playa de las Américas");
+  }
 }
 
 export { wmoToLabel };

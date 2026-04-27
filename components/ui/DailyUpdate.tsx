@@ -165,7 +165,7 @@ export default function DailyUpdate({ update }: Props) {
           >
             Forecast
           </h3>
-          {update.forecast.split("\n\n").map((para, i) => (
+          {(update.forecast ?? "").split("\n\n").map((para, i) => (
             <p
               key={i}
               className="text-sm leading-relaxed mb-3 last:mb-0"
