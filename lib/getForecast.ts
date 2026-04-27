@@ -118,81 +118,93 @@ Return only JSON, no markdown:
   };
 }
 
-// ─── Core generation (runs once, result is cached for 6 hours) ───────────────
+// ─── Shared placeholder ───────────────────────────────────────────────────────
+
+function makePlaceholder(): DailyUpdate {
+  const dateStr = new Date().toLocaleDateString("en-GB", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+    timeZone: "Atlantic/Canary",
+  });
+  return {
+    date: dateStr,
+    south: { emoji: "🌤️", label: "Tenerife South (Costa Adeje / Playa de las Américas)", temperature: 22, high: 25, conditions: "Forecast loading — check back shortly.", wind: "15–25 km/h" },
+    north: { emoji: "⛅", label: "Tenerife North (Santa Cruz / Puerto de la Cruz)", temperature: 18, high: 21, conditions: "Forecast loading — check back shortly.", wind: "18–30 km/h" },
+    warnings: "There are no active weather warnings for Tenerife today.",
+    hasWarnings: false,
+    forecast: "Today's forecast is loading. Please check back shortly.",
+    postedAt: new Date().toISOString(),
+    source: "Placeholder",
+  };
+}
+
+// ─── Core generation ──────────────────────────────────────────────────────────
 
 async function generate(): Promise<DailyUpdate> {
-  let south, north, medano, teide;
   try {
-    [south, north, medano, teide] = await Promise.all([
+    // All four locations in one go — const inside try so TypeScript knows they're defined
+    const [south, north, medano, teide] = await Promise.all([
       fetchLoc(28.0573, -16.7146),
       fetchLoc(28.4142, -16.5484),
       fetchLoc(28.0449, -16.5380),
       fetchLoc(28.2723, -16.6423),
     ]);
-  } catch {
-    // API unreachable — return a safe placeholder (will be replaced when API is available)
+
+    // Build conditions via AI or template
+    let conditions: { southConditions: string; northConditions: string; forecast: string };
+    if (process.env.OPENAI_API_KEY) {
+      try {
+        const ai = await aiForecast(south, north, medano, teide);
+        // Validate AI returned all required fields — fall back if not
+        if (ai?.southConditions && ai?.northConditions && ai?.forecast) {
+          conditions = ai;
+        } else {
+          conditions = templateForecast(south, north);
+        }
+      } catch {
+        conditions = templateForecast(south, north);
+      }
+    } else {
+      conditions = templateForecast(south, north);
+    }
+
+    const warningCodes = [61, 63, 65, 80, 81, 82, 95, 96, 99];
+    const hasWarnings = warningCodes.includes(south.code) || warningCodes.includes(north.code);
+
     const dateStr = new Date().toLocaleDateString("en-GB", {
       weekday: "long", day: "numeric", month: "long", year: "numeric",
       timeZone: "Atlantic/Canary",
     });
+
     return {
       date: dateStr,
-      south: { emoji: "🌤️", label: "Tenerife South (Costa Adeje / Playa de las Américas)", temperature: 22, high: 25, conditions: "Forecast loading — check back shortly.", wind: "15–25 km/h" },
-      north: { emoji: "⛅", label: "Tenerife North (Santa Cruz / Puerto de la Cruz)", temperature: 18, high: 21, conditions: "Forecast loading — check back shortly.", wind: "18–30 km/h" },
-      warnings: "There are no active weather warnings for Tenerife today.",
-      hasWarnings: false,
-      forecast: "Today's forecast is loading. Please check back shortly.",
+      south: {
+        emoji: south.emoji,
+        label: "Tenerife South (Costa Adeje / Playa de las Américas)",
+        temperature: south.temp,
+        high: south.high,
+        conditions: conditions.southConditions,
+        wind: `${south.wind}–${south.gust} km/h`,
+      },
+      north: {
+        emoji: north.emoji,
+        label: "Tenerife North (Santa Cruz / Puerto de la Cruz)",
+        temperature: north.temp,
+        high: north.high,
+        conditions: conditions.northConditions,
+        wind: `${north.wind}–${north.gust} km/h`,
+      },
+      warnings: hasWarnings
+        ? "Weather activity expected today — check Met Office forecasts before travelling."
+        : "There are no active weather warnings for Tenerife today.",
+      hasWarnings,
+      forecast: conditions.forecast,
       postedAt: new Date().toISOString(),
-      source: "Placeholder",
+      source: process.env.OPENAI_API_KEY ? "AI Generated" : "Auto Template",
     };
+  } catch {
+    // Any unexpected error — return safe placeholder rather than crashing
+    return makePlaceholder();
   }
-
-  // Use AI if key is set, otherwise use template (both produce same structure)
-  let conditions: { southConditions: string; northConditions: string; forecast: string };
-  if (process.env.OPENAI_API_KEY) {
-    try {
-      conditions = await aiForecast(south, north, medano, teide);
-    } catch {
-      conditions = templateForecast(south, north);
-    }
-  } else {
-    conditions = templateForecast(south, north);
-  }
-
-  const warningCodes = [61, 63, 65, 80, 81, 82, 95, 96, 99];
-  const hasWarnings = warningCodes.includes(south.code) || warningCodes.includes(north.code);
-
-  const dateStr = new Date().toLocaleDateString("en-GB", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-    timeZone: "Atlantic/Canary",
-  });
-
-  return {
-    date: dateStr,
-    south: {
-      emoji: south.emoji,
-      label: "Tenerife South (Costa Adeje / Playa de las Américas)",
-      temperature: south.temp,
-      high: south.high,
-      conditions: conditions.southConditions,
-      wind: `${south.wind}–${south.gust} km/h`,
-    },
-    north: {
-      emoji: north.emoji,
-      label: "Tenerife North (Santa Cruz / Puerto de la Cruz)",
-      temperature: north.temp,
-      high: north.high,
-      conditions: conditions.northConditions,
-      wind: `${north.wind}–${north.gust} km/h`,
-    },
-    warnings: hasWarnings
-      ? "Weather activity expected today — check Met Office forecasts before travelling."
-      : "There are no active weather warnings for Tenerife today.",
-    hasWarnings,
-    forecast: conditions.forecast,
-    postedAt: new Date().toISOString(),
-    source: process.env.OPENAI_API_KEY ? "AI Generated" : "Auto Template",
-  };
 }
 
 // ─── Exported function ────────────────────────────────────────────────────────

@@ -42,8 +42,18 @@ export default function ForecastModal() {
       if (status === "idle") {
         setStatus("loading");
         fetch("/api/daily-update")
-          .then((r) => r.json())
-          .then((d: DailyUpdate) => { setUpdate(d); setStatus("ready"); })
+          .then((r) => {
+            if (!r.ok) throw new Error(`API error ${r.status}`);
+            return r.json();
+          })
+          .then((d: DailyUpdate) => {
+            // Validate the shape before rendering — guards against error JSON
+            if (!d?.south || !d?.north || typeof d?.forecast !== "string") {
+              throw new Error("Unexpected response shape");
+            }
+            setUpdate(d);
+            setStatus("ready");
+          })
           .catch(() => setStatus("error"));
       }
     };
@@ -203,7 +213,7 @@ export default function ForecastModal() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">
                   Forecast
                 </p>
-                {update.forecast.split("\n\n").map((para, i) => (
+                {(update.forecast ?? "").split("\n\n").map((para, i) => (
                   <p key={i} className="text-white/75 text-sm leading-relaxed mb-2 last:mb-0">
                     {para}
                   </p>
