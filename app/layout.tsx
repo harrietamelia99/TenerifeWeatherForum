@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   description:
     "Your trusted guide to Tenerife weather. Daily forecasts, microclimate breakdowns, monthly climate guides and travel tips for UK visitors and Tenerife residents.",
   keywords: ["Tenerife weather", "Tenerife forecast", "Canary Islands weather", "Tenerife travel", "UK Tenerife"],
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     title: "Tenerife Weather Forum",
     description: "Daily forecasts, microclimates and travel info - all in one place.",
