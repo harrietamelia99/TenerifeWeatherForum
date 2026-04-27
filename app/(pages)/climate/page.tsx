@@ -1,5 +1,17 @@
 import RegionCard from "@/components/ui/RegionCard";
-import { regions } from "@/components/ui/MicroclimateStrip";
+import { REGION_META } from "@/components/ui/MicroclimateStrip";
+import type { RegionData } from "@/types/weather";
+
+// Static fallback for the climate page (no live temps needed here)
+const regions: RegionData[] = REGION_META.map((r) => ({
+  region: r.region,
+  slug: r.slug,
+  condition: "sunny" as const,
+  temp: 24,
+  description: r.description,
+  bestTime: r.bestTime,
+  gradient: r.gradient,
+}));
 import type { ClimateMonth } from "@/types/weather";
 import type { Metadata } from "next";
 

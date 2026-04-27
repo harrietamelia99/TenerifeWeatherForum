@@ -84,8 +84,10 @@ export function parseFacebookPost(text: string): DailyUpdate {
   // Detect emoji for each section (first char of header line)
   const emojiOf = (sectionLines: string[]) => {
     const header = sectionLines[0] ?? "";
-    const match = header.match(/^(\p{Emoji})/u);
-    return match ? match[1] : "🌤️";
+    // Grab the first character — emoji are multi-byte so use Array.from
+    const first = Array.from(header)[0] ?? "";
+    // If it's outside normal ASCII range it's likely an emoji
+    return first.codePointAt(0)! > 127 ? first : "🌤️";
   };
 
   // Temperature/high: strip °C and spaces
@@ -108,7 +110,7 @@ export function parseFacebookPost(text: string): DailyUpdate {
     date,
     south: {
       emoji: emojiOf(southLines),
-      label: southLines[0]?.replace(/^[\p{Emoji}\s]+/u, "").trim() ?? "Tenerife South",
+      label: southLines[0]?.replace(/^[^\w]+/, "").trim() ?? "Tenerife South",
       temperature: southTemp,
       high: southHigh,
       conditions: bullet(southLines, "Conditions"),
@@ -116,7 +118,7 @@ export function parseFacebookPost(text: string): DailyUpdate {
     },
     north: {
       emoji: emojiOf(northLines),
-      label: northLines[0]?.replace(/^[\p{Emoji}\s]+/u, "").trim() ?? "Tenerife North",
+      label: northLines[0]?.replace(/^[^\w]+/, "").trim() ?? "Tenerife North",
       temperature: northTemp,
       high: northHigh,
       conditions: bullet(northLines, "Conditions"),

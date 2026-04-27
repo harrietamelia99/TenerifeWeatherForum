@@ -42,6 +42,19 @@ export const WEATHER_LOCATIONS = {
   teide:         { name: "Mount Teide",           lat: 28.2723, lon: -16.6423 },
 } as const;
 
+// ─── Fallback data shown if API is unreachable at build time ─────────────────
+function weatherFallback(locationName: string): WeatherData {
+  const now = new Date();
+  return {
+    location: locationName,
+    date: now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
+    condition: "partly-cloudy",
+    tempCurrent: 22, feelsLike: 22, tempHigh: 25, tempLow: 17,
+    wind: 15, windDirection: "NE", uv: 6, humidity: 60,
+    sunrise: "07:20", sunset: "20:45", seaTemp: 21,
+  };
+}
+
 // ─── Fetch current + daily weather for one location ──────────────────────────
 export async function getLocationWeather(
   lat: number,
@@ -55,8 +68,13 @@ export async function getLocationWeather(
     `&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset` +
     `&timezone=Atlantic%2FCanary&forecast_days=1`;
 
-  const res = await fetch(url, { next: { revalidate: 1800 } }); // refresh every 30 min
-  if (!res.ok) throw new Error(`Open-Meteo error: ${res.status}`);
+  let res: Response;
+  try {
+    res = await fetch(url, { next: { revalidate: 1800 } });
+    if (!res.ok) return weatherFallback(locationName);
+  } catch {
+    return weatherFallback(locationName);
+  }
   const d = await res.json();
 
   const cur = d.current;
@@ -96,8 +114,13 @@ export async function getWeeklyForecast(lat: number, lon: number): Promise<DayFo
     `&daily=temperature_2m_max,temperature_2m_min,weather_code` +
     `&timezone=Atlantic%2FCanary&forecast_days=7`;
 
-  const res = await fetch(url, { next: { revalidate: 1800 } });
-  if (!res.ok) throw new Error(`Open-Meteo error: ${res.status}`);
+  let res: Response;
+  try {
+    res = await fetch(url, { next: { revalidate: 1800 } });
+    if (!res.ok) return [];
+  } catch {
+    return [];
+  }
   const d = await res.json();
 
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
