@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
 // ─── WMO code helpers ─────────────────────────────────────────────────────────
@@ -197,9 +197,7 @@ async function generate(): Promise<DailyUpdate> {
 }
 
 // ─── Exported cached version ─────────────────────────────────────────────────
-// Result is stored server-side and reused for 6 hours.
-// The 7am cron job refreshes it so users always see today's forecast.
+// React cache() deduplicates calls within a single render pass.
+// The page-level revalidate controls how often the whole page re-renders.
 
-export const getForecast = unstable_cache(generate, ["tenerife-daily-forecast"], {
-  revalidate: 6 * 60 * 60, // 6 hours
-});
+export const getForecast = cache(generate);

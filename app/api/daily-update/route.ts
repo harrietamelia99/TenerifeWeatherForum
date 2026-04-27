@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getForecast } from "@/lib/getForecast";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/daily-update
  *
