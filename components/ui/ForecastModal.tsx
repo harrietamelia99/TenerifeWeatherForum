@@ -74,20 +74,25 @@ export default function ForecastModal() {
     };
   }, [open]);
 
-  const handleCopyAndShare = async () => {
+  const handleCopy = async () => {
     if (!update) return;
     const text = buildFacebookPost(update);
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
-      // Open Facebook in a new tab — user pastes the copied text
-      window.open("https://www.facebook.com", "_blank", "noopener,noreferrer");
     } catch {
-      // Fallback: select a textarea
+      // Clipboard API not available — fall back to textarea trick
       const el = document.getElementById("fb-post-text") as HTMLTextAreaElement | null;
-      if (el) { el.select(); document.execCommand("copy"); }
+      if (el) {
+        el.style.position = "fixed";
+        el.style.opacity = "0";
+        el.select();
+        document.execCommand("copy");
+        el.style.position = "";
+        el.style.opacity = "";
+      }
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 8000);
   };
 
   if (!open) return null;
@@ -234,29 +239,48 @@ export default function ForecastModal() {
 
         {/* Footer — always visible */}
         <div className="px-6 pb-6 pt-3 flex flex-col gap-3 flex-shrink-0 border-t border-white/10">
-          {/* Copy & Share button */}
+          {/* Copy + Share buttons */}
           {status === "ready" && (
-            <button
-              onClick={handleCopyAndShare}
-              className="w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-all duration-200"
-              style={{
-                background: copied ? "rgba(34,197,94,0.25)" : "rgba(255,255,255,0.15)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
-              }}
-            >
-              {copied ? (
-                <>
-                  <Check size={15} />
-                  Copied! Now paste into Facebook
-                </>
-              ) : (
-                <>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleCopy}
+                className="w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-all duration-300"
+                style={{
+                  background: copied ? "rgba(34,197,94,0.3)" : "rgba(255,255,255,0.15)",
+                  border: `1px solid ${copied ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.2)"}`,
+                  color: "white",
+                }}
+              >
+                {copied ? (
+                  <>
+                    <Check size={15} />
+                    Post text copied to clipboard!
+                  </>
+                ) : (
+                  <>
+                    <Copy size={15} />
+                    Copy post text
+                  </>
+                )}
+              </button>
+
+              {copied && (
+                <a
+                  href="https://www.facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-all duration-200"
+                  style={{
+                    background: "rgba(24,119,242,0.25)",
+                    border: "1px solid rgba(24,119,242,0.4)",
+                    color: "white",
+                  }}
+                >
                   <Facebook size={15} />
-                  Copy &amp; Share to Facebook
-                </>
+                  Open Facebook &amp; paste
+                </a>
               )}
-            </button>
+            </div>
           )}
 
           <a
