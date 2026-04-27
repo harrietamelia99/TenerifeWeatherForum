@@ -34,6 +34,7 @@ export default function ForecastModal() {
   const [update, setUpdate] = useState<DailyUpdate | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [copied, setCopied] = useState(false);
+  const [toast, setToast] = useState(false);
 
   // Listen for the open event
   useEffect(() => {
@@ -92,6 +93,8 @@ export default function ForecastModal() {
       }
     }
     setCopied(true);
+    setToast(true);
+    setTimeout(() => setToast(false), 3500);
     setTimeout(() => setCopied(false), 8000);
   };
 
@@ -147,6 +150,26 @@ export default function ForecastModal() {
         </div>
 
         <div className="mx-6 h-px bg-white/10 flex-shrink-0" />
+
+        {/* Copied toast — slides in below the header */}
+        <div
+          className="overflow-hidden transition-all duration-300 flex-shrink-0"
+          style={{ maxHeight: toast ? "80px" : "0px", opacity: toast ? 1 : 0 }}
+        >
+          <div className="mx-6 mt-4 flex items-center gap-3 rounded-2xl px-4 py-3"
+            style={{ background: "rgba(34,197,94,0.2)", border: "1px solid rgba(34,197,94,0.35)" }}
+          >
+            <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: "rgba(34,197,94,0.3)" }}
+            >
+              <Check size={14} className="text-green-200" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white leading-tight">Copied to clipboard!</p>
+              <p className="text-xs text-white/60 leading-tight mt-0.5">Ready to paste into your Facebook post</p>
+            </div>
+          </div>
+        </div>
 
         {/* Scrollable body */}
         <div className="overflow-y-auto flex-1 px-6 py-5">
