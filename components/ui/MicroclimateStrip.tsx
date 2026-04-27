@@ -1,12 +1,13 @@
 import RegionCard from "./RegionCard";
-import type { RegionData } from "@/types/weather";
+import { getLocationWeather } from "@/lib/getWeather";
+import type { RegionData, WeatherCondition } from "@/types/weather";
 
-const regions: RegionData[] = [
+// Static info that doesn't change (descriptions, gradients, best times)
+const REGION_META = [
   {
     region: "South Tenerife",
     slug: "Playa de las Américas",
-    condition: "sunny",
-    temp: 26,
+    lat: 28.0573, lon: -16.7146,
     description: "The driest, sunniest part of the island. Sheltered from the trade winds by the central mountains. Perfect for beach holidays year-round.",
     bestTime: "Year-round",
     gradient: "linear-gradient(135deg, #f7ad19, #429ebd)",
@@ -14,8 +15,7 @@ const regions: RegionData[] = [
   {
     region: "North Tenerife",
     slug: "Puerto de la Cruz",
-    condition: "partly-cloudy",
-    temp: 21,
+    lat: 28.4142, lon: -16.5484,
     description: "Lush and dramatic thanks to the trade winds. Morning cloud usually clears by midday. The Orotava Valley is one of Tenerife's most beautiful spots.",
     bestTime: "Spring & Autumn",
     gradient: "linear-gradient(135deg, #429ebd, #053f5c)",
@@ -23,8 +23,7 @@ const regions: RegionData[] = [
   {
     region: "East Tenerife",
     slug: "El Médano",
-    condition: "windy",
-    temp: 23,
+    lat: 28.0449, lon: -16.5380,
     description: "Famous for its constant wind - world-class kitesurfing and windsurfing. Santa Cruz, the capital, is also here with great shopping and dining.",
     bestTime: "Summer",
     gradient: "linear-gradient(135deg, #9fe7f5, #429ebd)",
@@ -32,15 +31,31 @@ const regions: RegionData[] = [
   {
     region: "West Tenerife",
     slug: "Los Gigantes",
-    condition: "sunny",
-    temp: 24,
+    lat: 28.2449, lon: -16.8393,
     description: "Sheltered and warm even in winter. The dramatic Los Gigantes cliffs rise 600m from the sea. A quieter alternative to the busy south.",
     bestTime: "Winter",
     gradient: "linear-gradient(135deg, #429ebd, #9fe7f5)",
   },
 ];
 
-export default function MicroclimateStrip() {
+export default async function MicroclimateStrip() {
+  // Fetch live temps for all four regions in parallel
+  const liveData = await Promise.all(
+    REGION_META.map((r) =>
+      getLocationWeather(r.lat, r.lon, r.region).catch(() => null)
+    )
+  );
+
+  const regions: RegionData[] = REGION_META.map((meta, i) => ({
+    region: meta.region,
+    slug: meta.slug,
+    condition: (liveData[i]?.condition ?? "partly-cloudy") as WeatherCondition,
+    temp: liveData[i]?.tempCurrent ?? liveData[i]?.tempHigh ?? 22,
+    description: meta.description,
+    bestTime: meta.bestTime,
+    gradient: meta.gradient,
+  }));
+
   return (
     <section aria-labelledby="microclimate-heading">
       <div className="flex items-center justify-between mb-6">
@@ -68,4 +83,4 @@ export default function MicroclimateStrip() {
   );
 }
 
-export { regions };
+export { REGION_META };
