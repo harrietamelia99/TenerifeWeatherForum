@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Mail } from "lucide-react";
+import { Facebook } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -55,13 +55,6 @@ export default function Footer() {
                 className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-white"
               >
                 <TikTokIcon />
-              </a>
-              <a
-                href="mailto:hello@tenerifeweatherforum.com"
-                aria-label="Email us"
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-white"
-              >
-                <Mail size={18} />
               </a>
             </div>
 
