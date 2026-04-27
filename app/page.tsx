@@ -6,26 +6,14 @@ import NewsletterBar from "@/components/ui/NewsletterBar";
 import HeroClouds from "@/components/ui/HeroClouds";
 import ForecastButton from "@/components/ui/ForecastButton";
 import { getAllPosts } from "@/lib/getPosts";
-import type { WeatherData } from "@/types/weather";
+import { getHomepageWeather } from "@/lib/getWeather";
 import { MapPin, Calendar, BookOpen, Luggage, Bus, Lightbulb } from "lucide-react";
 
-const todayWeather: WeatherData = {
-  location: "Playa de las Américas",
-  date: "Today - Wednesday, 15 April",
-  condition: "sunny",
-  tempHigh: 27,
-  tempLow: 19,
-  tempCurrent: 26,
-  feelsLike: 28,
-  wind: 18,
-  windDirection: "NE",
-  uv: 7,
-  humidity: 58,
-  seaTemp: 20,
-};
-
 export default async function HomePage() {
-  const allPosts = getAllPosts();
+  const [allPosts, todayWeather] = await Promise.all([
+    Promise.resolve(getAllPosts()),
+    getHomepageWeather(),
+  ]);
   const recentPosts = allPosts.slice(0, 3);
 
   const quickLinks = [

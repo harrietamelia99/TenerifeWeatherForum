@@ -89,7 +89,7 @@ export default function Navbar() {
                   <TikTokIcon size={15} scrolled={true} />
                 </a>
                 <button
-                  className="btn-primary text-sm py-2 px-5"
+                  className="btn-primary text-sm py-2 px-5 whitespace-nowrap"
                   onClick={() => window.dispatchEvent(new Event("open-forecast-modal"))}
                 >
                   Today&apos;s Forecast

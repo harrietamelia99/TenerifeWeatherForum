@@ -2,15 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { X, CloudSun } from "lucide-react";
+import type { WeatherData } from "@/types/weather";
+
+interface LiveData {
+  south: WeatherData;
+  north: WeatherData;
+  teide: WeatherData;
+  seaTemp: number | null;
+}
 
 export default function ForecastModal() {
   const [open, setOpen] = useState(false);
+  const [live, setLive] = useState<LiveData | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const handler = () => setOpen(true);
+    const handler = () => {
+      setOpen(true);
+      if (!live && !loading) {
+        setLoading(true);
+        fetch("/api/weather")
+          .then((r) => r.json())
+          .then((d) => { setLive(d); setLoading(false); })
+          .catch(() => setLoading(false));
+      }
+    };
     window.addEventListener("open-forecast-modal", handler);
     return () => window.removeEventListener("open-forecast-modal", handler);
-  }, []);
+  }, [live, loading]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
@@ -25,6 +44,34 @@ export default function ForecastModal() {
   }, [open]);
 
   if (!open) return null;
+
+  const today = new Date().toLocaleDateString("en-GB", {
+    weekday: "long", day: "numeric", month: "long",
+  });
+
+  const stats = live
+    ? [
+        {
+          label: "South",
+          value: `${live.south.tempCurrent}°C`,
+          sub: live.south.condition.replace(/-/g, " "),
+        },
+        {
+          label: "North",
+          value: `${live.north.tempCurrent}°C`,
+          sub: live.north.condition.replace(/-/g, " "),
+        },
+        {
+          label: "Mt Teide",
+          value: `${live.teide.tempCurrent}°C`,
+          sub: live.teide.condition.replace(/-/g, " "),
+        },
+      ]
+    : [
+        { label: "South", value: "–", sub: "Loading..." },
+        { label: "North", value: "–", sub: "Loading..." },
+        { label: "Mt Teide", value: "–", sub: "Loading..." },
+      ];
 
   return (
     <div
@@ -56,7 +103,7 @@ export default function ForecastModal() {
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-white/50">
-                Wednesday, 15 April
+                {today}
               </p>
               <h2
                 id="forecast-modal-title"
@@ -87,24 +134,28 @@ export default function ForecastModal() {
             Northern areas will remain cloudier overall, with the chance of light drizzle at times, particularly through the morning and early afternoon. Breezy north easterly winds continue across exposed areas.
           </p>
 
-          {/* Quick stats */}
+          {/* Live quick stats */}
           <div className="grid grid-cols-3 gap-3 mt-6">
-            {[
-              { label: "South", value: "26°C", sub: "Sunny spells" },
-              { label: "North", value: "21°C", sub: "Cloudy" },
-              { label: "Mt Teide", value: "4°C", sub: "Clear summit" },
-            ].map((s) => (
+            {stats.map((s) => (
               <div
                 key={s.label}
                 className="rounded-2xl p-3 text-center"
                 style={{ background: "rgba(255,255,255,0.12)" }}
               >
-                <p className="text-xs text-white/50 font-semibold uppercase tracking-wider mb-1">{s.label}</p>
+                <p className="text-xs text-white/50 font-semibold uppercase tracking-wider mb-1">
+                  {s.label}
+                </p>
                 <p className="text-xl font-bold text-white leading-none">{s.value}</p>
-                <p className="text-xs text-white/60 mt-1">{s.sub}</p>
+                <p className="text-xs text-white/60 mt-1 capitalize">{s.sub}</p>
               </div>
             ))}
           </div>
+
+          {live?.seaTemp && (
+            <p className="text-xs text-white/50 mt-4 text-center">
+              Sea temperature: {live.seaTemp}°C
+            </p>
+          )}
         </div>
 
         {/* Footer */}
