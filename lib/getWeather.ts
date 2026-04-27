@@ -75,34 +75,45 @@ export async function getLocationWeather(
   } catch {
     return weatherFallback(locationName);
   }
-  const d = await res.json();
+  let d: Record<string, unknown>;
+  try {
+    d = await res.json();
+  } catch {
+    return weatherFallback(locationName);
+  }
 
-  const cur = d.current;
-  const day = d.daily;
+  // Guard: if the response shape is unexpected, fall back gracefully
+  const cur = d.current as Record<string, number> | undefined;
+  const day = d.daily as Record<string, unknown[]> | undefined;
+  if (!cur || !day) return weatherFallback(locationName);
 
   // Cardinal wind direction from degrees
   const dirs = ["N","NE","E","SE","S","SW","W","NW"];
-  const windDir = dirs[Math.round(cur.wind_direction_10m / 45) % 8];
+  const windDir = dirs[Math.round((cur.wind_direction_10m ?? 0) / 45) % 8];
 
   const now = new Date();
   const dateStr = now.toLocaleDateString("en-GB", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
+  // sunrise/sunset come as "2026-04-27T07:20" — extract the time portion safely
+  const parseSunTime = (arr: unknown[] | undefined) =>
+    typeof arr?.[0] === "string" ? (arr[0] as string).split("T")[1] ?? undefined : undefined;
+
   return {
     location: locationName,
     date: dateStr,
-    condition: wmoToCondition(cur.weather_code),
-    tempCurrent: Math.round(cur.temperature_2m),
-    feelsLike: Math.round(cur.apparent_temperature),
-    tempHigh: Math.round(day.temperature_2m_max[0]),
-    tempLow: Math.round(day.temperature_2m_min[0]),
-    wind: Math.round(cur.wind_speed_10m),
+    condition: wmoToCondition(cur.weather_code ?? 0),
+    tempCurrent: Math.round(cur.temperature_2m ?? 22),
+    feelsLike: Math.round(cur.apparent_temperature ?? 22),
+    tempHigh: Math.round((day.temperature_2m_max?.[0] as number) ?? 25),
+    tempLow: Math.round((day.temperature_2m_min?.[0] as number) ?? 17),
+    wind: Math.round(cur.wind_speed_10m ?? 15),
     windDirection: windDir,
-    uv: Math.round(cur.uv_index),
-    humidity: Math.round(cur.relative_humidity_2m),
-    sunrise: day.sunrise[0].split("T")[1],
-    sunset: day.sunset[0].split("T")[1],
+    uv: Math.round(cur.uv_index ?? 5),
+    humidity: Math.round(cur.relative_humidity_2m ?? 60),
+    sunrise: parseSunTime(day.sunrise as unknown[]),
+    sunset: parseSunTime(day.sunset as unknown[]),
   };
 }
 
