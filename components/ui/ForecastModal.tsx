@@ -281,8 +281,8 @@ export default function ForecastModal() {
                   </>
                 ) : (
                   <>
-                    <Copy size={15} />
-                    Copy post text
+                  <Copy size={15} />
+                  Copy &amp; Share to Facebook
                   </>
                 )}
               </button>
