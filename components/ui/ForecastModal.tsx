@@ -289,7 +289,7 @@ export default function ForecastModal() {
 
               {copied && (
                 <a
-                  href="https://www.facebook.com"
+                  href="https://www.facebook.com/groups/1826293804889186"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-all duration-200"

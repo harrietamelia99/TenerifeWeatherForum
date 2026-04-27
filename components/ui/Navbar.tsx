@@ -71,7 +71,7 @@ export default function Navbar() {
               {/* Desktop right: social + CTA */}
               <div className="hidden md:flex items-center gap-2">
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/groups/1826293804889186"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Tenerife Weather Forum on Facebook"
@@ -143,7 +143,7 @@ export default function Navbar() {
             style={{ borderColor: "var(--color-border)" }}
           >
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/groups/1826293804889186"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"

@@ -39,7 +39,7 @@ export default function Footer() {
             {/* Social */}
             <div className="flex items-center gap-3 mt-6">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/groups/1826293804889186"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Tenerife Weather Forum on Facebook"

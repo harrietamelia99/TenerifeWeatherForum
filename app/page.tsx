@@ -337,7 +337,7 @@ export default async function HomePage() {
               <div className="flex gap-4 flex-shrink-0">
                 {/* Facebook */}
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/groups/1826293804889186"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex flex-col items-center gap-3 px-7 py-6 rounded-2xl transition-all duration-200 hover:scale-105 hover:-translate-y-1"
