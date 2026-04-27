@@ -170,6 +170,7 @@ body {
 /* Card hover lift */
 .card-hover {
   transition: transform 200ms ease, box-shadow 200ms ease;
+  cursor: pointer;
 }
 
 .card-hover:hover {

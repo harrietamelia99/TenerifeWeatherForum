@@ -35,7 +35,7 @@ export default function DailyUpdate({ update }: Props) {
           </div>
           <div>
             <p className="text-xs text-white/50 font-semibold uppercase tracking-widest leading-none mb-0.5">
-              Kevin&apos;s Daily Update
+              Tenerife Weather Update
             </p>
             <p className="text-white font-700 text-sm leading-none">
               {update.date}

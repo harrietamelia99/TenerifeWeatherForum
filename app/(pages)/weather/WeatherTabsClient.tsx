@@ -41,10 +41,11 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
         {tabs.map((tab) => (
           <button
             key={tab}
+            type="button"
             role="tab"
             aria-selected={activeTab === tab}
             onClick={() => setActiveTab(tab)}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer"
             style={
               activeTab === tab
                 ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)" }

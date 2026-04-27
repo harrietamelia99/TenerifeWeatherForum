@@ -41,10 +41,11 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
+            type="button"
             role="tab"
             aria-selected={activeCategory === cat}
             onClick={() => handleCategoryChange(cat)}
-            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200"
+            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer"
             style={
               activeCategory === cat
                 ? {

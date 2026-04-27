@@ -35,6 +35,22 @@ export default function ForecastModal() {
   const [status, setStatus] = useState<Status>("idle");
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Admin mode: activate with ?admin=1 in the URL (stores flag in localStorage)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "1") {
+        localStorage.setItem("twf_admin", "1");
+      } else if (params.get("admin") === "0") {
+        localStorage.removeItem("twf_admin");
+      }
+      setIsAdmin(localStorage.getItem("twf_admin") === "1");
+    } catch {
+      // localStorage not available
+    }
+  }, []);
 
   // Listen for the open event
   useEffect(() => {
@@ -262,8 +278,8 @@ export default function ForecastModal() {
 
         {/* Footer — always visible */}
         <div className="px-6 pb-6 pt-3 flex flex-col gap-3 flex-shrink-0 border-t border-white/10">
-          {/* Copy + Share buttons */}
-          {status === "ready" && (
+          {/* Copy + Share buttons — only visible in admin mode */}
+          {status === "ready" && isAdmin && (
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleCopy}

@@ -41,12 +41,14 @@ export default function BlogCard({ post, className = "" }: BlogCardProps) {
   const textColor = categoryText[post.category] ?? "#053f5c";
 
   return (
-    <article
-      className={`rounded-3xl overflow-hidden card-hover group ${className}`}
+    <Link
+      href={`/blog/${post.slug}`}
+      className={`rounded-3xl overflow-hidden card-hover group block ${className}`}
       style={{
         background: "var(--color-surface)",
         border: "1px solid var(--color-border)",
         boxShadow: "0 2px 16px rgba(5,63,92,0.06)",
+        textDecoration: "none",
       }}
     >
       {/* Image */}
@@ -110,18 +112,17 @@ export default function BlogCard({ post, className = "" }: BlogCardProps) {
           {post.excerpt}
         </p>
 
-        <Link
-          href={`/blog/${post.slug}`}
-          className="inline-flex items-center gap-1.5 text-sm font-600 group/link"
+        <span
+          className="inline-flex items-center gap-1.5 text-sm font-600"
           style={{ color: "var(--color-mid)" }}
         >
           Read more
           <ArrowRight
             size={14}
-            className="transition-transform duration-200 group-hover/link:translate-x-1"
+            className="transition-transform duration-200 group-hover:translate-x-1"
           />
-        </Link>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }

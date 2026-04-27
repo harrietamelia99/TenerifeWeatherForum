@@ -88,22 +88,26 @@ export default async function HomePage() {
                 className="tabular-nums font-bold leading-none"
                 style={{ fontSize: "clamp(80px, 24vw, 110px)", color: "var(--color-sun)", letterSpacing: "-3px" }}
               >
-                26
+                {todayWeather.tempCurrent ?? todayWeather.tempHigh}
               </span>
               <span className="text-2xl font-light mb-3" style={{ color: "var(--color-text-muted)" }}>°C</span>
             </div>
 
             {/* Condition + high/low */}
-            <p className="font-bold text-lg mb-0.5" style={{ color: "var(--color-deep)" }}>Sunny</p>
-            <p className="text-sm mb-5" style={{ color: "var(--color-text-muted)" }}>High 27° · Low 19° · Feels like 28°</p>
+            <p className="font-bold text-lg mb-0.5" style={{ color: "var(--color-deep)" }}>
+              {todayWeather.condition.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+            </p>
+            <p className="text-sm mb-5" style={{ color: "var(--color-text-muted)" }}>
+              High {todayWeather.tempHigh}° · Low {todayWeather.tempLow}° · Feels like {todayWeather.feelsLike ?? todayWeather.tempCurrent ?? todayWeather.tempHigh}°
+            </p>
 
             {/* Stat tiles */}
             <div className="grid grid-cols-4 gap-2 mb-5">
               {[
-                { label: "Wind", value: "18", unit: "km/h" },
-                { label: "UV", value: "7", unit: "High" },
-                { label: "Humid", value: "58", unit: "%" },
-                { label: "Sea", value: "20", unit: "°C" },
+                { label: "Wind", value: String(todayWeather.wind), unit: "km/h" },
+                { label: "UV", value: String(todayWeather.uv), unit: todayWeather.uv <= 2 ? "Low" : todayWeather.uv <= 5 ? "Mod" : todayWeather.uv <= 7 ? "High" : "V.High" },
+                { label: "Humid", value: String(todayWeather.humidity), unit: "%" },
+                { label: "Sea", value: todayWeather.seaTemp != null ? String(todayWeather.seaTemp) : "–", unit: "°C" },
               ].map((s) => (
                 <div
                   key={s.label}
@@ -204,9 +208,9 @@ export default async function HomePage() {
                 }}
               >
                 <MapPin size={14} className="text-sky-300" />
-                Sea temp: <strong className="tabular-nums" style={{ color: "var(--color-sky)" }}>20°C</strong>
+                Sea temp: <strong className="tabular-nums" style={{ color: "var(--color-sky)" }}>{todayWeather.seaTemp != null ? `${todayWeather.seaTemp}°C` : "–"}</strong>
                 <span className="text-white/50">·</span>
-                <span>Sunrise: 07:21 - Sunset: 20:44</span>
+                <span>Sunrise: {todayWeather.sunrise ?? "–"} · Sunset: {todayWeather.sunset ?? "–"}</span>
               </div>
             </div>
           </div>
