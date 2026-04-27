@@ -4,7 +4,6 @@ import Link from "next/link";
 import WeatherCard from "@/components/ui/WeatherCard";
 import MicroclimateStrip from "@/components/ui/MicroclimateStrip";
 import BlogCard from "@/components/ui/BlogCard";
-import NewsletterBar from "@/components/ui/NewsletterBar";
 import HeroClouds from "@/components/ui/HeroClouds";
 import ForecastButton from "@/components/ui/ForecastButton";
 import { getAllPosts } from "@/lib/getPosts";
@@ -385,9 +384,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="pb-12 sm:pb-16 lg:pb-24">
-          <NewsletterBar />
-        </section>
       </div>
     </>
   );
