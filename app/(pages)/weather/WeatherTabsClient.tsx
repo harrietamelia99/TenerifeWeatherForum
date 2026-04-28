@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WeatherCard from "@/components/ui/WeatherCard";
 import AlertBanner from "@/components/ui/AlertBanner";
 import WeatherIcon from "@/components/ui/WeatherIcon";
@@ -31,7 +31,7 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
         </div>
       )}
 
-      {/* Tab nav */}
+      {/* Tab nav — uses radio+label for bulletproof iOS touch handling */}
       <div
         className="inline-flex gap-1 p-1.5 rounded-full mb-8"
         role="tablist"
@@ -39,19 +39,25 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
         style={{ background: "rgba(5,63,92,0.08)" }}
       >
         {tabs.map((tab) => (
-          <a
+          <label
             key={tab}
-            href={`#tab-${tab.toLowerCase().replace(" ", "-")}`}
-            role="tab"
-            aria-selected={activeTab === tab}
-            onClick={(e) => { e.preventDefault(); setActiveTab(tab); }}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap no-underline"
+            htmlFor={`wtab-${tab.replace(" ", "-")}`}
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap cursor-pointer"
             style={
               activeTab === tab
-                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)", textDecoration: "none" }
-                : { background: "transparent", color: "var(--color-text-muted)", textDecoration: "none" }
+                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)" }
+                : { background: "transparent", color: "var(--color-text-muted)" }
             }
           >
+            <input
+              type="radio"
+              id={`wtab-${tab.replace(" ", "-")}`}
+              name="weather-tab"
+              value={tab}
+              checked={activeTab === tab}
+              onChange={() => setActiveTab(tab)}
+              className="sr-only"
+            />
             {tab}
             {tab === "Alerts" && alerts.length > 0 && (
               <span
@@ -61,7 +67,7 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
                 {alerts.length}
               </span>
             )}
-          </a>
+          </label>
         ))}
       </div>
 
@@ -266,9 +272,15 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
 }
 
 function LiveUpdateItems({ weather }: { weather: WeatherData }) {
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  const dateStr = now.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  // Use useEffect to avoid server/client time mismatch that breaks hydration
+  const [timeStr, setTimeStr] = useState("");
+  const [dateStr, setDateStr] = useState("");
+
+  useEffect(() => {
+    const now = new Date();
+    setTimeStr(now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }));
+    setDateStr(now.toLocaleDateString("en-GB", { day: "numeric", month: "short" }));
+  }, []);
 
   const conditionLabel = weather.condition
     .replace(/-/g, " ")
@@ -294,7 +306,7 @@ function LiveUpdateItems({ weather }: { weather: WeatherData }) {
       <div className="flex items-center gap-2 mb-2">
         <Clock size={12} style={{ color: "var(--color-text-muted)" }} />
         <span className="text-xs font-500" style={{ color: "var(--color-text-muted)" }}>
-          {timeStr} · {dateStr}
+          {timeStr && dateStr ? `${timeStr} · ${dateStr}` : "Live"}
         </span>
       </div>
       <h3 className="font-600 text-sm mb-1.5" style={{ color: "var(--color-deep)" }}>
