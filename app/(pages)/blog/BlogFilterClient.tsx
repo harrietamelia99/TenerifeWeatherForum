@@ -33,10 +33,10 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
     <>
       {/* Filter bar */}
       <div
-        className="flex items-center gap-2 flex-wrap mb-10 p-1.5 rounded-full w-fit"
+        className="flex items-center gap-2 overflow-x-auto mb-10 p-1.5 rounded-full"
         role="tablist"
         aria-label="Filter posts by category"
-        style={{ background: "rgba(5,63,92,0.06)" }}
+        style={{ background: "rgba(5,63,92,0.06)", width: "fit-content", maxWidth: "100%" }}
       >
         {CATEGORIES.map((cat) => (
           <button
@@ -45,7 +45,7 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
             role="tab"
             aria-selected={activeCategory === cat}
             onClick={() => handleCategoryChange(cat)}
-            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer"
+            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0"
             style={
               activeCategory === cat
                 ? {
@@ -86,13 +86,15 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-3">
           <button
+            type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 disabled:opacity-40"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 disabled:opacity-40 cursor-pointer"
             style={{
               background: "var(--color-surface)",
               border: "1px solid var(--color-border)",
               color: "var(--color-deep)",
+              touchAction: "manipulation",
             }}
             aria-label="Previous page"
           >
@@ -104,12 +106,13 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
               <button
                 key={p}
+                type="button"
                 onClick={() => setPage(p)}
-                className="w-9 h-9 rounded-full text-sm font-600 transition-all duration-200"
+                className="w-9 h-9 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer"
                 style={
                   p === page
-                    ? { background: "var(--color-deep)", color: "white" }
-                    : { background: "transparent", color: "var(--color-text-muted)" }
+                    ? { background: "var(--color-deep)", color: "white", touchAction: "manipulation" }
+                    : { background: "transparent", color: "var(--color-text-muted)", touchAction: "manipulation" }
                 }
                 aria-label={`Page ${p}`}
                 aria-current={p === page ? "page" : undefined}
@@ -120,13 +123,15 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
           </div>
 
           <button
+            type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 disabled:opacity-40"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 disabled:opacity-40 cursor-pointer"
             style={{
               background: "var(--color-surface)",
               border: "1px solid var(--color-border)",
               color: "var(--color-deep)",
+              touchAction: "manipulation",
             }}
             aria-label="Next page"
           >

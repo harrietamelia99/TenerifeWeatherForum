@@ -167,7 +167,7 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
                   Weather data updates every 30 minutes direct from Open-Meteo. Current conditions for {currentWeather.location}: {currentWeather.tempCurrent}°C, {currentWeather.condition.replace("-", " ")}, wind {currentWeather.wind} km/h {currentWeather.windDirection}.
                 </p>
               </div>
-              <LiveUpdateItems />
+              <LiveUpdateItems weather={currentWeather} />
             </div>
           </div>
         </div>
@@ -265,47 +265,44 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
   );
 }
 
-function LiveUpdateItems() {
+function LiveUpdateItems({ weather }: { weather: WeatherData }) {
   const now = new Date();
   const timeStr = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   const dateStr = now.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-  const items = [
-    {
-      time: timeStr,
-      date: dateStr,
-      title: "Clear skies across the south, cloud building in the north",
-      summary:
-        "Another pleasant morning in Playa de las Americas. Puerto de la Cruz has morning cloud as expected.",
-    },
-  ];
+  const conditionLabel = weather.condition
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
+  const windDesc =
+    weather.wind < 15 ? "light breeze" :
+    weather.wind < 30 ? "moderate wind" :
+    weather.wind < 50 ? "fresh wind" : "strong wind";
+
+  const title = `${conditionLabel} — ${weather.tempCurrent ?? weather.tempHigh}°C in South Tenerife`;
+  const summary = `Current conditions at ${weather.location}: ${conditionLabel.toLowerCase()}, ${windDesc} at ${weather.wind} km/h${weather.windDirection ? ` from the ${weather.windDirection}` : ""}. Humidity ${weather.humidity}%. Data refreshes every 30 minutes.`;
 
   return (
-    <>
-      {items.map((update, i) => (
-        <div
-          key={i}
-          className="rounded-2xl p-4 card-hover"
-          style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            boxShadow: "0 2px 12px rgba(5,63,92,0.06)",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <Clock size={12} style={{ color: "var(--color-text-muted)" }} />
-            <span className="text-xs font-500" style={{ color: "var(--color-text-muted)" }}>
-              {update.time} · {update.date}
-            </span>
-          </div>
-          <h3 className="font-600 text-sm mb-1.5" style={{ color: "var(--color-deep)" }}>
-            {update.title}
-          </h3>
-          <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-            {update.summary}
-          </p>
-        </div>
-      ))}
-    </>
+    <div
+      className="rounded-2xl p-4"
+      style={{
+        background: "var(--color-surface)",
+        border: "1px solid var(--color-border)",
+        boxShadow: "0 2px 12px rgba(5,63,92,0.06)",
+      }}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <Clock size={12} style={{ color: "var(--color-text-muted)" }} />
+        <span className="text-xs font-500" style={{ color: "var(--color-text-muted)" }}>
+          {timeStr} · {dateStr}
+        </span>
+      </div>
+      <h3 className="font-600 text-sm mb-1.5" style={{ color: "var(--color-deep)" }}>
+        {title}
+      </h3>
+      <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+        {summary}
+      </p>
+    </div>
   );
 }

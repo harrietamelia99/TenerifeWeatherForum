@@ -154,9 +154,11 @@ export default function ForecastModal() {
             </div>
           </div>
           <button
+            type="button"
             onClick={() => setOpen(false)}
             aria-label="Close forecast"
             className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors flex-shrink-0 mt-0.5"
+            style={{ touchAction: "manipulation" }}
           >
             <X size={16} />
           </button>

@@ -269,14 +269,14 @@ export default function ResourcesPage() {
             gradient="linear-gradient(135deg, #053f5c, #9fe7f5)"
           >
             <ResourceLink
-              href="https://www.nhsinform.scot/illnesses-and-conditions/skin-hair-and-nails/sunburn"
+              href="https://www.gov.uk/foreign-travel-advice/spain/safety-and-emergencies"
               label="Emergency Numbers in Spain"
               description="112 (general emergency) · 061 (medical) · 091 (police) · 080 (fire)"
             />
             <ResourceLink
-              href="https://www.ehic.org.uk"
-              label="EHIC / GHIC Health Card"
-              description="Apply for or renew your Global Health Insurance Card before travelling"
+              href="https://www.nhs.uk/using-the-nhs/healthcare-abroad/apply-for-a-free-uk-global-health-insurance-card-ghic/"
+              label="UK Global Health Insurance Card (GHIC)"
+              description="Apply for or renew your free GHIC before travelling — replaced the EHIC for UK residents"
             />
             <ResourceLink
               href="https://www.aena.es/en/tenerife-south-airport.html"

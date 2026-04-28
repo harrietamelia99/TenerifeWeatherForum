@@ -89,7 +89,9 @@ export default function Navbar() {
                   <TikTokIcon size={15} scrolled={true} />
                 </a>
                 <button
+                  type="button"
                   className="btn-primary text-sm py-2 px-5 whitespace-nowrap"
+                  style={{ touchAction: "manipulation" }}
                   onClick={() => window.dispatchEvent(new Event("open-forecast-modal"))}
                 >
                   Today&apos;s Forecast
@@ -98,8 +100,10 @@ export default function Navbar() {
 
               {/* Mobile hamburger */}
               <button
+                type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="md:hidden p-2 rounded-full bg-[--color-bg] text-[--color-deep] transition-all duration-200"
+                style={{ touchAction: "manipulation" }}
                 aria-label={menuOpen ? "Close menu" : "Open menu"}
               >
                 {menuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -161,7 +165,9 @@ export default function Navbar() {
               <TikTokIcon size={16} scrolled={true} />
             </a>
             <button
+              type="button"
               className="btn-primary text-sm py-2.5 px-5 ml-auto"
+              style={{ touchAction: "manipulation" }}
               onClick={() => window.dispatchEvent(new Event("open-forecast-modal"))}
             >
               Today&apos;s Forecast
