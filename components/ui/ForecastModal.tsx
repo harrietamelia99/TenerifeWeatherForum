@@ -34,7 +34,6 @@ export default function ForecastModal() {
   const [update, setUpdate] = useState<DailyUpdate | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [copied, setCopied] = useState(false);
-  const [toast, setToast] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Admin mode: activate with ?admin=1 in the URL (stores flag in localStorage)
@@ -109,8 +108,6 @@ export default function ForecastModal() {
       }
     }
     setCopied(true);
-    setToast(true);
-    setTimeout(() => setToast(false), 3500);
     setTimeout(() => setCopied(false), 8000);
   };
 
@@ -166,26 +163,6 @@ export default function ForecastModal() {
         </div>
 
         <div className="mx-6 h-px bg-white/10 flex-shrink-0" />
-
-        {/* Copied toast — slides in below the header */}
-        <div
-          className="overflow-hidden transition-all duration-300 flex-shrink-0"
-          style={{ maxHeight: toast ? "80px" : "0px", opacity: toast ? 1 : 0 }}
-        >
-          <div className="mx-6 mt-4 flex items-center gap-3 rounded-2xl px-4 py-3"
-            style={{ background: "rgba(34,197,94,0.2)", border: "1px solid rgba(34,197,94,0.35)" }}
-          >
-            <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: "rgba(34,197,94,0.3)" }}
-            >
-              <Check size={14} className="text-green-200" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-white leading-tight">Copied to clipboard!</p>
-              <p className="text-xs text-white/60 leading-tight mt-0.5">Ready to paste into your Facebook post</p>
-            </div>
-          </div>
-        </div>
 
         {/* Scrollable body */}
         <div className="overflow-y-auto flex-1 px-6 py-5">
@@ -277,30 +254,23 @@ export default function ForecastModal() {
         </div>
 
         {/* Footer — always visible */}
-        <div className="px-6 pb-6 pt-3 flex flex-col gap-3 flex-shrink-0 border-t border-white/10">
-          {/* Copy + Share buttons — only visible in admin mode */}
+        <div className="px-6 pb-6 pt-3 flex-shrink-0 border-t border-white/10">
+
+          {/* Admin share row — invisible to regular visitors */}
           {status === "ready" && isAdmin && (
-            <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-3">
               <button
+                type="button"
                 onClick={handleCopy}
-                className="w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-all duration-300"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer"
                 style={{
-                  background: copied ? "rgba(34,197,94,0.3)" : "rgba(255,255,255,0.15)",
-                  border: `1px solid ${copied ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.2)"}`,
-                  color: "white",
+                  background: copied ? "rgba(34,197,94,0.2)" : "rgba(255,255,255,0.1)",
+                  border: `1px solid ${copied ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.15)"}`,
+                  color: copied ? "#86efac" : "rgba(255,255,255,0.6)",
                 }}
               >
-                {copied ? (
-                  <>
-                    <Check size={15} />
-                    Post text copied to clipboard!
-                  </>
-                ) : (
-                  <>
-                  <Copy size={15} />
-                  Copy &amp; Share to Facebook
-                  </>
-                )}
+                {copied ? <Check size={12} /> : <Copy size={12} />}
+                {copied ? "Copied!" : "Copy post"}
               </button>
 
               {copied && (
@@ -308,15 +278,15 @@ export default function ForecastModal() {
                   href="https://www.facebook.com/groups/1826293804889186"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-all duration-200"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200"
                   style={{
-                    background: "rgba(24,119,242,0.25)",
-                    border: "1px solid rgba(24,119,242,0.4)",
-                    color: "white",
+                    background: "rgba(24,119,242,0.2)",
+                    border: "1px solid rgba(24,119,242,0.35)",
+                    color: "rgba(255,255,255,0.7)",
                   }}
                 >
-                  <Facebook size={15} />
-                  Open Facebook &amp; paste
+                  <Facebook size={12} />
+                  Open Facebook
                 </a>
               )}
             </div>

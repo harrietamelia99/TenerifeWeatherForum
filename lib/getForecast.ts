@@ -34,9 +34,12 @@ async function fetchLoc(lat: number, lon: number) {
   const d = await res.json();
   const code: number = d.current.weather_code;
 
+  const temp = Math.round(d.current.temperature_2m);
+  const forecastHigh = Math.round(d.daily.temperature_2m_max[0]);
   return {
-    temp:     Math.round(d.current.temperature_2m),
-    high:     Math.round(d.daily.temperature_2m_max[0]),
+    temp,
+    // Never show a daily high lower than the current temperature
+    high:     Math.max(temp, forecastHigh),
     low:      Math.round(d.daily.temperature_2m_min[0]),
     wind:     Math.round(d.current.wind_speed_10m),
     gust:     Math.round(d.current.wind_gusts_10m),

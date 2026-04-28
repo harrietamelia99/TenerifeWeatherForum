@@ -100,13 +100,16 @@ export async function getLocationWeather(
   const parseSunTime = (arr: unknown[] | undefined) =>
     typeof arr?.[0] === "string" ? (arr[0] as string).split("T")[1] ?? undefined : undefined;
 
+  const tempCurrent = Math.round(cur.temperature_2m ?? 22);
+  const forecastHigh = Math.round((day.temperature_2m_max?.[0] as number) ?? 25);
   return {
     location: locationName,
     date: dateStr,
     condition: wmoToCondition(cur.weather_code ?? 0),
-    tempCurrent: Math.round(cur.temperature_2m ?? 22),
+    tempCurrent,
     feelsLike: Math.round(cur.apparent_temperature ?? 22),
-    tempHigh: Math.round((day.temperature_2m_max?.[0] as number) ?? 25),
+    // Never show daily high lower than the current temperature
+    tempHigh: Math.max(tempCurrent, forecastHigh),
     tempLow: Math.round((day.temperature_2m_min?.[0] as number) ?? 17),
     wind: Math.round(cur.wind_speed_10m ?? 15),
     windDirection: windDir,
