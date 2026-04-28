@@ -44,13 +44,12 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             type="button"
             role="tab"
             aria-selected={activeTab === tab}
-            onTouchEnd={(e) => { e.preventDefault(); setActiveTab(tab); }}
             onClick={() => setActiveTab(tab)}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap select-none"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap"
             style={
               activeTab === tab
-                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)", userSelect: "none", WebkitUserSelect: "none" }
-                : { background: "transparent", color: "var(--color-text-muted)", userSelect: "none", WebkitUserSelect: "none" }
+                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)" }
+                : { background: "transparent", color: "var(--color-text-muted)" }
             }
           >
             {tab}
