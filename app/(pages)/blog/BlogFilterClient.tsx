@@ -45,22 +45,23 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
             type="button"
             role="tab"
             aria-selected={activeCategory === cat}
+            onTouchEnd={(e) => { e.preventDefault(); handleCategoryChange(cat); }}
             onClick={() => handleCategoryChange(cat)}
-            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0"
+            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0 select-none"
             style={
               activeCategory === cat
                 ? {
                     background: "var(--color-deep)",
                     color: "white",
                     boxShadow: "0 2px 8px rgba(5,63,92,0.2)",
-                    touchAction: "manipulation",
-                    WebkitTapHighlightColor: "transparent",
+                    userSelect: "none",
+                    WebkitUserSelect: "none",
                   }
                 : {
                     background: "transparent",
                     color: "var(--color-text-muted)",
-                    touchAction: "manipulation",
-                    WebkitTapHighlightColor: "transparent",
+                    userSelect: "none",
+                    WebkitUserSelect: "none",
                   }
             }
           >
