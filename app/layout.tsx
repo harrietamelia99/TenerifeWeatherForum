@@ -20,7 +20,8 @@ export const metadata: Metadata = {
   },
   description:
     "Your trusted guide to Tenerife weather. Daily forecasts, microclimate breakdowns, monthly climate guides and travel tips for UK visitors and Tenerife residents.",
-  keywords: ["Tenerife weather", "Tenerife forecast", "Canary Islands weather", "Tenerife travel", "UK Tenerife"],
+  keywords: ["Tenerife weather", "Tenerife forecast", "Canary Islands weather", "Tenerife travel", "UK Tenerife", "Tenerife south weather", "Tenerife north weather", "Playa de las Americas weather"],
+  metadataBase: new URL("https://www.tenerifeweatherforum.com"),
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
@@ -30,6 +31,11 @@ export const metadata: Metadata = {
     title: "Tenerife Weather Forum",
     description: "Daily forecasts, microclimates and travel info - all in one place.",
     type: "website",
+    url: "https://www.tenerifeweatherforum.com",
+    siteName: "Tenerife Weather Forum",
+  },
+  alternates: {
+    canonical: "https://www.tenerifeweatherforum.com",
   },
 };
 
