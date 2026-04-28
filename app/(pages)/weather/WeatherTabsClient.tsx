@@ -33,10 +33,10 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
 
       {/* Tab nav */}
       <div
-        className="flex gap-1 p-1.5 rounded-full mb-8 w-fit"
+        className="flex gap-1 p-1.5 rounded-full mb-8 overflow-x-auto"
         role="tablist"
         aria-label="Weather sections"
-        style={{ background: "rgba(5,63,92,0.08)" }}
+        style={{ background: "rgba(5,63,92,0.08)", width: "fit-content", maxWidth: "100%" }}
       >
         {tabs.map((tab) => (
           <button
@@ -45,11 +45,11 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             role="tab"
             aria-selected={activeTab === tab}
             onClick={() => setActiveTab(tab)}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0"
             style={
               activeTab === tab
-                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)" }
-                : { background: "transparent", color: "var(--color-text-muted)" }
+                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)", touchAction: "manipulation" }
+                : { background: "transparent", color: "var(--color-text-muted)", touchAction: "manipulation" }
             }
           >
             {tab}
@@ -277,13 +277,6 @@ function LiveUpdateItems() {
       title: "Clear skies across the south, cloud building in the north",
       summary:
         "Another pleasant morning in Playa de las Americas. Puerto de la Cruz has morning cloud as expected.",
-    },
-    {
-      time: "18:00",
-      date: dateStr,
-      title: "Trade winds steady from the northeast",
-      summary:
-        "Northeasterly trades continuing at 15-20 km/h. Ideal conditions for El Medano watersports.",
     },
   ];
 
