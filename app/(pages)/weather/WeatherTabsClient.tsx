@@ -33,10 +33,10 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
 
       {/* Tab nav */}
       <div
-        className="flex gap-1 p-1.5 rounded-full mb-8 overflow-x-auto"
+        className="inline-flex gap-1 p-1.5 rounded-full mb-8"
         role="tablist"
         aria-label="Weather sections"
-        style={{ background: "rgba(5,63,92,0.08)", width: "fit-content", maxWidth: "100%" }}
+        style={{ background: "rgba(5,63,92,0.08)" }}
       >
         {tabs.map((tab) => (
           <button
@@ -45,11 +45,11 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             role="tab"
             aria-selected={activeTab === tab}
             onClick={() => setActiveTab(tab)}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap"
             style={
               activeTab === tab
-                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)", touchAction: "manipulation" }
-                : { background: "transparent", color: "var(--color-text-muted)", touchAction: "manipulation" }
+                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)", touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }
+                : { background: "transparent", color: "var(--color-text-muted)", touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }
             }
           >
             {tab}

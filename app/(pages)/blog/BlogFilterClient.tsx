@@ -32,11 +32,12 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
   return (
     <>
       {/* Filter bar */}
+      <div className="overflow-x-auto mb-10 max-w-full" style={{ WebkitOverflowScrolling: "touch" }}>
       <div
-        className="flex items-center gap-2 overflow-x-auto mb-10 p-1.5 rounded-full"
+        className="inline-flex items-center gap-2 p-1.5 rounded-full"
         role="tablist"
         aria-label="Filter posts by category"
-        style={{ background: "rgba(5,63,92,0.06)", width: "fit-content", maxWidth: "100%" }}
+        style={{ background: "rgba(5,63,92,0.06)" }}
       >
         {CATEGORIES.map((cat) => (
           <button
@@ -52,16 +53,21 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
                     background: "var(--color-deep)",
                     color: "white",
                     boxShadow: "0 2px 8px rgba(5,63,92,0.2)",
+                    touchAction: "manipulation",
+                    WebkitTapHighlightColor: "transparent",
                   }
                 : {
                     background: "transparent",
                     color: "var(--color-text-muted)",
+                    touchAction: "manipulation",
+                    WebkitTapHighlightColor: "transparent",
                   }
             }
           >
             {cat}
           </button>
         ))}
+      </div>
       </div>
 
       {/* Grid */}
