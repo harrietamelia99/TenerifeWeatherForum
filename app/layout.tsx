@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.tenerifeweatherforum.com",
   },
+  verification: {
+    google: "suNRlLaC9AiDVZEZYTxQxb3I3oEp4zEhLpaNBA6FBIE",
+  },
 };
 
 export default function RootLayout({
