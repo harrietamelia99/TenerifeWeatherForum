@@ -165,9 +165,9 @@ export default function ResourcesPage() {
               description="Search for bus routes between resorts, towns and both airports"
             />
             <ResourceLink
-              href="https://www.tenerifetransporte.com"
-              label="Tenerife Transport Guide"
-              description="Practical guide to buses, taxis and transfers for tourists"
+              href="https://www.webtenerife.co.uk/plan-trip/getting-around/"
+              label="Getting Around Tenerife - Official Tourism Guide"
+              description="Official Tenerife tourism board guide to buses, taxis, trams and car hire"
             />
             <ResourceLink
               href="/blog/getting-around-tenerife"
