@@ -160,7 +160,7 @@ export default function ResourcesPage() {
               description="Tenerife's public bus service. Route maps, live timetables and BONO card information"
             />
             <ResourceLink
-              href="https://www.titsa.com/index.php/tus-guaguas/lineas-y-horarios"
+              href="https://www.titsa.com/index.php/tus-guaguas/lineas-y-horarios/linea-011"
               label="TITSA Route Finder & Timetables"
               description="Search for bus routes between resorts, towns and both airports"
             />
