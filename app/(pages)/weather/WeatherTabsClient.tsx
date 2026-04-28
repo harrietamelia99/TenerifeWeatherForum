@@ -14,12 +14,7 @@ interface Props {
   seaTemp: number | null;
 }
 
-const tabs = ["Today", "This Week", "Alerts"] as const;
-type Tab = typeof tabs[number];
-
 export default function WeatherTabsClient({ currentWeather, weeklyForecast, alerts, seaTemp }: Props) {
-  const [activeTab, setActiveTab] = useState<Tab>("Today");
-
   return (
     <>
       {/* Active Alerts banner */}
@@ -31,35 +26,43 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
         </div>
       )}
 
-      {/* Tab nav — uses radio+label for bulletproof iOS touch handling */}
-      <div
-        className="inline-flex gap-1 p-1.5 rounded-full mb-8"
-        role="tablist"
-        aria-label="Weather sections"
-        style={{ background: "rgba(5,63,92,0.08)" }}
-      >
-        {tabs.map((tab) => (
+      {/*
+        CSS-only tab system — zero JavaScript dependency.
+        Radio inputs must come FIRST as siblings of nav + panels
+        so the CSS :checked ~ sibling selectors can reach them.
+      */}
+      <div>
+        {/* Hidden radio inputs — these control everything via CSS */}
+        <input type="radio" id="wtab-Today"    name="wtab" className="sr-only" defaultChecked />
+        <input type="radio" id="wtab-ThisWeek" name="wtab" className="sr-only" />
+        <input type="radio" id="wtab-Alerts"   name="wtab" className="sr-only" />
+
+        {/* Tab nav */}
+        <div
+          className="wtab-nav inline-flex gap-1 p-1.5 rounded-full mb-8"
+          style={{ background: "rgba(5,63,92,0.08)" }}
+        >
           <label
-            key={tab}
-            htmlFor={`wtab-${tab.replace(" ", "-")}`}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap cursor-pointer"
-            style={
-              activeTab === tab
-                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)" }
-                : { background: "transparent", color: "var(--color-text-muted)" }
-            }
+            htmlFor="wtab-Today"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap"
+            style={{ color: "var(--color-text-muted)" }}
           >
-            <input
-              type="radio"
-              id={`wtab-${tab.replace(" ", "-")}`}
-              name="weather-tab"
-              value={tab}
-              checked={activeTab === tab}
-              onChange={() => setActiveTab(tab)}
-              className="sr-only"
-            />
-            {tab}
-            {tab === "Alerts" && alerts.length > 0 && (
+            Today
+          </label>
+          <label
+            htmlFor="wtab-ThisWeek"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap"
+            style={{ color: "var(--color-text-muted)" }}
+          >
+            This Week
+          </label>
+          <label
+            htmlFor="wtab-Alerts"
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap"
+            style={{ color: "var(--color-text-muted)" }}
+          >
+            Alerts
+            {alerts.length > 0 && (
               <span
                 className="ml-2 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs font-700"
                 style={{ background: "#dc2626", color: "white" }}
@@ -68,120 +71,113 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
               </span>
             )}
           </label>
-        ))}
-      </div>
+        </div>
 
-      {/* TODAY */}
-      {activeTab === "Today" && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <WeatherCard data={currentWeather} variant="light" className="mb-6" />
+        {/* TODAY panel */}
+        <div className="wtab-panel wtab-panel-Today">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <WeatherCard data={currentWeather} variant="light" className="mb-6" />
 
-            {/* Detailed conditions */}
-            <div
-              className="rounded-3xl p-6"
-              style={{
-                background: "var(--color-surface)",
-                border: "1px solid var(--color-border)",
-                boxShadow: "0 2px 12px rgba(5,63,92,0.06)",
-              }}
-            >
-              <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>
-                Detailed Conditions
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {[
-                  {
-                    label: "Sea Temperature",
-                    value: seaTemp != null ? `${seaTemp}°C` : `${currentWeather.seaTemp ?? "–"}°C`,
-                    sub: "Atlantic Ocean",
-                  },
-                  {
-                    label: "Sunrise",
-                    value: currentWeather.sunrise ?? "–",
-                    sub: "Atlantic Time",
-                  },
-                  {
-                    label: "Sunset",
-                    value: currentWeather.sunset ?? "–",
-                    sub: "Atlantic Time",
-                  },
-                  {
-                    label: "Wind Direction",
-                    value: currentWeather.windDirection ?? "–",
-                    sub: currentWeather.windDirection === "NE" ? "Northeasterly"
-                       : currentWeather.windDirection === "N"  ? "Northerly"
-                       : currentWeather.windDirection === "E"  ? "Easterly"
-                       : currentWeather.windDirection === "SW" ? "Southwesterly"
-                       : currentWeather.windDirection === "NW" ? "Northwesterly"
-                       : "Variable",
-                  },
-                  {
-                    label: "Feels Like",
-                    value: currentWeather.feelsLike != null ? `${currentWeather.feelsLike}°C` : "–",
-                    sub: "With humidity",
-                  },
-                  {
-                    label: "Humidity",
-                    value: `${currentWeather.humidity}%`,
-                    sub: currentWeather.humidity < 50 ? "Low" : currentWeather.humidity < 70 ? "Moderate" : "High",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl p-4"
-                    style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)" }}
-                  >
-                    <p className="text-xs font-500 uppercase tracking-widest mb-2" style={{ color: "var(--color-text-muted)" }}>
-                      {item.label}
-                    </p>
-                    <p className="tabular-nums font-700 text-lg" style={{ color: "var(--color-deep)" }}>
-                      {item.value}
-                    </p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
-                      {item.sub}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Latest updates feed */}
-          <div>
-            <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>
-              Latest Updates
-            </h2>
-            <div className="flex flex-col gap-4">
+              {/* Detailed conditions */}
               <div
-                className="rounded-2xl p-4"
+                className="rounded-3xl p-6"
                 style={{
-                  background: "rgba(159,231,245,0.1)",
-                  border: "1px solid rgba(66,158,189,0.2)",
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
+                  boxShadow: "0 2px 12px rgba(5,63,92,0.06)",
                 }}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <span
-                    className="w-2 h-2 rounded-full inline-block"
-                    style={{ background: "#22c55e" }}
-                  />
-                  <span className="text-xs font-600" style={{ color: "var(--color-mid)" }}>
-                    Live data
-                  </span>
+                <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>
+                  Detailed Conditions
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {[
+                    {
+                      label: "Sea Temperature",
+                      value: seaTemp != null ? `${seaTemp}°C` : `${currentWeather.seaTemp ?? "–"}°C`,
+                      sub: "Atlantic Ocean",
+                    },
+                    {
+                      label: "Sunrise",
+                      value: currentWeather.sunrise ?? "–",
+                      sub: "Atlantic Time",
+                    },
+                    {
+                      label: "Sunset",
+                      value: currentWeather.sunset ?? "–",
+                      sub: "Atlantic Time",
+                    },
+                    {
+                      label: "Wind Direction",
+                      value: currentWeather.windDirection ?? "–",
+                      sub: currentWeather.windDirection === "NE" ? "Northeasterly"
+                         : currentWeather.windDirection === "N"  ? "Northerly"
+                         : currentWeather.windDirection === "E"  ? "Easterly"
+                         : currentWeather.windDirection === "SW" ? "Southwesterly"
+                         : currentWeather.windDirection === "NW" ? "Northwesterly"
+                         : "Variable",
+                    },
+                    {
+                      label: "Feels Like",
+                      value: currentWeather.feelsLike != null ? `${currentWeather.feelsLike}°C` : "–",
+                      sub: "With humidity",
+                    },
+                    {
+                      label: "Humidity",
+                      value: `${currentWeather.humidity}%`,
+                      sub: currentWeather.humidity < 50 ? "Low" : currentWeather.humidity < 70 ? "Moderate" : "High",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-2xl p-4"
+                      style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)" }}
+                    >
+                      <p className="text-xs font-500 uppercase tracking-widest mb-2" style={{ color: "var(--color-text-muted)" }}>
+                        {item.label}
+                      </p>
+                      <p className="tabular-nums font-700 text-lg" style={{ color: "var(--color-deep)" }}>
+                        {item.value}
+                      </p>
+                      <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+                        {item.sub}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                  Weather data updates every 30 minutes direct from Open-Meteo. Current conditions for {currentWeather.location}: {currentWeather.tempCurrent}°C, {currentWeather.condition.replace("-", " ")}, wind {currentWeather.wind} km/h {currentWeather.windDirection}.
-                </p>
               </div>
-              <LiveUpdateItems weather={currentWeather} />
+            </div>
+
+            {/* Latest updates feed */}
+            <div>
+              <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>
+                Latest Updates
+              </h2>
+              <div className="flex flex-col gap-4">
+                <div
+                  className="rounded-2xl p-4"
+                  style={{
+                    background: "rgba(159,231,245,0.1)",
+                    border: "1px solid rgba(66,158,189,0.2)",
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full inline-block" style={{ background: "#22c55e" }} />
+                    <span className="text-xs font-600" style={{ color: "var(--color-mid)" }}>Live data</span>
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                    Weather data updates every 30 minutes direct from Open-Meteo. Current conditions for {currentWeather.location}: {currentWeather.tempCurrent}°C, {currentWeather.condition.replace("-", " ")}, wind {currentWeather.wind} km/h {currentWeather.windDirection}.
+                  </p>
+                </div>
+                <LiveUpdateItems weather={currentWeather} />
+              </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* THIS WEEK */}
-      {activeTab === "This Week" && (
-        <div>
+        {/* THIS WEEK panel */}
+        <div className="wtab-panel wtab-panel-ThisWeek">
           <div className="grid grid-cols-1 sm:grid-cols-7 gap-3 mb-8">
             {weeklyForecast.map((day, i) => (
               <div
@@ -201,23 +197,16 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
                 </p>
                 <WeatherIcon condition={day.condition} size={48} />
                 <div className="text-center">
-                  <p
-                    className="tabular-nums font-700 text-xl"
-                    style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-sun)" }}
-                  >
+                  <p className="tabular-nums font-700 text-xl" style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-sun)" }}>
                     {day.high}°
                   </p>
-                  <p
-                    className="tabular-nums text-sm font-400"
-                    style={{ color: i === 0 ? "rgba(5,63,92,0.6)" : "var(--color-text-muted)" }}
-                  >
+                  <p className="tabular-nums text-sm font-400" style={{ color: i === 0 ? "rgba(5,63,92,0.6)" : "var(--color-text-muted)" }}>
                     {day.low}°
                   </p>
                 </div>
               </div>
             ))}
           </div>
-
           <div
             className="rounded-3xl p-6"
             style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
@@ -232,11 +221,9 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             </p>
           </div>
         </div>
-      )}
 
-      {/* ALERTS */}
-      {activeTab === "Alerts" && (
-        <div>
+        {/* ALERTS panel */}
+        <div className="wtab-panel wtab-panel-Alerts">
           {alerts.length === 0 ? (
             <div
               className="rounded-3xl p-16 text-center"
@@ -266,13 +253,12 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             </div>
           )}
         </div>
-      )}
+      </div>
     </>
   );
 }
 
 function LiveUpdateItems({ weather }: { weather: WeatherData }) {
-  // Use useEffect to avoid server/client time mismatch that breaks hydration
   const [timeStr, setTimeStr] = useState("");
   const [dateStr, setDateStr] = useState("");
 
@@ -291,9 +277,6 @@ function LiveUpdateItems({ weather }: { weather: WeatherData }) {
     weather.wind < 30 ? "moderate wind" :
     weather.wind < 50 ? "fresh wind" : "strong wind";
 
-  const title = `${conditionLabel} — ${weather.tempCurrent ?? weather.tempHigh}°C in South Tenerife`;
-  const summary = `Current conditions at ${weather.location}: ${conditionLabel.toLowerCase()}, ${windDesc} at ${weather.wind} km/h${weather.windDirection ? ` from the ${weather.windDirection}` : ""}. Humidity ${weather.humidity}%. Data refreshes every 30 minutes.`;
-
   return (
     <div
       className="rounded-2xl p-4"
@@ -310,10 +293,11 @@ function LiveUpdateItems({ weather }: { weather: WeatherData }) {
         </span>
       </div>
       <h3 className="font-600 text-sm mb-1.5" style={{ color: "var(--color-deep)" }}>
-        {title}
+        {conditionLabel} — {weather.tempCurrent ?? weather.tempHigh}°C in South Tenerife
       </h3>
       <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-        {summary}
+        {conditionLabel.toLowerCase()}, {windDesc} at {weather.wind} km/h
+        {weather.windDirection ? ` from the ${weather.windDirection}` : ""}. Humidity {weather.humidity}%.
       </p>
     </div>
   );

@@ -30,10 +30,30 @@
 /* iOS Safari: ensure buttons and interactive elements always receive touch events */
 button,
 [role="button"],
-[role="tab"] {
+[role="tab"],
+label {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   touch-action: manipulation;
   cursor: pointer;
+}
+
+/* ── CSS-only weather tab system ─────────────────────────────────────────────
+   Radio inputs control which panel is visible. No JavaScript required.
+   This works on every browser and device unconditionally.
+────────────────────────────────────────────────────────────────────────────── */
+.wtab-panel { display: none; }
+
+#wtab-Today:checked   ~ .wtab-panel-Today   { display: block; }
+#wtab-ThisWeek:checked ~ .wtab-panel-ThisWeek { display: block; }
+#wtab-Alerts:checked  ~ .wtab-panel-Alerts  { display: block; }
+
+/* Active tab label styling */
+#wtab-Today:checked   ~ .wtab-nav label[for="wtab-Today"],
+#wtab-ThisWeek:checked ~ .wtab-nav label[for="wtab-ThisWeek"],
+#wtab-Alerts:checked  ~ .wtab-nav label[for="wtab-Alerts"] {
+  background: var(--color-deep);
+  color: white;
+  box-shadow: 0 2px 8px rgba(5,63,92,0.25);
 }
 
 html {
