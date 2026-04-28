@@ -40,28 +40,30 @@ export default function BlogFilterClient({ posts }: BlogFilterClientProps) {
         style={{ background: "rgba(5,63,92,0.06)" }}
       >
         {CATEGORIES.map((cat) => (
-          <button
+          <a
             key={cat}
-            type="button"
+            href={`#filter-${cat.toLowerCase().replace(" ", "-")}`}
             role="tab"
             aria-selected={activeCategory === cat}
-            onClick={() => handleCategoryChange(cat)}
-            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0"
+            onClick={(e) => { e.preventDefault(); handleCategoryChange(cat); }}
+            className="px-5 py-2 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap flex-shrink-0 no-underline"
             style={
               activeCategory === cat
                 ? {
                     background: "var(--color-deep)",
                     color: "white",
                     boxShadow: "0 2px 8px rgba(5,63,92,0.2)",
+                    textDecoration: "none",
                   }
                 : {
                     background: "transparent",
                     color: "var(--color-text-muted)",
+                    textDecoration: "none",
                   }
             }
           >
             {cat}
-          </button>
+          </a>
         ))}
       </div>
       </div>

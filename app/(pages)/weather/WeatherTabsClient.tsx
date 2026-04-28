@@ -39,17 +39,17 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
         style={{ background: "rgba(5,63,92,0.08)" }}
       >
         {tabs.map((tab) => (
-          <button
+          <a
             key={tab}
-            type="button"
+            href={`#tab-${tab.toLowerCase().replace(" ", "-")}`}
             role="tab"
             aria-selected={activeTab === tab}
-            onClick={() => setActiveTab(tab)}
-            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 cursor-pointer whitespace-nowrap"
+            onClick={(e) => { e.preventDefault(); setActiveTab(tab); }}
+            className="px-5 py-2.5 rounded-full text-sm font-600 transition-all duration-200 whitespace-nowrap no-underline"
             style={
               activeTab === tab
-                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)" }
-                : { background: "transparent", color: "var(--color-text-muted)" }
+                ? { background: "var(--color-deep)", color: "white", boxShadow: "0 2px 8px rgba(5,63,92,0.25)", textDecoration: "none" }
+                : { background: "transparent", color: "var(--color-text-muted)", textDecoration: "none" }
             }
           >
             {tab}
@@ -61,7 +61,7 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
                 {alerts.length}
               </span>
             )}
-          </button>
+          </a>
         ))}
       </div>
 
