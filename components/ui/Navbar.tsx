@@ -24,9 +24,11 @@ export default function Navbar() {
   return (
     <>
       {/* Floating pill — always pill-shaped */}
-      <div className="fixed top-11 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-3">
+      {/* pointer-events-none on the outer wrapper so the invisible overflow of the
+          collapsed mobile menu never blocks taps on page content below */}
+      <div className="fixed top-11 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-3 pointer-events-none">
         <nav
-          className="max-w-7xl mx-auto rounded-full"
+          className="max-w-7xl mx-auto rounded-full pointer-events-auto"
           style={{
             background: "white",
             boxShadow: "0 4px 24px rgba(5,63,92,0.12), 0 1px 4px rgba(5,63,92,0.08)",
@@ -112,10 +114,11 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile dropdown — separate card below the pill */}
+        {/* Mobile dropdown — collapses to max-h-0 (zero layout space) when closed
+            so the fixed wrapper never overlaps page content below */}
         <div
-          className={`md:hidden mt-2 max-w-7xl mx-auto rounded-3xl overflow-hidden transition-all duration-300 ${
-            menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
+          className={`md:hidden mt-2 max-w-7xl mx-auto rounded-3xl overflow-hidden transition-all duration-300 pointer-events-auto ${
+            menuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
           }`}
           style={{
             background: "white",
