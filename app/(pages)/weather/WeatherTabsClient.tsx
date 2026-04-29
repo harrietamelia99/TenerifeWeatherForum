@@ -14,9 +14,26 @@ interface Props {
   seaTemp: number | null;
 }
 
+type Tab = "Today" | "This Week" | "Alerts";
+const TABS: Tab[] = ["Today", "This Week", "Alerts"];
+
+const ACTIVE_STYLE: React.CSSProperties = {
+  background: "#053f5c",
+  color: "#ffffff",
+  boxShadow: "0 2px 8px rgba(5,63,92,0.25)",
+};
+
+const INACTIVE_STYLE: React.CSSProperties = {
+  background: "transparent",
+  color: "#429ebd",
+  boxShadow: "none",
+};
+
 export default function WeatherTabsClient({ currentWeather, weeklyForecast, alerts, seaTemp }: Props) {
+  const [activeTab, setActiveTab] = useState<Tab>("Today");
+
   return (
-    <>
+    <div>
       {/* Active Alerts banner */}
       {alerts.length > 0 && (
         <div className="mb-8 flex flex-col gap-3">
@@ -26,110 +43,128 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
         </div>
       )}
 
-      {/*
-        CSS-only tabs. All elements must share the same parent so the
-        general sibling combinator (~) can reach from radio → nav → panels.
-      */}
-      <style>{`
-        .wtab-panel{display:none!important}
-        #wtab-Today:checked~.wtab-panel-Today{display:block!important}
-        #wtab-ThisWeek:checked~.wtab-panel-ThisWeek{display:block!important}
-        #wtab-Alerts:checked~.wtab-panel-Alerts{display:block!important}
-        .wtab-lbl{display:inline-block;padding:10px 20px;border-radius:9999px;font-size:.875rem;font-weight:600;color:#429ebd;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s;-webkit-tap-highlight-color:transparent}
-        #wtab-Today:checked~.wtab-nav label[for=wtab-Today],
-        #wtab-ThisWeek:checked~.wtab-nav label[for=wtab-ThisWeek],
-        #wtab-Alerts:checked~.wtab-nav label[for=wtab-Alerts]{background:#053f5c!important;color:#fff!important;box-shadow:0 2px 8px rgba(5,63,92,.25)}
-      `}</style>
-
-      <div className="relative">
-        {/* Radio inputs — MUST be first children so ~ sibling CSS reaches nav + panels */}
-        <input type="radio" id="wtab-Today"    name="wtab" className="sr-only" defaultChecked />
-        <input type="radio" id="wtab-ThisWeek" name="wtab" className="sr-only" />
-        <input type="radio" id="wtab-Alerts"   name="wtab" className="sr-only" />
-
-        {/* Tab nav */}
-        <div
-          className="wtab-nav inline-flex gap-1 p-1.5 rounded-full mb-8"
-          style={{ background: "rgba(5,63,92,0.08)" }}
-        >
-          <label htmlFor="wtab-Today"    className="wtab-lbl">Today</label>
-          <label htmlFor="wtab-ThisWeek" className="wtab-lbl">This Week</label>
-          <label htmlFor="wtab-Alerts"   className="wtab-lbl">
-            Alerts
-            {alerts.length > 0 && (
+      {/* Tab nav */}
+      <div
+        style={{
+          display: "inline-flex",
+          gap: 4,
+          padding: 6,
+          borderRadius: 9999,
+          background: "rgba(5,63,92,0.08)",
+          marginBottom: 32,
+        }}
+      >
+        {TABS.map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 20px",
+              borderRadius: 9999,
+              border: "none",
+              fontWeight: 600,
+              fontSize: "0.875rem",
+              cursor: "pointer",
+              touchAction: "manipulation",
+              WebkitTapHighlightColor: "transparent",
+              whiteSpace: "nowrap",
+              transition: "background 0.2s, color 0.2s",
+              outline: "none",
+              ...(activeTab === tab ? ACTIVE_STYLE : INACTIVE_STYLE),
+            }}
+          >
+            {tab}
+            {tab === "Alerts" && alerts.length > 0 && (
               <span
-                className="ml-2 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs font-700"
-                style={{ background: "#dc2626", color: "white" }}
+                style={{
+                  background: "#dc2626",
+                  color: "white",
+                  borderRadius: "50%",
+                  width: 20,
+                  height: 20,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                }}
               >
                 {alerts.length}
               </span>
             )}
-          </label>
-        </div>
+          </button>
+        ))}
+      </div>
 
-        {/* ── TODAY ─────────────────────────────────────────────────────── */}
-        <div className="wtab-panel wtab-panel-Today">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <WeatherCard data={currentWeather} variant="light" className="mb-6" />
-              <div
-                className="rounded-3xl p-6"
-                style={{
-                  background: "var(--color-surface)",
-                  border: "1px solid var(--color-border)",
-                  boxShadow: "0 2px 12px rgba(5,63,92,0.06)",
-                }}
-              >
-                <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>
-                  Detailed Conditions
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {[
-                    { label: "Sea Temperature", value: seaTemp != null ? `${seaTemp}°C` : `${currentWeather.seaTemp ?? "–"}°C`, sub: "Atlantic Ocean" },
-                    { label: "Sunrise",          value: currentWeather.sunrise ?? "–",  sub: "Atlantic Time" },
-                    { label: "Sunset",           value: currentWeather.sunset ?? "–",   sub: "Atlantic Time" },
-                    {
-                      label: "Wind Direction",
-                      value: currentWeather.windDirection ?? "–",
-                      sub: currentWeather.windDirection === "NE" ? "Northeasterly"
-                         : currentWeather.windDirection === "N"  ? "Northerly"
-                         : currentWeather.windDirection === "E"  ? "Easterly"
-                         : currentWeather.windDirection === "SW" ? "Southwesterly"
-                         : currentWeather.windDirection === "NW" ? "Northwesterly"
-                         : "Variable",
-                    },
-                    { label: "Feels Like", value: currentWeather.feelsLike != null ? `${currentWeather.feelsLike}°C` : "–", sub: "With humidity" },
-                    { label: "Humidity",   value: `${currentWeather.humidity}%`, sub: currentWeather.humidity < 50 ? "Low" : currentWeather.humidity < 70 ? "Moderate" : "High" },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-2xl p-4" style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)" }}>
-                      <p className="text-xs font-500 uppercase tracking-widest mb-2" style={{ color: "var(--color-text-muted)" }}>{item.label}</p>
-                      <p className="tabular-nums font-700 text-lg" style={{ color: "var(--color-deep)" }}>{item.value}</p>
-                      <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>{item.sub}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div>
-              <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>Latest Updates</h2>
-              <div className="flex flex-col gap-4">
-                <div className="rounded-2xl p-4" style={{ background: "rgba(159,231,245,0.1)", border: "1px solid rgba(66,158,189,0.2)" }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full inline-block" style={{ background: "#22c55e" }} />
-                    <span className="text-xs font-600" style={{ color: "var(--color-mid)" }}>Live data</span>
+      {/* ── TODAY ─────────────────────────────────────────────────────── */}
+      {activeTab === "Today" && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <WeatherCard data={currentWeather} variant="light" className="mb-6" />
+            <div
+              className="rounded-3xl p-6"
+              style={{
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                boxShadow: "0 2px 12px rgba(5,63,92,0.06)",
+              }}
+            >
+              <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>
+                Detailed Conditions
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {[
+                  { label: "Sea Temperature", value: seaTemp != null ? `${seaTemp}°C` : `${currentWeather.seaTemp ?? "–"}°C`, sub: "Atlantic Ocean" },
+                  { label: "Sunrise",          value: currentWeather.sunrise ?? "–",  sub: "Atlantic Time" },
+                  { label: "Sunset",           value: currentWeather.sunset ?? "–",   sub: "Atlantic Time" },
+                  {
+                    label: "Wind Direction",
+                    value: currentWeather.windDirection ?? "–",
+                    sub: currentWeather.windDirection === "NE" ? "Northeasterly"
+                       : currentWeather.windDirection === "N"  ? "Northerly"
+                       : currentWeather.windDirection === "E"  ? "Easterly"
+                       : currentWeather.windDirection === "SW" ? "Southwesterly"
+                       : currentWeather.windDirection === "NW" ? "Northwesterly"
+                       : "Variable",
+                  },
+                  { label: "Feels Like", value: currentWeather.feelsLike != null ? `${currentWeather.feelsLike}°C` : "–", sub: "With humidity" },
+                  { label: "Humidity",   value: `${currentWeather.humidity}%`, sub: currentWeather.humidity < 50 ? "Low" : currentWeather.humidity < 70 ? "Moderate" : "High" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-2xl p-4" style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)" }}>
+                    <p className="text-xs font-500 uppercase tracking-widest mb-2" style={{ color: "var(--color-text-muted)" }}>{item.label}</p>
+                    <p className="tabular-nums font-700 text-lg" style={{ color: "var(--color-deep)" }}>{item.value}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>{item.sub}</p>
                   </div>
-                  <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                    Weather data updates every 30 minutes from Open-Meteo. {currentWeather.location}: {currentWeather.tempCurrent}°C, {currentWeather.condition.replace(/-/g, " ")}, wind {currentWeather.wind} km/h {currentWeather.windDirection}.
-                  </p>
-                </div>
-                <LiveUpdateItems weather={currentWeather} />
+                ))}
               </div>
             </div>
           </div>
+          <div>
+            <h2 className="font-700 text-lg mb-5" style={{ color: "var(--color-deep)" }}>Latest Updates</h2>
+            <div className="flex flex-col gap-4">
+              <div className="rounded-2xl p-4" style={{ background: "rgba(159,231,245,0.1)", border: "1px solid rgba(66,158,189,0.2)" }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2 h-2 rounded-full inline-block" style={{ background: "#22c55e" }} />
+                  <span className="text-xs font-600" style={{ color: "var(--color-mid)" }}>Live data</span>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                  Weather data updates every 30 minutes from Open-Meteo. {currentWeather.location}: {currentWeather.tempCurrent}°C, {currentWeather.condition.replace(/-/g, " ")}, wind {currentWeather.wind} km/h {currentWeather.windDirection}.
+                </p>
+              </div>
+              <LiveUpdateItems weather={currentWeather} />
+            </div>
+          </div>
         </div>
+      )}
 
-        {/* ── THIS WEEK ─────────────────────────────────────────────────── */}
-        <div className="wtab-panel wtab-panel-ThisWeek">
+      {/* ── THIS WEEK ─────────────────────────────────────────────────── */}
+      {activeTab === "This Week" && (
+        <div>
           <div className="grid grid-cols-1 sm:grid-cols-7 gap-3 mb-8">
             {weeklyForecast.map((day, i) => (
               <div
@@ -159,9 +194,11 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             </p>
           </div>
         </div>
+      )}
 
-        {/* ── ALERTS ────────────────────────────────────────────────────── */}
-        <div className="wtab-panel wtab-panel-Alerts">
+      {/* ── ALERTS ────────────────────────────────────────────────────── */}
+      {activeTab === "Alerts" && (
+        <div>
           {alerts.length === 0 ? (
             <div className="rounded-3xl p-16 text-center" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
               <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(159,231,245,0.2)" }}>
@@ -182,8 +219,8 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
             </div>
           )}
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
 
