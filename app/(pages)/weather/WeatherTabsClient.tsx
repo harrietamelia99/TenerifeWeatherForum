@@ -58,6 +58,7 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
           <button
             key={tab}
             type="button"
+            onPointerDown={() => setActiveTab(tab)}
             onClick={() => setActiveTab(tab)}
             style={{
               display: "inline-flex",
@@ -72,8 +73,8 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
               touchAction: "manipulation",
               WebkitTapHighlightColor: "transparent",
               whiteSpace: "nowrap",
-              transition: "background 0.2s, color 0.2s",
               outline: "none",
+              userSelect: "none",
               ...(activeTab === tab ? ACTIVE_STYLE : INACTIVE_STYLE),
             }}
           >
@@ -100,6 +101,10 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
           </button>
         ))}
       </div>
+
+      {/* Content area — fixed min-height stops layout shifts between tabs
+          which cause iOS Safari to miss subsequent taps */}
+      <div style={{ minHeight: "60vh" }}>
 
       {/* ── TODAY ─────────────────────────────────────────────────────── */}
       {activeTab === "Today" && (
@@ -220,6 +225,8 @@ export default function WeatherTabsClient({ currentWeather, weeklyForecast, aler
           )}
         </div>
       )}
+
+      </div>{/* end min-height content wrapper */}
     </div>
   );
 }
