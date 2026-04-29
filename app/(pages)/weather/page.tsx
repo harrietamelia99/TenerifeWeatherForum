@@ -13,7 +13,16 @@ import type { WeatherAlert } from "@/types/weather";
 // Vercel's edge cache handles freshness after first render.
 export const dynamic = "force-dynamic";
 
-export default async function WeatherPage() {
+type ActiveTab = "today" | "week" | "alerts";
+
+export default async function WeatherPage({
+  searchParams,
+}: {
+  searchParams?: { tab?: string };
+}) {
+  const raw = searchParams?.tab ?? "today";
+  const activeTab: ActiveTab =
+    raw === "week" ? "week" : raw === "alerts" ? "alerts" : "today";
   const loc = WEATHER_LOCATIONS.playaAmericas;
 
   const [currentWeather, weeklyForecast, seaTemp, dailyUpdate] = await Promise.all([
@@ -62,6 +71,7 @@ export default async function WeatherPage() {
 
         {/* Live sensor data tabs */}
         <WeatherTabsClient
+          activeTab={activeTab}
           currentWeather={currentWeather}
           weeklyForecast={weeklyForecast}
           alerts={alerts}
