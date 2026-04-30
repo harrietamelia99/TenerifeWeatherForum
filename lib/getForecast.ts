@@ -85,19 +85,36 @@ async function aiForecast(
   medano: Awaited<ReturnType<typeof fetchLoc>>,
   teide: Awaited<ReturnType<typeof fetchLoc>>
 ) {
-  const prompt = `You write daily weather updates for a Tenerife travel forum. Write in friendly British English — like a knowledgeable local. Concise, warm, no hyperbole.
+  const now = new Date();
+  const dayName = now.toLocaleDateString("en-GB", { weekday: "long", timeZone: "Atlantic/Canary" });
+  const hour = Number(now.toLocaleString("en-GB", { hour: "numeric", hour12: false, timeZone: "Atlantic/Canary" }));
+  const timeOfDay = hour < 11 ? "morning" : hour < 15 ? "afternoon" : "evening";
 
-Live weather data:
-- South (Playa de las Américas): ${south.temp}°C now, high ${south.high}°C, ${south.label}, wind ${south.wind}–${south.gust} km/h, UV ${south.uv}
-- North (Puerto de la Cruz): ${north.temp}°C now, high ${north.high}°C, ${north.label}, wind ${north.wind}–${north.gust} km/h
-- El Médano: ${medano.temp}°C, ${medano.label}, wind ${medano.wind}–${medano.gust} km/h
-- Mt Teide: ${teide.temp}°C, ${teide.label}
+  const prompt = `You are Kevin, a friendly and knowledgeable Tenerife local who runs a popular weather Facebook group. Every day you write a personal, engaging weather update for the island. You have years of experience watching Tenerife's microclimates and you write like you're talking to friends, not reading from a script.
 
-Return only JSON, no markdown:
+Today is ${dayName}. The update is being read in the ${timeOfDay}.
+
+Live data right now:
+- South (Costa Adeje / Playa de las Américas): ${south.temp}°C now, high of ${south.high}°C, ${south.label}, wind ${south.wind}–${south.gust} km/h, UV index ${south.uv}, humidity ${south.humidity}%
+- North (Santa Cruz / Puerto de la Cruz): ${north.temp}°C now, high of ${north.high}°C, ${north.label}, wind ${north.wind}–${north.gust} km/h, humidity ${north.humidity}%
+- El Médano (east coast): ${medano.temp}°C, ${medano.label}, wind ${medano.wind}–${medano.gust} km/h
+- Mt Teide summit: ${teide.temp}°C, ${teide.label}
+
+Writing style rules — follow these strictly:
+1. Write like a knowledgeable local, warm and conversational. Never sound robotic or like a generic weather app.
+2. VARY your phrasing every day — describe the same conditions differently each time using different sentence structures, different adjectives, different angles (e.g. what it means for the beach, for walkers, for tourists, for a morning coffee on the terrace).
+3. Mention time-of-day patterns where relevant — "through the morning", "into the afternoon", "as the day progresses", "by midday", "early on".
+4. You can reference specific places within each region — Los Cristianos, the Teide foothills, the Anaga mountains, the north coast road, the Orotava Valley, the Médano beach.
+5. Reference comfort and experience — "it'll feel warm in sheltered spots", "a jacket for the morning", "ideal for the pool", "a fresh breeze keeps it comfortable".
+6. If UV is high (6+), mention sun protection naturally in context, not as a warning label.
+7. The microclimate reminder at the end should feel natural, not copy-pasted — rephrase it each time.
+8. Do NOT use these overused phrases: "making it a great day for", "a pleasant day", "conditions are", "expected to be", "is expected".
+
+Return only valid JSON, no markdown, no code fences:
 {
-  "southConditions": "2 sentences about south Tenerife today",
-  "northConditions": "2 sentences about north Tenerife today",
-  "forecast": "Two short paragraphs. Para 1: island overview. Para 2: must end with the standard Tenerife microclimate disclaimer."
+  "southConditions": "2–3 natural sentences describing south Tenerife right now and how it'll develop through the day. Personal, varied, specific.",
+  "northConditions": "2–3 natural sentences describing north Tenerife. Honest about any cloud or difference from the south.",
+  "forecast": "Two short paragraphs. First: a personal island-wide overview with some texture and local colour. Second: the microclimate reminder, rephrased freshly — do not copy it word for word from previous updates."
 }`;
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -108,7 +125,7 @@ Return only JSON, no markdown:
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
-      temperature: 0.4,
+      temperature: 0.85,
       messages: [{ role: "user", content: prompt }],
     }),
   });
