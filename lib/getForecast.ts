@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
 // ─── WMO code helpers ─────────────────────────────────────────────────────────
@@ -21,25 +22,36 @@ const WMO_EMOJI: Record<number, string> = {
 };
 
 // ─── Fetch one location from Open-Meteo ──────────────────────────────────────
+// Uses hourly temps so we get the actual daytime high, not just
+// the model's daily max (which can be inaccurate early in the morning).
 
 async function fetchLoc(lat: number, lon: number) {
   const url =
     `https://api.open-meteo.com/v1/forecast` +
     `?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,relative_humidity_2m,uv_index` +
+    `&hourly=temperature_2m` +
     `&daily=temperature_2m_max,temperature_2m_min` +
     `&timezone=Atlantic%2FCanary&forecast_days=1`;
 
   const res = await fetch(url, { next: { revalidate: 1800 } });
+  if (!res.ok) throw new Error(`Open-Meteo error ${res.status} for ${lat},${lon}`);
   const d = await res.json();
   const code: number = d.current.weather_code;
-
   const temp = Math.round(d.current.temperature_2m);
-  const forecastHigh = Math.round(d.daily.temperature_2m_max[0]);
+
+  // Pick the highest hourly temp between 09:00 and 18:00 local time
+  // to get the true afternoon peak rather than the model's daily max.
+  const hourlyTemps: number[] = d.hourly?.temperature_2m ?? [];
+  const peakHourly = hourlyTemps.slice(9, 19).length > 0
+    ? Math.round(Math.max(...hourlyTemps.slice(9, 19)))
+    : Math.round(d.daily.temperature_2m_max[0]);
+  const dailyMax = Math.round(d.daily.temperature_2m_max[0]);
+
   return {
     temp,
-    // Never show a daily high lower than the current temperature
-    high:     Math.max(temp, forecastHigh),
+    // Use the higher of: current, daily max, or hourly afternoon peak
+    high:     Math.max(temp, dailyMax, peakHourly),
     low:      Math.round(d.daily.temperature_2m_min[0]),
     wind:     Math.round(d.current.wind_speed_10m),
     gust:     Math.round(d.current.wind_gusts_10m),
@@ -51,29 +63,57 @@ async function fetchLoc(lat: number, lon: number) {
   };
 }
 
-// ─── Template forecast (works with no API key) ────────────────────────────────
+// ─── Template forecast (fallback when AI is unavailable) ─────────────────────
+// Uses date-seeded variation so it's not word-for-word identical every day.
 
-function templateForecast(south: Awaited<ReturnType<typeof fetchLoc>>, north: Awaited<ReturnType<typeof fetchLoc>>) {
+function templateForecast(
+  south: Awaited<ReturnType<typeof fetchLoc>>,
+  north: Awaited<ReturnType<typeof fetchLoc>>
+) {
+  const dayOfWeek = new Date().getDay(); // 0–6, used to pick phrase variants
   const isWarm = south.temp >= 22;
   const southDry = south.code <= 3;
   const northWet = north.code >= 51;
 
-  const southLine = southDry
-    ? `Mostly ${south.label} across the south today. Temperatures reaching a high of ${south.high}°C with winds of ${south.wind}–${south.gust} km/h.`
-    : `${south.label.charAt(0).toUpperCase() + south.label.slice(1)} expected in the south. High of ${south.high}°C with winds of ${south.wind}–${south.gust} km/h.`;
+  const southPhrases = southDry
+    ? [
+        `Largely clear across the south today with ${south.label} through most of the day. High of ${south.high}°C, wind ${south.wind}–${south.gust} km/h.`,
+        `The south looks bright with ${south.label} and temperatures reaching ${south.high}°C. Light to moderate winds of ${south.wind}–${south.gust} km/h.`,
+        `${south.label.charAt(0).toUpperCase() + south.label.slice(1)} across the south, with a high of ${south.high}°C and winds around ${south.wind}–${south.gust} km/h.`,
+      ]
+    : [
+        `${south.label.charAt(0).toUpperCase() + south.label.slice(1)} expected in the south. High of ${south.high}°C, winds ${south.wind}–${south.gust} km/h.`,
+        `The south sees ${south.label} today with highs of ${south.high}°C and winds ${south.wind}–${south.gust} km/h.`,
+      ];
 
-  const northLine = northWet
-    ? `The north looks more unsettled with ${north.label} likely at times. High of ${north.high}°C, winds ${north.wind}–${north.gust} km/h.`
-    : `${north.label.charAt(0).toUpperCase() + north.label.slice(1)} across the north. High of ${north.high}°C with winds of ${north.wind}–${north.gust} km/h.`;
+  const northPhrases = northWet
+    ? [
+        `The north is more unsettled with ${north.label} likely at times. High of ${north.high}°C, winds ${north.wind}–${north.gust} km/h.`,
+        `Expect ${north.label} in the north today — high of ${north.high}°C with winds ${north.wind}–${north.gust} km/h.`,
+      ]
+    : [
+        `${north.label.charAt(0).toUpperCase() + north.label.slice(1)} across the north. High of ${north.high}°C, winds ${north.wind}–${north.gust} km/h.`,
+        `The north sees ${north.label} with a high of ${north.high}°C and winds ${north.wind}–${north.gust} km/h.`,
+      ];
 
-  const uvNote = south.uv >= 8
-    ? " UV levels are very high today — SPF 50+ essential even in the shade."
-    : south.uv >= 6 ? " UV levels are high — sun protection recommended." : "";
+  const overviews = [
+    `A ${isWarm ? "warm" : "mild"} day across Tenerife. The south stays ${southDry ? "largely dry" : "mixed"} while the north sees ${northWet ? "more cloud and rain" : "similar conditions"}.`,
+    `${isWarm ? "Warm" : "Mild"} conditions island-wide today with the usual north–south contrast. ${southDry ? "Dry and bright in the south" : "Mixed skies in the south"}, ${northWet ? "wetter in the north" : "reasonable in the north"}.`,
+    `Another ${isWarm ? "warm" : "mild"} day for Tenerife. ${southDry ? "The south enjoys good sunshine" : "The south has mixed conditions"} while ${northWet ? "the north deals with more cloud and rain" : "the north sees similar weather"}.`,
+  ];
+
+  const disclaimers = [
+    `Remember Tenerife's microclimates mean conditions can vary a lot — completely different weather is possible just 15 minutes' drive away.`,
+    `As always with Tenerife, the microclimate effect means you can have sunshine in one resort and cloud the next — always worth checking locally.`,
+    `Tenerife's landscape creates big local differences — the weather just 15 minutes away can be completely different, so check before you travel.`,
+  ];
+
+  const pick = <T,>(arr: T[]) => arr[dayOfWeek % arr.length];
 
   return {
-    southConditions: southLine,
-    northConditions: northLine,
-    forecast: `A ${isWarm ? "warm" : "mild"} day ahead across Tenerife with the typical north–south split. The south stays ${southDry ? "largely dry" : "mixed"} while the north sees ${northWet ? "more cloud and rain" : "similar conditions"}.${uvNote}\n\nConditions can vary significantly across different parts of the island due to Tenerife's microclimates, and weather can be completely different just 15 minutes away from one location to another.`,
+    southConditions: pick(southPhrases),
+    northConditions: pick(northPhrases),
+    forecast: `${pick(overviews)}\n\n${pick(disclaimers)}`,
   };
 }
 
@@ -119,6 +159,7 @@ Return only valid JSON, no markdown, no code fences:
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    cache: "no-store", // Never cache OpenAI responses — always generate fresh
     headers: {
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       "Content-Type": "application/json",
@@ -130,12 +171,24 @@ Return only valid JSON, no markdown, no code fences:
     }),
   });
 
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`OpenAI API error ${res.status}: ${body.slice(0, 200)}`);
+  }
+
   const data = await res.json();
-  return JSON.parse(data.choices?.[0]?.message?.content ?? "{}") as {
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error("OpenAI returned empty content");
+
+  const parsed = JSON.parse(content) as {
     southConditions: string;
     northConditions: string;
     forecast: string;
   };
+  if (!parsed.southConditions || !parsed.northConditions || !parsed.forecast) {
+    throw new Error("OpenAI response missing required fields");
+  }
+  return parsed;
 }
 
 // ─── Shared placeholder ───────────────────────────────────────────────────────
@@ -161,7 +214,6 @@ function makePlaceholder(): DailyUpdate {
 
 async function generate(): Promise<DailyUpdate> {
   try {
-    // All four locations in one go — const inside try so TypeScript knows they're defined
     const [south, north, medano, teide] = await Promise.all([
       fetchLoc(28.0573, -16.7146),
       fetchLoc(28.4142, -16.5484),
@@ -169,21 +221,21 @@ async function generate(): Promise<DailyUpdate> {
       fetchLoc(28.2723, -16.6423),
     ]);
 
-    // Build conditions via AI or template
     let conditions: { southConditions: string; northConditions: string; forecast: string };
+    let source = "Auto Template";
+
     if (process.env.OPENAI_API_KEY) {
       try {
         const ai = await aiForecast(south, north, medano, teide);
-        // Validate AI returned all required fields — fall back if not
-        if (ai?.southConditions && ai?.northConditions && ai?.forecast) {
-          conditions = ai;
-        } else {
-          conditions = templateForecast(south, north);
-        }
-      } catch {
+        conditions = ai;
+        source = "AI Generated";
+      } catch (err) {
+        // Log the real error so it appears in Vercel function logs
+        console.error("[getForecast] OpenAI failed, using template fallback:", err);
         conditions = templateForecast(south, north);
       }
     } else {
+      console.warn("[getForecast] OPENAI_API_KEY not set — using template fallback");
       conditions = templateForecast(south, north);
     }
 
@@ -219,16 +271,24 @@ async function generate(): Promise<DailyUpdate> {
       hasWarnings,
       forecast: conditions.forecast,
       postedAt: new Date().toISOString(),
-      source: process.env.OPENAI_API_KEY ? "AI Generated" : "Auto Template",
+      source,
     };
-  } catch {
-    // Any unexpected error — return safe placeholder rather than crashing
+  } catch (err) {
+    console.error("[getForecast] Unexpected error, returning placeholder:", err);
     return makePlaceholder();
   }
 }
 
-// ─── Exported function ────────────────────────────────────────────────────────
-// Called directly from the weather page. The page is force-dynamic so this
-// runs fresh on each request. Results are cached at Vercel's edge layer.
+// ─── Cached export ────────────────────────────────────────────────────────────
+// AI is expensive — generate once per day, not on every page load.
+// The cron job at 06:00 UTC calls revalidateTag("daily-forecast") to
+// force a fresh generation. All page visitors then share that result.
 
-export const getForecast = generate;
+export const getForecast = unstable_cache(
+  generate,
+  ["daily-forecast"],
+  {
+    tags: ["daily-forecast"],
+    revalidate: 86400, // 24-hour ceiling; cron job refreshes at 6am
+  }
+);
