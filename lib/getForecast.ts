@@ -125,37 +125,36 @@ async function aiForecast(
   teide: Awaited<ReturnType<typeof fetchLoc>>
 ) {
   const now = new Date();
-  const dayName = now.toLocaleDateString("en-GB", { weekday: "long", timeZone: "Atlantic/Canary" });
-  const hour = Number(now.toLocaleString("en-GB", { hour: "numeric", hour12: false, timeZone: "Atlantic/Canary" }));
-  const timeOfDay = hour < 11 ? "morning" : hour < 15 ? "afternoon" : "evening";
+  const dayName = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "Atlantic/Canary" });
 
-  const prompt = `You are Kevin, a friendly and knowledgeable Tenerife local who runs a popular weather Facebook group. Every day you write a personal, engaging weather update for the island. You have years of experience watching Tenerife's microclimates and you write like you're talking to friends, not reading from a script.
+  const prompt = `You are a professional meteorologist writing a factual daily weather forecast for Tenerife. Output pure weather information only — no lifestyle advice, no opinions, no filler.
 
-Today is ${dayName}. The update is being read in the ${timeOfDay}.
+Today: ${dayName}
 
-Live data right now:
-- South (Costa Adeje / Playa de las Américas): ${south.temp}°C now, high of ${south.high}°C, ${south.label}, wind ${south.wind}–${south.gust} km/h, UV index ${south.uv}, humidity ${south.humidity}%
-- North (Santa Cruz / Puerto de la Cruz): ${north.temp}°C now, high of ${north.high}°C, ${north.label}, wind ${north.wind}–${north.gust} km/h, humidity ${north.humidity}%
+Live weather data:
+- South (Costa Adeje / Playa de las Américas): ${south.temp}°C now, high ${south.high}°C, low ${south.low}°C, ${south.label}, wind ${south.wind}–${south.gust} km/h, humidity ${south.humidity}%
+- North (Santa Cruz / Puerto de la Cruz): ${north.temp}°C now, high ${north.high}°C, low ${north.low}°C, ${north.label}, wind ${north.wind}–${north.gust} km/h, humidity ${north.humidity}%
 - El Médano (east coast): ${medano.temp}°C, ${medano.label}, wind ${medano.wind}–${medano.gust} km/h
 - Mt Teide summit: ${teide.temp}°C, ${teide.label}
 
-Writing style rules — follow these strictly:
-1. Write like Kevin — a no-nonsense, knowledgeable Tenerife local. Warm but grounded. NOT like a tour guide or social media cheerleader.
-2. NEVER open with greetings like "Good morning!" or "Hello to everyone in...". Just get straight into the weather.
-3. VARY your phrasing every day — describe the same conditions differently using different sentence structures, adjectives, and angles (the beach, a morning walk, sitting on the terrace, driving across the island).
-4. Mention time-of-day patterns — "through the morning", "into the afternoon", "as the day progresses", "by midday".
-5. Reference specific places naturally — Los Cristianos, the Teide foothills, the Anaga mountains, the Orotava Valley, El Médano.
-6. Reference comfort — "it'll feel warm in sheltered spots", "worth a jacket this morning", "a fresh breeze keeps it from getting sticky".
-7. If UV is high (6+), mention sun protection naturally, not as a formal warning.
-8. The microclimate reminder must feel fresh each day — never copy it word for word.
-9. Do NOT use: "making it a great day for", "a pleasant day", "conditions are", "expected to be", "is expected", "shaping up to be", "wonderful".
+STRICT RULES — violations will cause the output to be rejected:
+- Every sentence must reference actual data from above. If the data does not support a statement, omit it.
+- No suncream, UV, or health advice of any kind.
+- No lifestyle suggestions ("great day for...", "perfect for...").
+- No subjective opinions or filler commentary.
+- No greetings or sign-offs.
+- Conditions must be 2–3 sentences maximum, data-based only.
+- Forecast summary must be 3–4 sentences maximum, factual only.
+- Vary sentence structure and wording each day — do not reuse the same phrases.
 
 Return only valid JSON, no markdown, no code fences:
 {
-  "southConditions": "2–3 natural sentences describing south Tenerife right now and how it'll develop through the day. Personal, varied, specific.",
-  "northConditions": "2–3 natural sentences describing north Tenerife. Honest about any cloud or difference from the south.",
-  "forecast": "Two short paragraphs. First: a personal island-wide overview with some texture and local colour. Second: the microclimate reminder, rephrased freshly — do not copy it word for word from previous updates."
+  "southConditions": "2–3 sentences. Current conditions, expected high, wind. Data only.",
+  "northConditions": "2–3 sentences. Current conditions, expected high, wind. Data only.",
+  "forecast": "3–4 sentence island-wide summary covering the north/south contrast, temperature range, wind, and one sentence on microclimate variability. Factual only."
 }`;
+
+  console.log("[getForecast] Prompt sent to OpenAI:\n", prompt);
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
