@@ -1,5 +1,9 @@
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
+// Always appended to the forecast — never left to the AI
+const MICROCLIMATE_SENTENCE =
+  "Conditions can vary significantly across different parts of the island due to Tenerife's microclimates, and weather can be completely different just 15 minutes away from one location to another.";
+
 // ─── WMO code helpers ─────────────────────────────────────────────────────────
 
 const WMO_LABEL: Record<number, string> = {
@@ -49,8 +53,10 @@ async function fetchLoc(lat: number, lon: number) {
 
   return {
     temp,
-    // Use the higher of: current, daily max, or hourly afternoon peak
-    high:     Math.max(temp, dailyMax, peakHourly),
+    // Forecast high = best of daily max or hourly afternoon peak.
+    // Do NOT include current temp — high must always reflect the day's peak,
+    // not the current reading (which may equal the high mid-afternoon).
+    high:     Math.max(dailyMax, peakHourly),
     low:      Math.round(d.daily.temperature_2m_min[0]),
     wind:     Math.round(d.current.wind_speed_10m),
     gust:     Math.round(d.current.wind_gusts_10m),
@@ -127,27 +133,30 @@ async function aiForecast(
   const now = new Date();
   const dayName = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "Atlantic/Canary" });
 
-  const prompt = `You are writing the conditions and forecast text for a daily Tenerife weather update. Output factual weather information only — no lifestyle advice, no opinions, no filler.
+  const prompt = `You are writing the conditions and forecast text for a daily Tenerife weather update.
 
 Today: ${dayName}
 
 Live weather data:
-- South (Costa Adeje / Playa de las Américas): ${south.temp}°C now, high ${south.high}°C, low ${south.low}°C, ${south.label}, wind ${south.wind}–${south.gust} km/h, humidity ${south.humidity}%
-- North (Santa Cruz / Puerto de la Cruz): ${north.temp}°C now, high ${north.high}°C, low ${north.low}°C, ${north.label}, wind ${north.wind}–${north.gust} km/h, humidity ${north.humidity}%
+- South (Costa Adeje / Playa de las Américas): ${south.temp}°C now, high ${south.high}°C, ${south.label}, wind ${south.wind}–${south.gust} km/h
+- North (Santa Cruz / Puerto de la Cruz): ${north.temp}°C now, high ${north.high}°C, ${north.label}, wind ${north.wind}–${north.gust} km/h
 - El Médano (east coast): ${medano.temp}°C, ${medano.label}, wind ${medano.wind}–${medano.gust} km/h
 - Mt Teide summit: ${teide.temp}°C, ${teide.label}
 
 RULES — every rule is mandatory:
-1. Every sentence must be directly supported by the data above. Do not invent or infer anything not in the data.
-2. No lifestyle suggestions, no health advice, no suncream mentions, no opinions, no greetings, no sign-offs.
-3. southConditions and northConditions: 2–3 sentences each. Describe current conditions and how they develop through the day. Vary phrasing each day.
-4. forecast: exactly 3 sentences of factual island-wide summary (north/south contrast, temperatures, wind), followed by this exact sentence as sentence 4 — copy it word for word: "Conditions can vary significantly across different parts of the island due to Tenerife's microclimates, and weather can be completely different just 15 minutes away from one location to another."
+1. southConditions and northConditions: 2–3 sentences each. State the current conditions and how they are likely to develop through the day. Base every sentence on the data above only.
+2. Do NOT mention humidity, UV index, suncream, health advice, lifestyle suggestions, opinions, greetings, or sign-offs.
+3. forecast: write 3 sentences of connected, flowing weather commentary describing the day island-wide — covering the overall picture, the north/south difference, and temperatures. Write it as a natural paragraph, not a list of facts. Vary the phrasing each day.
+
+Good forecast style example: "A settled day ahead across Tenerife with dry conditions expected across most of the island. The south looks set to enjoy the best of the sunshine through the afternoon, while the north may hold onto some cloud through the morning before brightening later. Temperatures will range from ${south.temp}°C in the south to ${north.high}°C in the north through the afternoon."
+
+Bad forecast style example (do not write like this): "Temperatures range from X to Y. Winds are Z km/h. Conditions are overcast."
 
 Return only valid JSON, no markdown, no code fences:
 {
-  "southConditions": "2–3 factual sentences about south Tenerife conditions today.",
-  "northConditions": "2–3 factual sentences about north Tenerife conditions today.",
-  "forecast": "3 factual sentences of island-wide summary, then the mandatory microclimate sentence word for word."
+  "southConditions": "2–3 factual sentences about south Tenerife conditions and how they develop today.",
+  "northConditions": "2–3 factual sentences about north Tenerife conditions and how they develop today.",
+  "forecast": "3 sentences of flowing, natural weather commentary for the island as a whole."
 }`;
 
   console.log("[getForecast] Prompt sent to OpenAI:\n", prompt);
@@ -264,7 +273,11 @@ async function generate(): Promise<DailyUpdate> {
         ? "Weather activity expected today — check Met Office forecasts before travelling."
         : "There are no active weather warnings for Tenerife today.",
       hasWarnings,
-      forecast: conditions.forecast,
+      // Strip any AI-generated version of the microclimate sentence then
+      // append the hardcoded one so it is always present and word-perfect.
+      forecast: conditions.forecast
+        .replace(/Conditions can vary[\s\S]*?another\./gi, "")
+        .trim() + "\n\n" + MICROCLIMATE_SENTENCE,
       postedAt: new Date().toISOString(),
       source,
     };
