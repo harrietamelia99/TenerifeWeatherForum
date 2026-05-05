@@ -127,7 +127,7 @@ async function aiForecast(
   const now = new Date();
   const dayName = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "Atlantic/Canary" });
 
-  const prompt = `You are a professional meteorologist writing a factual daily weather forecast for Tenerife. Output pure weather information only — no lifestyle advice, no opinions, no filler.
+  const prompt = `You are writing the conditions and forecast text for a daily Tenerife weather update. Output factual weather information only — no lifestyle advice, no opinions, no filler.
 
 Today: ${dayName}
 
@@ -137,21 +137,17 @@ Live weather data:
 - El Médano (east coast): ${medano.temp}°C, ${medano.label}, wind ${medano.wind}–${medano.gust} km/h
 - Mt Teide summit: ${teide.temp}°C, ${teide.label}
 
-STRICT RULES — violations will cause the output to be rejected:
-- Every sentence must reference actual data from above. If the data does not support a statement, omit it.
-- No suncream, UV, or health advice of any kind.
-- No lifestyle suggestions ("great day for...", "perfect for...").
-- No subjective opinions or filler commentary.
-- No greetings or sign-offs.
-- Conditions must be 2–3 sentences maximum, data-based only.
-- Forecast summary must be 3–4 sentences maximum, factual only.
-- Vary sentence structure and wording each day — do not reuse the same phrases.
+RULES — every rule is mandatory:
+1. Every sentence must be directly supported by the data above. Do not invent or infer anything not in the data.
+2. No lifestyle suggestions, no health advice, no suncream mentions, no opinions, no greetings, no sign-offs.
+3. southConditions and northConditions: 2–3 sentences each. Describe current conditions and how they develop through the day. Vary phrasing each day.
+4. forecast: exactly 3 sentences of factual island-wide summary (north/south contrast, temperatures, wind), followed by this exact sentence as sentence 4 — copy it word for word: "Conditions can vary significantly across different parts of the island due to Tenerife's microclimates, and weather can be completely different just 15 minutes away from one location to another."
 
 Return only valid JSON, no markdown, no code fences:
 {
-  "southConditions": "2–3 sentences. Current conditions, expected high, wind. Data only.",
-  "northConditions": "2–3 sentences. Current conditions, expected high, wind. Data only.",
-  "forecast": "3–4 sentence island-wide summary covering the north/south contrast, temperature range, wind, and one sentence on microclimate variability. Factual only."
+  "southConditions": "2–3 factual sentences about south Tenerife conditions today.",
+  "northConditions": "2–3 factual sentences about north Tenerife conditions today.",
+  "forecast": "3 factual sentences of island-wide summary, then the mandatory microclimate sentence word for word."
 }`;
 
   console.log("[getForecast] Prompt sent to OpenAI:\n", prompt);
