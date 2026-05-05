@@ -29,34 +29,41 @@ const WMO_EMOJI: Record<number, string> = {
 // the model's daily max (which can be inaccurate early in the morning).
 
 async function fetchLoc(lat: number, lon: number) {
+  // forecast_days=2 guarantees 48 hourly values — we read today's (indices 0–23)
   const url =
     `https://api.open-meteo.com/v1/forecast` +
     `?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,relative_humidity_2m,uv_index` +
     `&hourly=temperature_2m` +
     `&daily=temperature_2m_max,temperature_2m_min` +
-    `&timezone=Atlantic%2FCanary&forecast_days=1`;
+    `&timezone=Atlantic%2FCanary&forecast_days=2`;
 
   const res = await fetch(url, { next: { revalidate: 1800 } });
   if (!res.ok) throw new Error(`Open-Meteo error ${res.status} for ${lat},${lon}`);
   const d = await res.json();
   const code: number = d.current.weather_code;
   const temp = Math.round(d.current.temperature_2m);
-
-  // Pick the highest hourly temp between 09:00 and 18:00 local time
-  // to get the true afternoon peak rather than the model's daily max.
-  const hourlyTemps: number[] = d.hourly?.temperature_2m ?? [];
-  const peakHourly = hourlyTemps.slice(9, 19).length > 0
-    ? Math.round(Math.max(...hourlyTemps.slice(9, 19)))
-    : Math.round(d.daily.temperature_2m_max[0]);
   const dailyMax = Math.round(d.daily.temperature_2m_max[0]);
+
+  // Scan all 24 hourly values for today (indices 0–23 = 00:00–23:00 local time)
+  // to find the true daily peak regardless of time of day.
+  const hourlyTemps: number[] = Array.isArray(d.hourly?.temperature_2m)
+    ? d.hourly.temperature_2m
+    : [];
+  const todayHourly = hourlyTemps.slice(0, 24);
+  const hourlyPeak = todayHourly.length > 0
+    ? Math.round(Math.max(...todayHourly))
+    : dailyMax;
+
+  // high = the highest of: model daily max, full-day hourly peak, current temp.
+  // Including current temp ensures high is never shown below what it actually is.
+  const high = Math.max(dailyMax, hourlyPeak, temp);
+
+  console.log(`[fetchLoc ${lat},${lon}] temp=${temp} dailyMax=${dailyMax} hourlyPeak=${hourlyPeak} high=${high} hourlyCount=${todayHourly.length}`);
 
   return {
     temp,
-    // Forecast high = best of daily max or hourly afternoon peak.
-    // Do NOT include current temp — high must always reflect the day's peak,
-    // not the current reading (which may equal the high mid-afternoon).
-    high:     Math.max(dailyMax, peakHourly),
+    high,
     low:      Math.round(d.daily.temperature_2m_min[0]),
     wind:     Math.round(d.current.wind_speed_10m),
     gust:     Math.round(d.current.wind_gusts_10m),
@@ -145,7 +152,8 @@ Live weather data:
 
 RULES — every rule is mandatory:
 1. southConditions and northConditions: 2–3 sentences each. State the current conditions and how they are likely to develop through the day. Base every sentence on the data above only.
-2. Do NOT mention humidity, UV index, suncream, health advice, lifestyle suggestions, opinions, greetings, or sign-offs.
+2. Do NOT mention temperature values anywhere in southConditions or northConditions. Temperature is already shown in a separate field and must not be repeated in the written conditions.
+3. Do NOT mention humidity, UV index, suncream, health advice, lifestyle suggestions, opinions, greetings, or sign-offs.
 3. forecast: write 3 sentences of connected, flowing weather commentary describing the day island-wide — covering the overall picture, the north/south difference, and temperatures. Write it as a natural paragraph, not a list of facts. Vary the phrasing each day.
 
 Good forecast style example: "A settled day ahead across Tenerife with dry conditions expected across most of the island. The south looks set to enjoy the best of the sunshine through the afternoon, while the north may hold onto some cloud through the morning before brightening later. Temperatures will range from ${south.temp}°C in the south to ${north.high}°C in the north through the afternoon."
