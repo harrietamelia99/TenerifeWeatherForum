@@ -151,21 +151,29 @@ Live weather data:
 - El Médano (east coast): ${medano.temp}°C, ${medano.label}, wind ${medano.wind}–${medano.gust} km/h
 - Mt Teide summit: ${teide.temp}°C, ${teide.label}
 
-RULES — every rule is mandatory:
-1. southConditions and northConditions: 2–3 sentences each. State the current conditions and how they are likely to develop through the day. Base every sentence on the data above only.
-2. Do NOT mention temperature values anywhere in southConditions or northConditions. Temperature is already shown in a separate field and must not be repeated in the written conditions.
-3. Do NOT mention humidity, UV index, suncream, health advice, lifestyle suggestions, opinions, greetings, or sign-offs.
-3. forecast: write 3 sentences of connected, flowing weather commentary describing the day island-wide — covering the overall picture, the north/south difference, and general conditions. Write it as a natural paragraph, not a list of facts. Vary the phrasing each day. Do NOT mention any specific temperature values in the forecast paragraph — they are already shown in the temperature fields and must not be repeated here.
+SENTENCE TEST — apply to every sentence before including it:
+Can this statement be directly tied to a specific data point (cloud cover, precipitation, wind speed, or visibility)? If not, remove it.
 
-Good forecast style example: "A settled day ahead across Tenerife with dry conditions expected across most of the island. The south looks set to enjoy the best of the sunshine through the afternoon, while the north may hold onto some cloud through the morning before brightening later. Temperatures will range from ${south.temp}°C in the south to ${north.high}°C in the north through the afternoon."
+BANNED — reject any sentence containing:
+- Subjective feelings: "pleasant", "delightful", "comfortable", "cooler moments", "warmer feeling"
+- Human experience language: "enjoying", "catering to", "encourage", "you'll find", "great for"
+- Tourism or lifestyle framing: "showcase", "preferences", "atmosphere", "ideal for", "perfect for"
+- Any specific temperature or humidity values (shown in separate fields — do not repeat)
+- Health or lifestyle advice of any kind
 
-Bad forecast style example (do not write like this): "Temperatures range from X to Y. Winds are Z km/h. Conditions are overcast."
+FORMAT:
+1. southConditions: 2–3 sentences. Current sky/cloud condition, wind, expected development through the day. No temperatures. No subjective language.
+2. northConditions: 2–3 sentences. Same rules as southConditions.
+3. forecast: 3 sentences. Factual, flowing description of the island-wide picture and north/south contrast. Must read like a Met Office bulletin — objective and measurable only. No temperatures. No subjective or lifestyle language.
+
+GOOD example: "Overcast across the south with cloud cover expected to persist through the morning. Some breaks possible during the afternoon, with light northerly winds of 6–17 km/h throughout."
+BAD example (rejected): "A delightful day with pleasant conditions encouraging outdoor activities. The south is showcasing its finest weather, catering to all preferences."
 
 Return only valid JSON, no markdown, no code fences:
 {
-  "southConditions": "2–3 factual sentences about south Tenerife conditions and how they develop today.",
-  "northConditions": "2–3 factual sentences about north Tenerife conditions and how they develop today.",
-  "forecast": "3 sentences of flowing, natural weather commentary for the island as a whole."
+  "southConditions": "2–3 factual, data-based sentences. No temperatures. No subjective language.",
+  "northConditions": "2–3 factual, data-based sentences. No temperatures. No subjective language.",
+  "forecast": "3 factual sentences. Met Office style. No temperatures. No lifestyle language."
 }`;
 
   console.log("[getForecast] Prompt sent to OpenAI:\n", prompt);
@@ -179,7 +187,7 @@ Return only valid JSON, no markdown, no code fences:
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
-      temperature: 0.85,
+      temperature: 0.5,
       messages: [{ role: "user", content: prompt }],
     }),
   });
