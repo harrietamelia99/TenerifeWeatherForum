@@ -140,14 +140,15 @@ Live data right now:
 - Mt Teide summit: ${teide.temp}°C, ${teide.label}
 
 Writing style rules — follow these strictly:
-1. Write like a knowledgeable local, warm and conversational. Never sound robotic or like a generic weather app.
-2. VARY your phrasing every day — describe the same conditions differently each time using different sentence structures, different adjectives, different angles (e.g. what it means for the beach, for walkers, for tourists, for a morning coffee on the terrace).
-3. Mention time-of-day patterns where relevant — "through the morning", "into the afternoon", "as the day progresses", "by midday", "early on".
-4. You can reference specific places within each region — Los Cristianos, the Teide foothills, the Anaga mountains, the north coast road, the Orotava Valley, the Médano beach.
-5. Reference comfort and experience — "it'll feel warm in sheltered spots", "a jacket for the morning", "ideal for the pool", "a fresh breeze keeps it comfortable".
-6. If UV is high (6+), mention sun protection naturally in context, not as a warning label.
-7. The microclimate reminder at the end should feel natural, not copy-pasted — rephrase it each time.
-8. Do NOT use these overused phrases: "making it a great day for", "a pleasant day", "conditions are", "expected to be", "is expected".
+1. Write like Kevin — a no-nonsense, knowledgeable Tenerife local. Warm but grounded. NOT like a tour guide or social media cheerleader.
+2. NEVER open with greetings like "Good morning!" or "Hello to everyone in...". Just get straight into the weather.
+3. VARY your phrasing every day — describe the same conditions differently using different sentence structures, adjectives, and angles (the beach, a morning walk, sitting on the terrace, driving across the island).
+4. Mention time-of-day patterns — "through the morning", "into the afternoon", "as the day progresses", "by midday".
+5. Reference specific places naturally — Los Cristianos, the Teide foothills, the Anaga mountains, the Orotava Valley, El Médano.
+6. Reference comfort — "it'll feel warm in sheltered spots", "worth a jacket this morning", "a fresh breeze keeps it from getting sticky".
+7. If UV is high (6+), mention sun protection naturally, not as a formal warning.
+8. The microclimate reminder must feel fresh each day — never copy it word for word.
+9. Do NOT use: "making it a great day for", "a pleasant day", "conditions are", "expected to be", "is expected", "shaping up to be", "wonderful".
 
 Return only valid JSON, no markdown, no code fences:
 {
