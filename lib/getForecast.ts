@@ -59,7 +59,8 @@ async function fetchLoc(lat: number, lon: number) {
   // Including current temp ensures high is never shown below what it actually is.
   const high = Math.max(dailyMax, hourlyPeak, temp);
 
-  console.log(`[fetchLoc ${lat},${lon}] temp=${temp} dailyMax=${dailyMax} hourlyPeak=${hourlyPeak} high=${high} hourlyCount=${todayHourly.length}`);
+  console.log(`[fetchLoc ${lat},${lon}] temp=${temp} dailyMax=${dailyMax} hourlyPeak=${hourlyPeak} high=${high}`);
+  console.log(`[fetchLoc ${lat},${lon}] today's 24h temps:`, JSON.stringify(todayHourly));
 
   return {
     temp,
