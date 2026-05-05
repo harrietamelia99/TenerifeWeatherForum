@@ -155,7 +155,7 @@ RULES — every rule is mandatory:
 1. southConditions and northConditions: 2–3 sentences each. State the current conditions and how they are likely to develop through the day. Base every sentence on the data above only.
 2. Do NOT mention temperature values anywhere in southConditions or northConditions. Temperature is already shown in a separate field and must not be repeated in the written conditions.
 3. Do NOT mention humidity, UV index, suncream, health advice, lifestyle suggestions, opinions, greetings, or sign-offs.
-3. forecast: write 3 sentences of connected, flowing weather commentary describing the day island-wide — covering the overall picture, the north/south difference, and temperatures. Write it as a natural paragraph, not a list of facts. Vary the phrasing each day.
+3. forecast: write 3 sentences of connected, flowing weather commentary describing the day island-wide — covering the overall picture, the north/south difference, and general conditions. Write it as a natural paragraph, not a list of facts. Vary the phrasing each day. Do NOT mention any specific temperature values in the forecast paragraph — they are already shown in the temperature fields and must not be repeated here.
 
 Good forecast style example: "A settled day ahead across Tenerife with dry conditions expected across most of the island. The south looks set to enjoy the best of the sunshine through the afternoon, while the north may hold onto some cloud through the morning before brightening later. Temperatures will range from ${south.temp}°C in the south to ${north.high}°C in the north through the afternoon."
 
