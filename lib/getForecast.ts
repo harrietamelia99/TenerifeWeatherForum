@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
 // ─── WMO code helpers ─────────────────────────────────────────────────────────
@@ -279,16 +278,8 @@ async function generate(): Promise<DailyUpdate> {
   }
 }
 
-// ─── Cached export ────────────────────────────────────────────────────────────
-// AI is expensive — generate once per day, not on every page load.
-// The cron job at 06:00 UTC calls revalidateTag("daily-forecast") to
-// force a fresh generation. All page visitors then share that result.
+// ─── Export ───────────────────────────────────────────────────────────────────
+// Called fresh on each request. Open-Meteo data is cached 30 min at the
+// fetch level; the OpenAI call always runs fresh (cache: no-store).
 
-export const getForecast = unstable_cache(
-  generate,
-  ["daily-forecast"],
-  {
-    tags: ["daily-forecast"],
-    revalidate: 86400, // 24-hour ceiling; cron job refreshes at 6am
-  }
-);
+export const getForecast = generate;
