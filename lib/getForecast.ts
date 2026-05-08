@@ -1,4 +1,5 @@
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
+import { getManualForecast } from "@/lib/getManualForecast";
 
 // Always appended to the forecast — never left to the AI
 const MICROCLIMATE_SENTENCE =
@@ -232,36 +233,20 @@ function makePlaceholder(): DailyUpdate {
 }
 
 // ─── Core generation ──────────────────────────────────────────────────────────
+// Checks for Kevin's manually posted forecast first.
+// If he hasn't posted today, returns a "coming soon" card with live weather data.
 
 async function generate(): Promise<DailyUpdate> {
   try {
-    const [south, north, medano, teide] = await Promise.all([
+    // 1. Check for today's manual forecast from Kevin
+    const manual = await getManualForecast();
+    if (manual) return manual;
+
+    // 2. No manual forecast yet — fetch live weather data so temps/wind are still accurate
+    const [south, north] = await Promise.all([
       fetchLoc(28.0573, -16.7146),
       fetchLoc(28.4142, -16.5484),
-      fetchLoc(28.0449, -16.5380),
-      fetchLoc(28.2723, -16.6423),
     ]);
-
-    let conditions: { southConditions: string; northConditions: string; forecast: string };
-    let source = "Auto Template";
-
-    if (process.env.OPENAI_API_KEY) {
-      try {
-        const ai = await aiForecast(south, north, medano, teide);
-        conditions = ai;
-        source = "AI Generated";
-      } catch (err) {
-        // Log the real error so it appears in Vercel function logs
-        console.error("[getForecast] OpenAI failed, using template fallback:", err);
-        conditions = templateForecast(south, north);
-      }
-    } else {
-      console.warn("[getForecast] OPENAI_API_KEY not set — using template fallback");
-      conditions = templateForecast(south, north);
-    }
-
-    const warningCodes = [61, 63, 65, 80, 81, 82, 95, 96, 99];
-    const hasWarnings = warningCodes.includes(south.code) || warningCodes.includes(north.code);
 
     const dateStr = new Date().toLocaleDateString("en-GB", {
       weekday: "long", day: "numeric", month: "long", year: "numeric",
@@ -275,7 +260,7 @@ async function generate(): Promise<DailyUpdate> {
         label: "Tenerife South (Costa Adeje / Playa de las Américas)",
         temperature: south.temp,
         high: south.high,
-        conditions: conditions.southConditions,
+        conditions: "Kevin's forecast for today will be posted here shortly.",
         wind: `${south.wind}–${south.gust} km/h`,
       },
       north: {
@@ -283,20 +268,14 @@ async function generate(): Promise<DailyUpdate> {
         label: "Tenerife North (Santa Cruz / Puerto de la Cruz)",
         temperature: north.temp,
         high: north.high,
-        conditions: conditions.northConditions,
+        conditions: "Kevin's forecast for today will be posted here shortly.",
         wind: `${north.wind}–${north.gust} km/h`,
       },
-      warnings: hasWarnings
-        ? "Weather activity expected today — check Met Office forecasts before travelling."
-        : "There are no active weather warnings for Tenerife today.",
-      hasWarnings,
-      // Strip any AI-generated version of the microclimate sentence then
-      // append the hardcoded one so it is always present and word-perfect.
-      forecast: conditions.forecast
-        .replace(/Conditions can vary[\s\S]*?another\./gi, "")
-        .trim() + "\n\n" + MICROCLIMATE_SENTENCE,
+      warnings: "There are no active weather warnings for Tenerife today.",
+      hasWarnings: false,
+      forecast: "Kevin's full forecast for today will be posted here shortly — check back soon.",
       postedAt: new Date().toISOString(),
-      source,
+      source: "Pending",
     };
   } catch (err) {
     console.error("[getForecast] Unexpected error, returning placeholder:", err);
