@@ -1,0 +1,136 @@
+import { kv } from "@vercel/kv";
+import { createServerClient } from "@/lib/supabase";
+import { resend, FROM_EMAIL } from "@/lib/resend";
+import { getForecast } from "@/lib/getForecast";
+import { getSeaTemp, WEATHER_LOCATIONS } from "@/lib/getWeather";
+import { dailyDigestHtml, dailyDigestSubject } from "@/lib/emailTemplates";
+
+const SENT_KEY_PREFIX = "digest-sent-";
+
+function todayCanary(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Atlantic/Canary" });
+}
+
+async function hasBeenSentToday(): Promise<boolean> {
+  try {
+    const flag = await kv.get<boolean>(`${SENT_KEY_PREFIX}${todayCanary()}`);
+    return flag === true;
+  } catch {
+    return false;
+  }
+}
+
+async function markSentToday(): Promise<void> {
+  try {
+    // Expires after 26 hours so the key cleans itself up
+    await kv.set(`${SENT_KEY_PREFIX}${todayCanary()}`, true, { ex: 60 * 60 * 26 });
+  } catch (err) {
+    console.error("[sendDailyDigest] Failed to mark sent flag:", err);
+  }
+}
+
+async function generateOutlook(forecast: Awaited<ReturnType<typeof getForecast>>): Promise<string> {
+  if (!process.env.OPENAI_API_KEY) return forecast.forecast;
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        messages: [
+          {
+            role: "user",
+            content: `Write a 2-sentence email outlook for Tenerife today based on this forecast data.
+South: ${forecast.south.temperature}°C now, high ${forecast.south.high}°C, ${forecast.south.conditions}
+North: ${forecast.north.temperature}°C now, high ${forecast.north.high}°C, ${forecast.north.conditions}
+Forecast: ${forecast.forecast}
+Rules: factual, no lifestyle advice, no temperatures in the second sentence, no greetings. Plain sentences only.`,
+          },
+        ],
+      }),
+    });
+    if (!res.ok) throw new Error(`OpenAI ${res.status}`);
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content?.trim() ?? forecast.forecast;
+  } catch (err) {
+    console.error("[sendDailyDigest] AI outlook failed:", err);
+    return forecast.forecast;
+  }
+}
+
+export interface SendResult {
+  alreadySent: boolean;
+  sent: number;
+  failed: number;
+  subscribers: number;
+}
+
+/**
+ * Sends the daily digest to all subscribers.
+ * Safe to call multiple times — will no-op if already sent today.
+ */
+export async function sendDailyDigest(): Promise<SendResult> {
+  if (await hasBeenSentToday()) {
+    console.log("[sendDailyDigest] Already sent today — skipping.");
+    return { alreadySent: true, sent: 0, failed: 0, subscribers: 0 };
+  }
+
+  const supabase = createServerClient();
+  const { data: subscribers, error } = await supabase
+    .from("subscribers")
+    .select("email, unsubscribe_token")
+    .eq("daily_digest", true);
+
+  if (error) throw new Error(`DB error: ${error.message}`);
+  if (!subscribers || subscribers.length === 0) {
+    return { alreadySent: false, sent: 0, failed: 0, subscribers: 0 };
+  }
+
+  const loc = WEATHER_LOCATIONS.playaAmericas;
+  const [forecast, seaTemp] = await Promise.all([
+    getForecast(),
+    getSeaTemp(loc.lat, loc.lon),
+  ]);
+
+  const aiOutlook = await generateOutlook(forecast);
+
+  const BATCH = 50;
+  let sent = 0;
+  let failed = 0;
+
+  for (let i = 0; i < subscribers.length; i += BATCH) {
+    const batch = subscribers.slice(i, i + BATCH);
+    await Promise.all(
+      batch.map(async (sub) => {
+        try {
+          await resend.emails.send({
+            from: FROM_EMAIL,
+            to: sub.email,
+            subject: dailyDigestSubject(forecast),
+            html: dailyDigestHtml({
+              forecast,
+              seaTemp,
+              aiOutlook,
+              subscriberToken: sub.unsubscribe_token,
+            }),
+          });
+          sent++;
+        } catch (err) {
+          console.error(`[sendDailyDigest] Failed to send to ${sub.email}:`, err);
+          failed++;
+        }
+      })
+    );
+  }
+
+  // Mark as sent so the cron doesn't double-send later in the day
+  await markSentToday();
+
+  console.log(`[sendDailyDigest] Sent: ${sent}, Failed: ${failed}`);
+  return { alreadySent: false, sent, failed, subscribers: subscribers.length };
+}
