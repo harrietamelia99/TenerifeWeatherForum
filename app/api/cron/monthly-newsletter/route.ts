@@ -23,9 +23,10 @@ async function fetchEvents(monthName: string): Promise<string> {
     const events: string[] = [];
 
     // Try to match event article titles (webtenerife uses h2/h3 for event names)
-    const titleMatches = html.matchAll(/<h[23][^>]*>\s*([^<]{5,80})\s*<\/h[23]>/gi);
-    for (const match of titleMatches) {
-      const title = match[1].replace(/&amp;/g, "&").replace(/&#\d+;/g, "").trim();
+    const titleRe = /<h[23][^>]*>\s*([^<]{5,80})\s*<\/h[23]>/gi;
+    let titleMatch: RegExpExecArray | null;
+    while ((titleMatch = titleRe.exec(html)) !== null) {
+      const title = titleMatch[1].replace(/&amp;/g, "&").replace(/&#\d+;/g, "").trim();
       if (title.length > 5 && title.length < 80 && !title.includes("<")) {
         events.push(title);
         if (events.length >= 6) break;
