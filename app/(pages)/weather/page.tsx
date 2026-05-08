@@ -27,7 +27,7 @@ export default async function WeatherPage({
 
   const [currentWeather, weeklyForecast, seaTemp, dailyUpdate] = await Promise.all([
     getLocationWeather(loc.lat, loc.lon, `South Tenerife — ${loc.name}`),
-    getWeeklyForecast(loc.lat, loc.lon),
+    getWeeklyForecast(),
     getSeaTemp(loc.lat, loc.lon),
     getForecast(),
   ]);

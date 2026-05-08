@@ -220,64 +220,169 @@ export default function WeatherTabsClient({
         {/* ── THIS WEEK ───────────────────────────────────────────────── */}
         {activeTab === "week" && (
           <div>
-            <div className="grid grid-cols-1 sm:grid-cols-7 gap-3 mb-8">
+            {/* Compact 7-day icon strip — quick visual overview */}
+            <div
+              className="flex gap-2 mb-8 overflow-x-auto pb-1"
+              style={{ scrollbarWidth: "none" }}
+            >
               {weeklyForecast.map((day, i) => (
                 <div
-                  key={day.day}
-                  className={`rounded-3xl p-5 flex flex-col items-center gap-3 ${i === 0 ? "ring-2" : ""}`}
+                  key={day.day + i}
+                  className="flex-shrink-0 rounded-2xl px-3 py-4 flex flex-col items-center gap-2"
                   style={{
+                    minWidth: 72,
                     background: i === 0 ? "var(--gradient-sky)" : "var(--color-surface)",
                     border: i === 0 ? "none" : "1px solid var(--color-border)",
                     boxShadow:
                       i === 0
-                        ? "0 4px 20px rgba(66,158,189,0.3)"
-                        : "0 2px 8px rgba(5,63,92,0.05)",
+                        ? "0 4px 16px rgba(66,158,189,0.25)"
+                        : "0 1px 4px rgba(5,63,92,0.05)",
                   }}
                 >
                   <p
-                    className="text-xs font-700 uppercase tracking-widest"
-                    style={{
-                      color: i === 0 ? "var(--color-deep)" : "var(--color-text-muted)",
-                    }}
+                    className="text-xs font-700 uppercase tracking-wider"
+                    style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-text-muted)" }}
                   >
                     {i === 0 ? "Today" : day.shortDay}
                   </p>
-                  <WeatherIcon condition={day.condition} size={48} />
-                  <div className="text-center">
-                    <p
-                      className="tabular-nums font-700 text-xl"
-                      style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-sun)" }}
-                    >
-                      {day.high}°
-                    </p>
-                    <p
-                      className="tabular-nums text-sm font-400"
-                      style={{
-                        color: i === 0 ? "rgba(5,63,92,0.6)" : "var(--color-text-muted)",
-                      }}
-                    >
-                      {day.low}°
-                    </p>
-                  </div>
+                  <WeatherIcon condition={day.condition} size={32} />
+                  <p
+                    className="tabular-nums font-700 text-base"
+                    style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-sun)" }}
+                  >
+                    {day.high}°
+                  </p>
+                  <p
+                    className="tabular-nums text-xs"
+                    style={{ color: "var(--color-text-muted)" }}
+                  >
+                    {day.low}°
+                  </p>
                 </div>
               ))}
             </div>
-            <div
-              className="rounded-3xl p-6"
-              style={{
-                background: "var(--color-surface)",
-                border: "1px solid var(--color-border)",
-              }}
-            >
-              <h2 className="font-700 text-lg mb-3" style={{ color: "var(--color-deep)" }}>
-                7-Day Outlook
-              </h2>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                7-day forecast for South Tenerife. Highs of{" "}
-                {Math.max(...weeklyForecast.map((d) => d.high))}°C expected this week, lows around{" "}
-                {Math.min(...weeklyForecast.map((d) => d.low))}°C. Data refreshes every 30 minutes.
-              </p>
+
+            {/* Detailed day cards with written summaries */}
+            <div className="flex flex-col gap-4">
+              {weeklyForecast.map((day, i) => (
+                <div
+                  key={day.day + i + "detail"}
+                  className="rounded-3xl p-5 sm:p-6"
+                  style={{
+                    background: i === 0 ? "rgba(159,231,245,0.12)" : "var(--color-surface)",
+                    border: i === 0
+                      ? "1.5px solid rgba(66,158,189,0.35)"
+                      : "1px solid var(--color-border)",
+                    boxShadow: "0 2px 10px rgba(5,63,92,0.05)",
+                  }}
+                >
+                  {/* Header row */}
+                  <div className="flex items-start gap-4">
+                    <WeatherIcon condition={day.condition} size={44} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 mb-1">
+                        <span
+                          className="font-700 text-base"
+                          style={{ color: "var(--color-deep)" }}
+                        >
+                          {i === 0 ? "Today" : day.day}
+                        </span>
+                        <span
+                          className="text-xs font-500"
+                          style={{ color: "var(--color-text-muted)" }}
+                        >
+                          {day.date}
+                        </span>
+                      </div>
+                      {/* Temp + badges */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className="tabular-nums font-700 text-lg"
+                          style={{ color: "var(--color-sun)" }}
+                        >
+                          {day.high}°
+                        </span>
+                        <span
+                          className="tabular-nums text-sm"
+                          style={{ color: "var(--color-text-muted)" }}
+                        >
+                          / {day.low}°
+                        </span>
+                        {day.wind >= 30 && (
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-full font-500"
+                            style={{
+                              background: "rgba(66,158,189,0.12)",
+                              color: "var(--color-mid)",
+                            }}
+                          >
+                            💨 {day.wind} km/h
+                          </span>
+                        )}
+                        {day.uv >= 6 && (
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-full font-500"
+                            style={{
+                              background: day.uv >= 8
+                                ? "rgba(239,68,68,0.1)"
+                                : "rgba(245,158,11,0.12)",
+                              color: day.uv >= 8 ? "#dc2626" : "#d97706",
+                            }}
+                          >
+                            🔆 UV {day.uv}
+                          </span>
+                        )}
+                        {day.precipProb >= 30 && (
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-full font-500"
+                            style={{
+                              background: "rgba(59,130,246,0.1)",
+                              color: "#3b82f6",
+                            }}
+                          >
+                            🌧 {day.precipProb}%
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Summary text */}
+                  <p
+                    className="text-sm leading-relaxed mt-3"
+                    style={{ color: "var(--color-text-muted)" }}
+                  >
+                    {day.summary}
+                  </p>
+
+                  {/* North/south indicator if conditions differ */}
+                  {day.northCondition !== day.condition && (
+                    <div
+                      className="flex items-center gap-3 mt-3 pt-3"
+                      style={{ borderTop: "1px solid var(--color-border)" }}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <WeatherIcon condition={day.condition} size={18} />
+                        <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>South</span>
+                      </div>
+                      <span className="text-xs" style={{ color: "var(--color-border)" }}>·</span>
+                      <div className="flex items-center gap-1.5">
+                        <WeatherIcon condition={day.northCondition} size={18} />
+                        <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>North</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
+
+            {/* Footer note */}
+            <p
+              className="text-xs text-center mt-6"
+              style={{ color: "var(--color-text-muted)" }}
+            >
+              South Tenerife forecast · refreshes every 30 minutes · north/south differences shown where relevant
+            </p>
           </div>
         )}
 

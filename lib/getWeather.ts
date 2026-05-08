@@ -120,34 +120,135 @@ export async function getLocationWeather(
   };
 }
 
-// ─── Fetch 7-day forecast for one location ───────────────────────────────────
-export async function getWeeklyForecast(lat: number, lon: number): Promise<DayForecast[]> {
-  const url =
-    `https://api.open-meteo.com/v1/forecast` +
-    `?latitude=${lat}&longitude=${lon}` +
-    `&daily=temperature_2m_max,temperature_2m_min,weather_code` +
-    `&timezone=Atlantic%2FCanary&forecast_days=7`;
+// ─── Summary generator ───────────────────────────────────────────────────────
+// Produces 1–2 natural sentences per day from raw forecast data.
 
-  let res: Response;
+function generateDaySummary(
+  southCode: number,
+  northCode: number,
+  wind: number,
+  uv: number,
+  precipProb: number,
+  precipSum: number,
+): string {
+  const southSunny   = southCode <= 1;
+  const southPartly  = southCode === 2;
+  const southCloudy  = southCode === 3;
+  const southRainy   = southCode >= 51;
+  const northCloudier = northCode > southCode + 1;
+  const northRainy   = northCode >= 51;
+
+  // Sky condition sentence
+  let sky: string;
+  if (southSunny && !northCloudier) {
+    sky = "Clear skies and sunshine expected across most of the island.";
+  } else if (southSunny && northCloudier && !northRainy) {
+    sky = "Sunny in the south with cloud building across the north through the day.";
+  } else if (southSunny && northRainy) {
+    sky = "Sunshine in the south while the north sees cloud and rain.";
+  } else if (southPartly && northCloudier) {
+    sky = "Some sunny spells across the south with cloudier conditions in the north.";
+  } else if (southPartly && !northCloudier) {
+    sky = "Partly cloudy across the island with intervals of sunshine expected.";
+  } else if (southCloudy && northRainy) {
+    sky = "Overcast in the south with rain likely across the north.";
+  } else if (southCloudy) {
+    sky = "Overcast across much of the island with limited sunshine.";
+  } else if (southRainy && northRainy) {
+    sky = `${wmoToLabel(southCode)} likely across both the south and north today.`;
+  } else if (southRainy) {
+    sky = `${wmoToLabel(southCode)} expected across the south, drier in the north.`;
+  } else {
+    sky = `${wmoToLabel(southCode)} in the south, ${wmoToLabel(northCode).toLowerCase()} across the north.`;
+  }
+
+  // Additional detail fragments
+  const details: string[] = [];
+
+  if (precipProb >= 60 && !southRainy) {
+    details.push(`${precipProb}% chance of rain.`);
+  } else if (precipSum >= 5) {
+    details.push("Significant rainfall possible.");
+  } else if (precipProb >= 30 && precipProb < 60) {
+    details.push("Some rain possible.");
+  }
+
+  if (wind >= 45) {
+    details.push(`Strong winds, gusts up to ${wind} km/h.`);
+  } else if (wind >= 30) {
+    details.push(`Breezy, winds up to ${wind} km/h.`);
+  }
+
+  if (uv >= 8 && southCode <= 2) {
+    details.push("UV very high — sun protection essential.");
+  } else if (uv >= 6 && southCode <= 2) {
+    details.push(`UV ${uv} — high. Sun protection recommended.`);
+  }
+
+  return details.length > 0 ? `${sky} ${details.join(" ")}` : sky;
+}
+
+// ─── Fetch 7-day forecast (south + north combined) ───────────────────────────
+// No location params — always fetches Tenerife south (primary) and north
+// (for comparison), plus extra daily fields to power written summaries.
+
+export async function getWeeklyForecast(): Promise<DayForecast[]> {
+  const baseFields =
+    "temperature_2m_max,temperature_2m_min,weather_code," +
+    "wind_speed_10m_max,uv_index_max,precipitation_sum,precipitation_probability_max";
+
+  const southUrl =
+    `https://api.open-meteo.com/v1/forecast` +
+    `?latitude=28.0573&longitude=-16.7146` +
+    `&daily=${baseFields}&timezone=Atlantic%2FCanary&forecast_days=7`;
+
+  const northUrl =
+    `https://api.open-meteo.com/v1/forecast` +
+    `?latitude=28.4142&longitude=-16.5484` +
+    `&daily=weather_code&timezone=Atlantic%2FCanary&forecast_days=7`;
+
+  let southData: Record<string, Record<string, unknown[]>>;
+  let northData: Record<string, Record<string, unknown[]>> | null = null;
+
   try {
-    res = await fetch(url, { next: { revalidate: 1800 } });
-    if (!res.ok) return [];
+    const [southRes, northRes] = await Promise.all([
+      fetch(southUrl, { next: { revalidate: 1800 } }),
+      fetch(northUrl, { next: { revalidate: 1800 } }),
+    ]);
+    if (!southRes.ok) return [];
+    southData = await southRes.json();
+    if (northRes.ok) northData = await northRes.json();
   } catch {
     return [];
   }
-  const d = await res.json();
 
-  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const days  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const short = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-  return d.daily.time.map((dateStr: string, i: number) => {
-    const dow = new Date(dateStr).getDay();
+  return (southData.daily.time as string[]).map((dateStr: string, i: number) => {
+    const dow        = new Date(dateStr).getDay();
+    const southCode  = southData.daily.weather_code[i] as number;
+    const northCode  = (northData?.daily?.weather_code?.[i] as number) ?? southCode;
+    const wind       = Math.round((southData.daily.wind_speed_10m_max[i] as number) ?? 0);
+    const uv         = Math.round((southData.daily.uv_index_max[i] as number) ?? 0);
+    const precipProb = Math.round((southData.daily.precipitation_probability_max[i] as number) ?? 0);
+    const precipSum  = Math.round((southData.daily.precipitation_sum[i] as number) ?? 0);
+
+    const dateObj = new Date(dateStr);
+    const dateDisplay = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
     return {
-      day: days[dow],
-      shortDay: short[dow],
-      condition: wmoToCondition(d.daily.weather_code[i]),
-      high: Math.round(d.daily.temperature_2m_max[i]),
-      low: Math.round(d.daily.temperature_2m_min[i]),
+      day:            days[dow],
+      shortDay:       short[dow],
+      date:           dateDisplay,
+      condition:      wmoToCondition(southCode),
+      northCondition: wmoToCondition(northCode),
+      high:           Math.round(southData.daily.temperature_2m_max[i] as number),
+      low:            Math.round(southData.daily.temperature_2m_min[i] as number),
+      wind,
+      uv,
+      precipProb,
+      summary:        generateDaySummary(southCode, northCode, wind, uv, precipProb, precipSum),
     };
   });
 }

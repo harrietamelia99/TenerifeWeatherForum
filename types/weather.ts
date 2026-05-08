@@ -29,9 +29,15 @@ export interface WeatherData {
 export interface DayForecast {
   day: string;
   shortDay: string;
+  date: string;           // e.g. "12 May"
   condition: WeatherCondition;
+  northCondition: WeatherCondition;
   high: number;
   low: number;
+  wind: number;           // daily max wind km/h
+  uv: number;             // daily max UV index
+  precipProb: number;     // precipitation probability %
+  summary: string;        // generated Tenerife-specific text
 }
 
 export interface ClimateMonth {
