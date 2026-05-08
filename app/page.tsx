@@ -6,6 +6,7 @@ import MicroclimateStrip from "@/components/ui/MicroclimateStrip";
 import BlogCard from "@/components/ui/BlogCard";
 import HeroClouds from "@/components/ui/HeroClouds";
 import ForecastButton from "@/components/ui/ForecastButton";
+import SubscribeForm from "@/components/ui/SubscribeForm";
 import { getAllPosts } from "@/lib/getPosts";
 import { getHomepageWeather } from "@/lib/getWeather";
 import { MapPin, Calendar, BookOpen, Luggage, Bus, Lightbulb } from "lucide-react";
@@ -292,6 +293,47 @@ export default async function HomePage() {
               </p>
             </div>
           )}
+        </section>
+
+        {/* ── NEWSLETTER SUBSCRIBE ── */}
+        <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="subscribe-heading">
+          <div
+            className="rounded-3xl overflow-hidden"
+            style={{ background: "var(--gradient-ocean)" }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+              {/* Left: copy */}
+              <div className="px-8 sm:px-10 py-10 sm:py-12 flex flex-col justify-center">
+                <p className="text-xs font-600 uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  Free newsletter
+                </p>
+                <h2 id="subscribe-heading" className="text-2xl sm:text-3xl font-700 text-white mb-3">
+                  Tenerife weather, straight to your inbox
+                </h2>
+                <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-6">
+                  Get a daily morning digest or a monthly guide to the weather, events and what to expect on the island.
+                </p>
+                <div className="flex flex-col gap-3 text-sm text-white/70">
+                  <div className="flex items-center gap-2">
+                    <span>🌅</span>
+                    <span><strong className="text-white">Daily digest</strong> — conditions sent every morning at 7am</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>📅</span>
+                    <span><strong className="text-white">Monthly newsletter</strong> — climate, events and travel tips</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: form */}
+              <div
+                className="px-8 sm:px-10 py-10 sm:py-12"
+                style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(10px)" }}
+              >
+                <SubscribeForm compact />
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ── FOLLOW US ON SOCIAL ── */}
