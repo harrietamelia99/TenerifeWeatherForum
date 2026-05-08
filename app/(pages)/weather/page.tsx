@@ -64,7 +64,7 @@ export default async function WeatherPage({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Kevin's daily update — auto-populated from his Facebook posts */}
+        {/* Daily forecast update */}
         <div className="mb-10">
           <DailyUpdate update={dailyUpdate} />
         </div>

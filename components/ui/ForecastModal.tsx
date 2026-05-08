@@ -6,7 +6,7 @@ import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
-// Build the formatted Facebook post text — matches Kevin's exact posting format
+// Build the formatted Facebook post text for sharing
 function buildFacebookPost(update: DailyUpdate): string {
   // Forecast paragraphs use a single newline between them (no blank lines)
   const forecast = update.forecast.replace(/\n\n+/g, "\n");
