@@ -78,6 +78,6 @@ A few patterns that recur often enough to be worth knowing:
 
 Tenerife's complex topography — steep gradients from sea level to nearly 3,700 metres within 30km — is genuinely difficult for global weather models to resolve accurately. The cloud layer, where it sits and how thick it is, is particularly hard to pin down precisely.
 
-Local knowledge beats a raw forecast model on most days. That's why observational forecasts from people who understand the island — like Kevin's daily updates on this site — often give a more accurate picture than what a standard weather app shows.
+Local knowledge beats a raw forecast model on most days. That's why observational forecasts from people who understand the island — like the daily updates on this site — often give a more accurate picture than what a standard weather app shows.
 
 The microclimate effect is real, localised, and more predictable than it might appear once you understand what's driving it.

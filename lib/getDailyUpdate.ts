@@ -128,6 +128,6 @@ export function parseFacebookPost(text: string): DailyUpdate {
     hasWarnings,
     forecast: forecastLines.join("\n\n"),
     postedAt: new Date().toISOString(),
-    source: "Kevin's Daily Update",
+    source: "Daily Update",
   };
 }

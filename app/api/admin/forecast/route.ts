@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     await saveManualForecast({
       ...forecast,
       postedAt: new Date().toISOString(),
-      source: "Kevin's Daily Forecast",
+      source: "Daily Forecast",
     });
 
     return NextResponse.json({ ok: true });
