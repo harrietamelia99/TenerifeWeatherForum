@@ -1,30 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveManualForecast } from "@/lib/getManualForecast";
-import type { DailyUpdate } from "@/lib/getDailyUpdate";
+import { saveManualForecastText } from "@/lib/getManualForecast";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { password, forecast } = body as {
-      password: string;
-      forecast: DailyUpdate;
-    };
+    const { password, text } = body as { password: string; text: string };
 
     if (!password || password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: "Incorrect password." }, { status: 401 });
     }
 
-    if (!forecast?.south?.conditions || !forecast?.north?.conditions || !forecast?.forecast) {
-      return NextResponse.json({ error: "Missing required forecast fields." }, { status: 400 });
+    if (!text || text.trim().length < 10) {
+      return NextResponse.json({ error: "Forecast text is too short." }, { status: 400 });
     }
 
-    await saveManualForecast({
-      ...forecast,
-      postedAt: new Date().toISOString(),
-      source: "Daily Forecast",
-    });
+    await saveManualForecastText(text.trim());
 
     return NextResponse.json({ ok: true });
   } catch (err) {

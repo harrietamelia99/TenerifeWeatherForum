@@ -1,5 +1,5 @@
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
-import { getManualForecast } from "@/lib/getManualForecast";
+import { getManualForecastText } from "@/lib/getManualForecast";
 
 // Always appended to the forecast — never left to the AI
 const MICROCLIMATE_SENTENCE =
@@ -238,20 +238,19 @@ function makePlaceholder(): DailyUpdate {
 
 async function generate(): Promise<DailyUpdate> {
   try {
-    // 1. Check for today's manual forecast from Kevin
-    const manual = await getManualForecast();
-    if (manual) return manual;
-
-    // 2. No manual forecast yet — fetch live weather data so temps/wind are still accurate
-    const [south, north] = await Promise.all([
+    // Always fetch live weather data for accurate temps, wind, and emoji.
+    const [south, north, manualText] = await Promise.all([
       fetchLoc(28.0573, -16.7146),
       fetchLoc(28.4142, -16.5484),
+      getManualForecastText(),
     ]);
 
     const dateStr = new Date().toLocaleDateString("en-GB", {
       weekday: "long", day: "numeric", month: "long", year: "numeric",
       timeZone: "Atlantic/Canary",
     });
+
+    const template = templateForecast(south, north);
 
     return {
       date: dateStr,
@@ -260,7 +259,7 @@ async function generate(): Promise<DailyUpdate> {
         label: "Tenerife South (Costa Adeje / Playa de las Américas)",
         temperature: south.temp,
         high: south.high,
-        conditions: "Today's forecast will be posted here shortly — check back soon.",
+        conditions: template.southConditions,
         wind: `${south.wind}–${south.gust} km/h`,
       },
       north: {
@@ -268,14 +267,16 @@ async function generate(): Promise<DailyUpdate> {
         label: "Tenerife North (Santa Cruz / Puerto de la Cruz)",
         temperature: north.temp,
         high: north.high,
-        conditions: "Today's forecast will be posted here shortly — check back soon.",
+        conditions: template.northConditions,
         wind: `${north.wind}–${north.gust} km/h`,
       },
       warnings: "There are no active weather warnings for Tenerife today.",
       hasWarnings: false,
-      forecast: "Today's full forecast will be posted here shortly — check back soon.",
+      // If a manual forecast has been submitted today, use it; otherwise show pending.
+      forecast: manualText
+        ?? "Today's forecast will be posted here shortly — check back soon.",
       postedAt: new Date().toISOString(),
-      source: "Pending",
+      source: manualText ? "Daily Forecast" : "Pending",
     };
   } catch (err) {
     console.error("[getForecast] Unexpected error, returning placeholder:", err);

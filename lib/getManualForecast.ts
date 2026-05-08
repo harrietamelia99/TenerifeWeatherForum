@@ -1,31 +1,28 @@
 import { kv } from "@vercel/kv";
-import type { DailyUpdate } from "@/lib/getDailyUpdate";
 
-const KV_KEY = "manual-forecast";
+const KV_KEY = "manual-forecast-text";
 
-// Returns today's manual forecast if Kevin has posted one, otherwise null.
-export async function getManualForecast(): Promise<DailyUpdate | null> {
+interface ManualForecastText {
+  text: string;
+  date: string; // YYYY-MM-DD in Canary time
+}
+
+function todayCanary(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Atlantic/Canary" });
+}
+
+// Returns today's manually written forecast text, or null if not posted yet.
+export async function getManualForecastText(): Promise<string | null> {
   try {
-    const data = await kv.get<DailyUpdate & { _date: string }>(KV_KEY);
-    if (!data) return null;
-
-    // en-CA gives YYYY-MM-DD format — compare against today in Canary time
-    const today = new Date().toLocaleDateString("en-CA", {
-      timeZone: "Atlantic/Canary",
-    });
-    if (data._date !== today) return null;
-
-    const { _date: _removed, ...forecast } = data;
-    return forecast as DailyUpdate;
+    const data = await kv.get<ManualForecastText>(KV_KEY);
+    if (!data || data.date !== todayCanary()) return null;
+    return data.text;
   } catch (err) {
     console.error("[getManualForecast] KV read error:", err);
     return null;
   }
 }
 
-export async function saveManualForecast(forecast: DailyUpdate): Promise<void> {
-  const today = new Date().toLocaleDateString("en-CA", {
-    timeZone: "Atlantic/Canary",
-  });
-  await kv.set(KV_KEY, { ...forecast, _date: today });
+export async function saveManualForecastText(text: string): Promise<void> {
+  await kv.set(KV_KEY, { text, date: todayCanary() });
 }
