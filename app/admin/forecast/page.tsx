@@ -55,7 +55,7 @@ export default function AdminForecastPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-start justify-center p-6 pt-20">
+    <div className="min-h-screen bg-slate-900 flex items-start justify-center p-6 pt-32">
       <div className="w-full max-w-xl">
         <h1 className="text-2xl font-bold text-white mb-1">Daily Forecast</h1>
         <p className="text-slate-400 text-sm mb-8">
