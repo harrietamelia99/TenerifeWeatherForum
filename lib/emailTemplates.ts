@@ -70,7 +70,6 @@ function regionCard(
   region: string,
   temp: number,
   high: number,
-  conditions: string,
   wind: string
 ): string {
   return `
@@ -94,7 +93,6 @@ function regionCard(
               </td>
             </tr>
           </table>
-          <p style="margin:12px 0 0;font-size:14px;line-height:1.6;color:#475569;">${conditions}</p>
         </td>
       </tr>
     </table>`;
@@ -105,12 +103,11 @@ function regionCard(
 export interface DigestData {
   forecast: DailyUpdate;
   seaTemp: number | null;
-  aiOutlook: string;
   subscriberToken: string;
 }
 
 export function dailyDigestHtml(data: DigestData): string {
-  const { forecast, seaTemp, aiOutlook, subscriberToken } = data;
+  const { forecast, seaTemp, subscriberToken } = data;
   const f = forecast;
 
   const warningsBlock = f.hasWarnings
@@ -127,22 +124,30 @@ export function dailyDigestHtml(data: DigestData): string {
        <p style="margin:0 0 20px;font-size:18px;font-weight:700;color:#429ebd;">🌊 ${seaTemp}°C Atlantic</p>`
     : "";
 
+  // Convert Kevin's forecast paragraphs to HTML
+  const forecastHtml = f.forecast
+    .split("\n\n")
+    .filter(Boolean)
+    .map((p) => `<p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#0c4a6e;">${p}</p>`)
+    .join("");
+
+  const forecastBlock = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;border-radius:12px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;overflow:hidden;">
+      <tr><td style="padding:20px;">
+        <p style="margin:0 0 12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;">Today's Forecast</p>
+        ${forecastHtml}
+      </td></tr>
+    </table>`;
+
   const body = `
     <p style="margin:24px 0 20px;font-size:15px;color:#475569;">Good morning. Here is today's forecast for Tenerife.</p>
 
-    ${regionCard(f.south.emoji, f.south.label, f.south.temperature, f.south.high, f.south.conditions, f.south.wind)}
-    ${regionCard(f.north.emoji, f.north.label, f.north.temperature, f.north.high, f.north.conditions, f.north.wind)}
+    ${regionCard(f.south.emoji, f.south.label, f.south.temperature, f.south.high, f.south.wind)}
+    ${regionCard(f.north.emoji, f.north.label, f.north.temperature, f.north.high, f.north.wind)}
 
     ${warningsBlock}
     ${seaTempBlock}
-
-    <!-- Outlook -->
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;border-radius:12px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;overflow:hidden;">
-      <tr><td style="padding:20px;">
-        <p style="margin:0 0 8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;">Today's Outlook</p>
-        <p style="margin:0;font-size:14px;line-height:1.7;color:#0c4a6e;">${aiOutlook}</p>
-      </td></tr>
-    </table>
+    ${forecastBlock}
 
     <a href="${SITE_URL}/weather" style="display:block;text-align:center;padding:14px 24px;background:#053f5c;color:#ffffff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;margin-bottom:8px;">View Full Forecast →</a>
   `;

@@ -127,13 +127,6 @@ export default function DailyUpdate({ update }: Props) {
                 </span>
               </div>
 
-              {/* Conditions */}
-              <p
-                className="text-sm leading-relaxed"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                {region.conditions}
-              </p>
             </div>
           ))}
         </div>

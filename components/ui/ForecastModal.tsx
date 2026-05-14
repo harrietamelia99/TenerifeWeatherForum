@@ -204,22 +204,6 @@ export default function ForecastModal() {
                 ))}
               </div>
 
-              {/* South conditions */}
-              <div className="mb-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">
-                  South — {update.south.label.replace(/^Tenerife South \(/, "").replace(/\)$/, "")}
-                </p>
-                <p className="text-white/85 text-sm leading-relaxed">{update.south.conditions}</p>
-              </div>
-
-              {/* North conditions */}
-              <div className="mb-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">
-                  North — {update.north.label.replace(/^Tenerife North \(/, "").replace(/\)$/, "")}
-                </p>
-                <p className="text-white/85 text-sm leading-relaxed">{update.north.conditions}</p>
-              </div>
-
               {/* Warnings */}
               {update.hasWarnings && (
                 <div

@@ -250,8 +250,6 @@ async function generate(): Promise<DailyUpdate> {
       timeZone: "Atlantic/Canary",
     });
 
-    const template = templateForecast(south, north);
-
     return {
       date: dateStr,
       south: {
@@ -259,7 +257,7 @@ async function generate(): Promise<DailyUpdate> {
         label: "Tenerife South (Costa Adeje / Playa de las Américas)",
         temperature: south.temp,
         high: south.high,
-        conditions: template.southConditions,
+        conditions: "",
         wind: `${south.wind}–${south.gust} km/h`,
       },
       north: {
@@ -267,7 +265,7 @@ async function generate(): Promise<DailyUpdate> {
         label: "Tenerife North (Santa Cruz / Puerto de la Cruz)",
         temperature: north.temp,
         high: north.high,
-        conditions: template.northConditions,
+        conditions: "",
         wind: `${north.wind}–${north.gust} km/h`,
       },
       warnings: "There are no active weather warnings for Tenerife today.",

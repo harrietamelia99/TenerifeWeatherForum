@@ -29,40 +29,6 @@ async function markSentToday(): Promise<void> {
   }
 }
 
-async function generateOutlook(forecast: Awaited<ReturnType<typeof getForecast>>): Promise<string> {
-  if (!process.env.OPENAI_API_KEY) return forecast.forecast;
-  try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        temperature: 0.5,
-        messages: [
-          {
-            role: "user",
-            content: `Write a 2-sentence email outlook for Tenerife today based on this forecast data.
-South: ${forecast.south.temperature}°C now, high ${forecast.south.high}°C, ${forecast.south.conditions}
-North: ${forecast.north.temperature}°C now, high ${forecast.north.high}°C, ${forecast.north.conditions}
-Forecast: ${forecast.forecast}
-Rules: factual, no lifestyle advice, no temperatures in the second sentence, no greetings. Plain sentences only.`,
-          },
-        ],
-      }),
-    });
-    if (!res.ok) throw new Error(`OpenAI ${res.status}`);
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content?.trim() ?? forecast.forecast;
-  } catch (err) {
-    console.error("[sendDailyDigest] AI outlook failed:", err);
-    return forecast.forecast;
-  }
-}
-
 export interface SendResult {
   alreadySent: boolean;
   sent: number;
@@ -97,8 +63,6 @@ export async function sendDailyDigest(): Promise<SendResult> {
     getSeaTemp(loc.lat, loc.lon),
   ]);
 
-  const aiOutlook = await generateOutlook(forecast);
-
   const BATCH = 50;
   let sent = 0;
   let failed = 0;
@@ -115,7 +79,6 @@ export async function sendDailyDigest(): Promise<SendResult> {
             html: dailyDigestHtml({
               forecast,
               seaTemp,
-              aiOutlook,
               subscriberToken: sub.unsubscribe_token,
             }),
           });
