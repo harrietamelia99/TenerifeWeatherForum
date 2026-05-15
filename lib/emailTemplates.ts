@@ -137,7 +137,6 @@ export function dailyDigestHtml(data: DigestData): string {
     <p style="margin:24px 0 20px;font-size:15px;color:#475569;">Good morning. Here is today's forecast for Tenerife.</p>
 
     ${warningsBlock}
-    ${seaTempBlock}
     ${forecastBlock}
 
     <a href="${SITE_URL}/weather" style="display:block;text-align:center;padding:14px 24px;background:#053f5c;color:#ffffff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;margin-bottom:8px;">View Full Forecast →</a>
