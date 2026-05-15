@@ -1,5 +1,5 @@
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
-import { Wind, Thermometer, TrendingUp, AlertTriangle, Facebook } from "lucide-react";
+import { AlertTriangle, Facebook } from "lucide-react";
 
 interface Props {
   update: DailyUpdate;
@@ -12,6 +12,8 @@ export default function DailyUpdate({ update }: Props) {
     minute: "2-digit",
     timeZone: "Atlantic/Canary",
   });
+
+  const isPending = update.source === "Pending";
 
   return (
     <div
@@ -45,10 +47,10 @@ export default function DailyUpdate({ update }: Props) {
         <div className="flex items-center gap-1.5">
           <span
             className="w-2 h-2 rounded-full flex-shrink-0"
-            style={{ background: "#22c55e" }}
+            style={{ background: isPending ? "#f59e0b" : "#22c55e" }}
           />
           <span className="text-xs text-white/60 whitespace-nowrap">
-            Posted {timeStr}
+            {isPending ? "Forecast coming soon" : `Posted ${timeStr}`}
           </span>
         </div>
       </div>
@@ -71,68 +73,8 @@ export default function DailyUpdate({ update }: Props) {
           </div>
         )}
 
-        {/* North / South grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-          {[update.south, update.north].map((region) => (
-            <div
-              key={region.label}
-              className="rounded-2xl p-4"
-              style={{
-                background: "var(--color-bg)",
-                border: "1px solid var(--color-border)",
-              }}
-            >
-              {/* Region header */}
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl leading-none">{region.emoji}</span>
-                <p
-                  className="font-700 text-sm leading-tight"
-                  style={{ color: "var(--color-deep)" }}
-                >
-                  {region.label}
-                </p>
-              </div>
-
-              {/* Stat pills */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-600"
-                  style={{
-                    background: "rgba(66,158,189,0.12)",
-                    color: "var(--color-mid)",
-                  }}
-                >
-                  <Thermometer size={11} />
-                  Now {region.temperature}°C
-                </span>
-                <span
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-600"
-                  style={{
-                    background: "rgba(247,173,25,0.12)",
-                    color: "#b45309",
-                  }}
-                >
-                  <TrendingUp size={11} />
-                  High {region.high}°C
-                </span>
-                <span
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-600"
-                  style={{
-                    background: "rgba(5,63,92,0.07)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  <Wind size={11} />
-                  {region.wind}
-                </span>
-              </div>
-
-            </div>
-          ))}
-        </div>
-
         {/* No warnings pill */}
-        {!update.hasWarnings && (
+        {!update.hasWarnings && !isPending && (
           <div
             className="flex items-center gap-2 rounded-full px-4 py-2 mb-5 w-fit"
             style={{
@@ -150,14 +92,16 @@ export default function DailyUpdate({ update }: Props) {
           </div>
         )}
 
-        {/* Forecast */}
+        {/* Forecast text */}
         <div>
-          <h3
-            className="font-700 text-sm uppercase tracking-widest mb-3"
-            style={{ color: "var(--color-deep)" }}
-          >
-            Forecast
-          </h3>
+          {!isPending && (
+            <h3
+              className="font-700 text-sm uppercase tracking-widest mb-3"
+              style={{ color: "var(--color-deep)" }}
+            >
+              Forecast
+            </h3>
+          )}
           {(update.forecast ?? "").split("\n\n").map((para, i) => (
             <p
               key={i}

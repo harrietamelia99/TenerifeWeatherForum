@@ -182,28 +182,6 @@ export default function ForecastModal() {
 
           {status === "ready" && update && (
             <>
-              {/* South / North quick stats */}
-              <div className="grid grid-cols-2 gap-3 mb-5">
-                {[update.south, update.north].map((region) => (
-                  <div
-                    key={region.label}
-                    className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.1)" }}
-                  >
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <span className="text-lg leading-none">{region.emoji}</span>
-                      <span className="text-xs text-white/60 font-semibold leading-tight">
-                        {region.label.includes("South") ? "South" : "North"}
-                      </span>
-                    </div>
-                    <p className="text-2xl font-bold text-white tabular-nums leading-none mb-1">
-                      {region.temperature}°C
-                    </p>
-                    <p className="text-xs text-white/50">High {region.high}°C · {region.wind}</p>
-                  </div>
-                ))}
-              </div>
-
               {/* Warnings */}
               {update.hasWarnings && (
                 <div
