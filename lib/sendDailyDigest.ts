@@ -2,7 +2,6 @@ import { kv } from "@vercel/kv";
 import { createServerClient } from "@/lib/supabase";
 import { resend, FROM_EMAIL } from "@/lib/resend";
 import { getForecast } from "@/lib/getForecast";
-import { getSeaTemp, WEATHER_LOCATIONS } from "@/lib/getWeather";
 import { dailyDigestHtml, dailyDigestSubject } from "@/lib/emailTemplates";
 
 const SENT_KEY_PREFIX = "digest-sent-";
@@ -57,11 +56,7 @@ export async function sendDailyDigest(): Promise<SendResult> {
     return { alreadySent: false, sent: 0, failed: 0, subscribers: 0 };
   }
 
-  const loc = WEATHER_LOCATIONS.playaAmericas;
-  const [forecast, seaTemp] = await Promise.all([
-    getForecast(),
-    getSeaTemp(loc.lat, loc.lon),
-  ]);
+  const forecast = await getForecast();
 
   const BATCH = 50;
   let sent = 0;
@@ -78,7 +73,6 @@ export async function sendDailyDigest(): Promise<SendResult> {
             subject: dailyDigestSubject(forecast),
             html: dailyDigestHtml({
               forecast,
-              seaTemp,
               subscriberToken: sub.unsubscribe_token,
             }),
           });

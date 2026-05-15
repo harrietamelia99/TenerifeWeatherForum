@@ -102,12 +102,11 @@ function regionCard(
 
 export interface DigestData {
   forecast: DailyUpdate;
-  seaTemp: number | null;
   subscriberToken: string;
 }
 
 export function dailyDigestHtml(data: DigestData): string {
-  const { forecast, seaTemp, subscriberToken } = data;
+  const { forecast, subscriberToken } = data;
   const f = forecast;
 
   const warningsBlock = f.hasWarnings
@@ -117,11 +116,6 @@ export function dailyDigestHtml(data: DigestData): string {
           <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#7f1d1d;">${f.warnings}</p>
         </td></tr>
       </table>`
-    : "";
-
-  const seaTempBlock = seaTemp != null
-    ? `<p style="margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;">Sea Temperature</p>
-       <p style="margin:0 0 20px;font-size:18px;font-weight:700;color:#429ebd;">🌊 ${seaTemp}°C Atlantic</p>`
     : "";
 
   // Convert Kevin's forecast paragraphs to HTML
@@ -142,9 +136,6 @@ export function dailyDigestHtml(data: DigestData): string {
   const body = `
     <p style="margin:24px 0 20px;font-size:15px;color:#475569;">Good morning. Here is today's forecast for Tenerife.</p>
 
-    ${regionCard(f.south.emoji, f.south.label, f.south.temperature, f.south.high, f.south.wind)}
-    ${regionCard(f.north.emoji, f.north.label, f.north.temperature, f.north.high, f.north.wind)}
-
     ${warningsBlock}
     ${seaTempBlock}
     ${forecastBlock}
@@ -154,7 +145,7 @@ export function dailyDigestHtml(data: DigestData): string {
 
   const html = emailWrapper(
     `Tenerife Weather — ${f.date}`,
-    `${f.south.emoji} South: ${f.south.temperature}°C · ${f.north.emoji} North: ${f.north.temperature}°C`,
+    `Today's forecast for Tenerife — ${f.date}`,
     body
   ).replace("UNSUBSCRIBE_PLACEHOLDER", unsubscribeLinks(subscriberToken));
 
