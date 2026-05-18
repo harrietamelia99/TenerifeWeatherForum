@@ -180,9 +180,9 @@ function generateDaySummary(
   }
 
   if (uv >= 8 && southCode <= 2) {
-    details.push("UV very high — sun protection essential.");
+    details.push(`UV index very high (${uv}).`);
   } else if (uv >= 6 && southCode <= 2) {
-    details.push(`UV ${uv} — high. Sun protection recommended.`);
+    details.push(`UV index high (${uv}).`);
   }
 
   return details.length > 0 ? `${sky} ${details.join(" ")}` : sky;
@@ -200,12 +200,12 @@ export async function getWeeklyForecast(): Promise<DayForecast[]> {
   const southUrl =
     `https://api.open-meteo.com/v1/forecast` +
     `?latitude=28.0573&longitude=-16.7146` +
-    `&daily=${baseFields}&timezone=Atlantic%2FCanary&forecast_days=7`;
+    `&daily=${baseFields}&timezone=Atlantic%2FCanary&forecast_days=8`;
 
   const northUrl =
     `https://api.open-meteo.com/v1/forecast` +
     `?latitude=28.4142&longitude=-16.5484` +
-    `&daily=weather_code&timezone=Atlantic%2FCanary&forecast_days=7`;
+    `&daily=weather_code&timezone=Atlantic%2FCanary&forecast_days=8`;
 
   let southData: Record<string, Record<string, unknown[]>>;
   let northData: Record<string, Record<string, unknown[]>> | null = null;
@@ -225,14 +225,16 @@ export async function getWeeklyForecast(): Promise<DayForecast[]> {
   const days  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const short = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-  return (southData.daily.time as string[]).map((dateStr: string, i: number) => {
+  // Skip index 0 (today) — today's forecast is handled by Kevin's manual forecast card above.
+  return (southData.daily.time as string[]).slice(1).map((dateStr: string, i: number) => {
+    const i2 = i + 1; // offset into the original array
     const dow        = new Date(dateStr).getDay();
-    const southCode  = southData.daily.weather_code[i] as number;
-    const northCode  = (northData?.daily?.weather_code?.[i] as number) ?? southCode;
-    const wind       = Math.round((southData.daily.wind_speed_10m_max[i] as number) ?? 0);
-    const uv         = Math.round((southData.daily.uv_index_max[i] as number) ?? 0);
-    const precipProb = Math.round((southData.daily.precipitation_probability_max[i] as number) ?? 0);
-    const precipSum  = Math.round((southData.daily.precipitation_sum[i] as number) ?? 0);
+    const southCode  = southData.daily.weather_code[i2] as number;
+    const northCode  = (northData?.daily?.weather_code?.[i2] as number) ?? southCode;
+    const wind       = Math.round((southData.daily.wind_speed_10m_max[i2] as number) ?? 0);
+    const uv         = Math.round((southData.daily.uv_index_max[i2] as number) ?? 0);
+    const precipProb = Math.round((southData.daily.precipitation_probability_max[i2] as number) ?? 0);
+    const precipSum  = Math.round((southData.daily.precipitation_sum[i2] as number) ?? 0);
 
     const dateObj = new Date(dateStr);
     const dateDisplay = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
@@ -243,8 +245,8 @@ export async function getWeeklyForecast(): Promise<DayForecast[]> {
       date:           dateDisplay,
       condition:      wmoToCondition(southCode),
       northCondition: wmoToCondition(northCode),
-      high:           Math.round(southData.daily.temperature_2m_max[i] as number),
-      low:            Math.round(southData.daily.temperature_2m_min[i] as number),
+      high:           Math.round(southData.daily.temperature_2m_max[i2] as number),
+      low:            Math.round(southData.daily.temperature_2m_min[i2] as number),
       wind,
       uv,
       precipProb,
