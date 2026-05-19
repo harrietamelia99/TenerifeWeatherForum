@@ -3,10 +3,16 @@
 import { useState } from "react";
 
 interface Props {
-  compact?: boolean; // Compact mode for embedding in homepage
+  compact?: boolean;
+  onDark?: boolean; // Use white text when sitting on a dark/coloured background
 }
 
-export default function SubscribeForm({ compact = false }: Props) {
+export default function SubscribeForm({ compact = false, onDark = false }: Props) {
+  const labelColor  = onDark ? "rgba(255,255,255,0.95)" : "var(--color-deep)";
+  const mutedColor  = onDark ? "rgba(255,255,255,0.65)" : "var(--color-text-muted)";
+  const inputStyle  = onDark
+    ? { background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)", color: "#ffffff" }
+    : { background: "var(--color-bg)", border: "1px solid var(--color-border)", color: "var(--color-deep)" };
   const [email, setEmail]               = useState("");
   const [daily, setDaily]               = useState(true);
   const [monthly, setMonthly]           = useState(false);
@@ -67,7 +73,7 @@ export default function SubscribeForm({ compact = false }: Props) {
         <label
           htmlFor="sub-email"
           className={`block font-600 mb-1.5 ${compact ? "text-sm" : "text-base"}`}
-          style={{ color: "var(--color-deep)" }}
+          style={{ color: labelColor }}
         >
           Email address
         </label>
@@ -78,12 +84,8 @@ export default function SubscribeForm({ compact = false }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="w-full rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-sky-400"
-          style={{
-            background: "var(--color-bg)",
-            border: "1px solid var(--color-border)",
-            color: "var(--color-deep)",
-          }}
+          className="w-full rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-sky-400 placeholder:text-white/40"
+          style={inputStyle}
         />
       </div>
 
@@ -97,10 +99,10 @@ export default function SubscribeForm({ compact = false }: Props) {
             className="mt-0.5 w-4 h-4 rounded accent-sky-600 cursor-pointer"
           />
           <div>
-            <p className={`font-600 ${compact ? "text-sm" : "text-base"}`} style={{ color: "var(--color-deep)" }}>
+            <p className={`font-600 ${compact ? "text-sm" : "text-base"}`} style={{ color: labelColor }}>
               Daily Weather Digest
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+            <p className="text-xs mt-0.5" style={{ color: mutedColor }}>
               Each morning at 7am — today&apos;s conditions, temperatures and a short outlook
             </p>
           </div>
@@ -114,10 +116,10 @@ export default function SubscribeForm({ compact = false }: Props) {
             className="mt-0.5 w-4 h-4 rounded accent-sky-600 cursor-pointer"
           />
           <div>
-            <p className={`font-600 ${compact ? "text-sm" : "text-base"}`} style={{ color: "var(--color-deep)" }}>
+            <p className={`font-600 ${compact ? "text-sm" : "text-base"}`} style={{ color: labelColor }}>
               Monthly Newsletter
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+            <p className="text-xs mt-0.5" style={{ color: mutedColor }}>
               1st of each month — climate overview, events &amp; what to expect
             </p>
           </div>
@@ -138,7 +140,7 @@ export default function SubscribeForm({ compact = false }: Props) {
         {status === "loading" ? "Subscribing…" : "Subscribe →"}
       </button>
 
-      <p className="text-xs text-center" style={{ color: "var(--color-text-muted)" }}>
+      <p className="text-xs text-center" style={{ color: mutedColor }}>
         No spam. Unsubscribe any time from any email.
       </p>
     </form>

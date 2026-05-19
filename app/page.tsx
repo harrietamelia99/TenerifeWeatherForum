@@ -330,7 +330,7 @@ export default async function HomePage() {
                 className="px-8 sm:px-10 py-10 sm:py-12"
                 style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(10px)" }}
               >
-                <SubscribeForm compact />
+                <SubscribeForm compact onDark />
               </div>
             </div>
           </div>
