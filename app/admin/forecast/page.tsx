@@ -7,11 +7,12 @@ const STORAGE_KEY = "twf_admin_pw";
 export default function AdminForecastPage() {
   const [password, setPassword] = useState("");
   const [text, setText] = useState("");
+  const [hasWarnings, setHasWarnings] = useState(false);
+  const [warnings, setWarnings] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [authed, setAuthed] = useState(false);
 
-  // Restore password from localStorage so they don't re-type it every time
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -29,7 +30,7 @@ export default function AdminForecastPage() {
       const res = await fetch("/api/admin/forecast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, text }),
+        body: JSON.stringify({ password, text, hasWarnings, warnings }),
       });
 
       const data = await res.json();
@@ -79,6 +80,7 @@ export default function AdminForecastPage() {
             </div>
           )}
 
+          {/* Forecast text */}
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Today&apos;s forecast
@@ -87,13 +89,49 @@ export default function AdminForecastPage() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={10}
-              placeholder={`A settled and pleasant day ahead across Tenerife with light winds and comfortable temperatures expected island-wide. The south looks set to enjoy plenty of sunshine through the day, making it feel warm in sheltered spots. The north is also expected to see brighter conditions, with cloud breaking to allow sunny spells to develop through the afternoon.\n\nConditions can vary significantly across different parts of the island due to Tenerife's microclimates, and weather can be completely different just 15 minutes away from one location to another.`}
+              placeholder="Write your forecast here — same as what you'd post on Facebook..."
               className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-y leading-relaxed"
               required
             />
-            <p className="text-slate-500 text-xs mt-2">
-              This text appears in the Forecast section on the weather page. Temperatures, wind speeds, and conditions for each region are pulled automatically from live weather data.
-            </p>
+          </div>
+
+          {/* Weather warnings */}
+          <div className="rounded-lg border border-slate-700 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setHasWarnings(!hasWarnings)}
+              className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium transition-colors ${
+                hasWarnings
+                  ? "bg-amber-500/20 border-b border-amber-500/30 text-amber-300"
+                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Weather warning active today</span>
+              </span>
+              <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                hasWarnings ? "bg-amber-500 border-amber-500" : "border-slate-500"
+              }`}>
+                {hasWarnings && <span className="text-white text-xs font-bold">✓</span>}
+              </span>
+            </button>
+
+            {hasWarnings && (
+              <div className="bg-slate-800 px-4 pb-4 pt-3">
+                <label className="block text-xs font-medium text-amber-300 mb-2">
+                  Warning details
+                </label>
+                <textarea
+                  value={warnings}
+                  onChange={(e) => setWarnings(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. Heatwave warning in place for Tenerife. Temperatures expected to exceed 40°C in inland areas. Calima (dust from the Sahara) forecast to affect visibility across the island."
+                  className="w-full rounded-lg bg-slate-700 border border-amber-500/30 text-white px-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y leading-relaxed"
+                  required={hasWarnings}
+                />
+              </div>
+            )}
           </div>
 
           <button

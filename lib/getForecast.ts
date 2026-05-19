@@ -1,5 +1,5 @@
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
-import { getManualForecastText } from "@/lib/getManualForecast";
+import { getManualForecastData } from "@/lib/getManualForecast";
 
 // Always appended to the forecast — never left to the AI
 const MICROCLIMATE_SENTENCE =
@@ -239,10 +239,10 @@ function makePlaceholder(): DailyUpdate {
 async function generate(): Promise<DailyUpdate> {
   try {
     // Always fetch live weather data for accurate temps, wind, and emoji.
-    const [south, north, manualText] = await Promise.all([
+    const [south, north, manual] = await Promise.all([
       fetchLoc(28.0573, -16.7146),
       fetchLoc(28.4142, -16.5484),
-      getManualForecastText(),
+      getManualForecastData(),
     ]);
 
     const dateStr = new Date().toLocaleDateString("en-GB", {
@@ -268,13 +268,15 @@ async function generate(): Promise<DailyUpdate> {
         conditions: "",
         wind: `${north.wind}–${north.gust} km/h`,
       },
-      warnings: "There are no active weather warnings for Tenerife today.",
-      hasWarnings: false,
+      warnings: manual?.hasWarnings
+        ? (manual.warnings || "Active weather warning in place for Tenerife.")
+        : "There are no active weather warnings for Tenerife today.",
+      hasWarnings: manual?.hasWarnings ?? false,
       // If a manual forecast has been submitted today, use it; otherwise show pending.
-      forecast: manualText
+      forecast: manual?.text
         ?? "Today's forecast will be posted here shortly — check back soon.",
       postedAt: new Date().toISOString(),
-      source: manualText ? "Daily Forecast" : "Pending",
+      source: manual ? "Daily Forecast" : "Pending",
     };
   } catch (err) {
     console.error("[getForecast] Unexpected error, returning placeholder:", err);
