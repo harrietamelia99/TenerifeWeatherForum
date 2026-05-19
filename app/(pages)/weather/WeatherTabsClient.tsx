@@ -254,7 +254,7 @@ export default function WeatherTabsClient({
                   </p>
                   <p
                     className="tabular-nums text-xs"
-                    style={{ color: "var(--color-text-muted)" }}
+                    style={{ color: i === 0 ? "rgba(255,255,255,0.75)" : "var(--color-text-muted)" }}
                   >
                     {day.low}°
                   </p>
