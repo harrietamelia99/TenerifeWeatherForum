@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import WeatherTicker from "@/components/ui/WeatherTicker";
 import ForecastModal from "@/components/ui/ForecastModal";
+
+const GA_ID = "G-4BK6V9K96C";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -49,6 +52,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={dmSans.variable}>
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
+      </head>
       <body className="font-sans antialiased">
         <WeatherTicker />
         <Navbar />
