@@ -114,9 +114,14 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <p className="text-white/40 text-xs">
-            © {new Date().getFullYear()} Tenerife Weather Forum. All rights reserved.
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-white/40 text-xs">
+              © {new Date().getFullYear()} Tenerife Weather Forum. All rights reserved.
+            </p>
+            <Link href="/privacy" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
+              Privacy Policy
+            </Link>
+          </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <span className="text-white/40 text-xs">
               Weather data is indicative only. Always check official forecasts before travelling.
