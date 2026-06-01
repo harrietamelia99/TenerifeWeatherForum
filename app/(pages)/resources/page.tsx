@@ -255,7 +255,7 @@ export default function ResourcesPage() {
               description="Permits, opening times and trail maps for Teide National Park"
             />
             <ResourceLink
-              href="https://www.gobiernodecanarias.org/inicio/"
+              href="https://www.gobiernodecanarias.org/"
               label="Government of the Canary Islands"
               description="Official government site — regulations and public services"
             />
@@ -269,7 +269,7 @@ export default function ResourcesPage() {
             gradient="linear-gradient(135deg, #053f5c, #9fe7f5)"
           >
             <ResourceLink
-              href="https://www.gov.uk/foreign-travel-advice/spain/safety-and-emergencies"
+              href="https://www.gov.uk/foreign-travel-advice/spain"
               label="Emergency Numbers in Spain"
               description="112 (general emergency) · 061 (medical) · 091 (police) · 080 (fire)"
             />
@@ -279,12 +279,12 @@ export default function ResourcesPage() {
               description="Apply for or renew your free GHIC before travelling — replaced the EHIC for UK residents"
             />
             <ResourceLink
-              href="https://www.aena.es/en/tenerife-south-airport.html"
+              href="https://www.aena.es/en/tenerife-sur.html"
               label="Tenerife South Airport (TFS) - AENA"
               description="Arrivals, departures and airport information for Tenerife South"
             />
             <ResourceLink
-              href="https://www.aena.es/en/tenerife-north-airport.html"
+              href="https://www.aena.es/en/tenerife-norte-ciudad-de-la-laguna.html"
               label="Tenerife North Airport (TFN) - AENA"
               description="Arrivals, departures and airport information for Tenerife North"
             />
