@@ -38,8 +38,14 @@ export interface SendResult {
 /**
  * Sends the daily digest to all subscribers.
  * Safe to call multiple times — will no-op if already sent today.
+ *
+ * @param forecastOverride — pass the forecast directly from the admin save
+ *   to avoid a KV race condition where the email fires before the write
+ *   has fully propagated.
  */
-export async function sendDailyDigest(): Promise<SendResult> {
+export async function sendDailyDigest(
+  forecastOverride?: Awaited<ReturnType<typeof getForecast>>
+): Promise<SendResult> {
   if (await hasBeenSentToday()) {
     console.log("[sendDailyDigest] Already sent today — skipping.");
     return { alreadySent: true, sent: 0, failed: 0, subscribers: 0 };
@@ -56,7 +62,7 @@ export async function sendDailyDigest(): Promise<SendResult> {
     return { alreadySent: false, sent: 0, failed: 0, subscribers: 0 };
   }
 
-  const forecast = await getForecast();
+  const forecast = forecastOverride ?? await getForecast();
 
   const BATCH = 50;
   let sent = 0;

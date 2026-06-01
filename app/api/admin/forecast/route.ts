@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveManualForecast } from "@/lib/getManualForecast";
 import { sendDailyDigest } from "@/lib/sendDailyDigest";
+import { getForecast } from "@/lib/getForecast";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -29,7 +30,11 @@ export async function POST(req: NextRequest) {
 
     await saveManualForecast(text.trim(), hasWarnings, warnings?.trim() ?? "");
 
-    sendDailyDigest()
+    // Build the forecast object now (KV write is confirmed) and pass it
+    // directly to sendDailyDigest to avoid a race condition on the KV read.
+    const forecast = await getForecast();
+
+    sendDailyDigest(forecast)
       .then((result) => {
         if (result.alreadySent) {
           console.log("[admin/forecast] Digest already sent today — not re-sending.");
