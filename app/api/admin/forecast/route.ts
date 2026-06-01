@@ -34,17 +34,16 @@ export async function POST(req: NextRequest) {
     // directly to sendDailyDigest to avoid a race condition on the KV read.
     const forecast = await getForecast();
 
-    sendDailyDigest(forecast)
-      .then((result) => {
-        if (result.alreadySent) {
-          console.log("[admin/forecast] Digest already sent today — not re-sending.");
-        } else {
-          console.log(`[admin/forecast] Digest triggered: sent=${result.sent}, failed=${result.failed}`);
-        }
-      })
-      .catch((err) => {
-        console.error("[admin/forecast] Digest send failed (non-fatal):", err);
-      });
+    // Await the send so the serverless function doesn't terminate before
+    // emails are dispatched. maxDuration: 60 gives enough headroom.
+    // force=true ensures Kevin's manual forecast always goes out even if
+    // the backup cron already sent a placeholder earlier that morning.
+    try {
+      const result = await sendDailyDigest(forecast, true);
+      console.log(`[admin/forecast] Digest triggered: sent=${result.sent}, failed=${result.failed}`);
+    } catch (err) {
+      console.error("[admin/forecast] Digest send failed (non-fatal):", err);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {

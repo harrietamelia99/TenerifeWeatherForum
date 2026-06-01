@@ -42,11 +42,14 @@ export interface SendResult {
  * @param forecastOverride — pass the forecast directly from the admin save
  *   to avoid a KV race condition where the email fires before the write
  *   has fully propagated.
+ * @param force — if true, bypasses the "already sent today" check so Kevin's
+ *   manual forecast always goes out even if the backup cron already ran.
  */
 export async function sendDailyDigest(
-  forecastOverride?: Awaited<ReturnType<typeof getForecast>>
+  forecastOverride?: Awaited<ReturnType<typeof getForecast>>,
+  force = false
 ): Promise<SendResult> {
-  if (await hasBeenSentToday()) {
+  if (!force && await hasBeenSentToday()) {
     console.log("[sendDailyDigest] Already sent today — skipping.");
     return { alreadySent: true, sent: 0, failed: 0, subscribers: 0 };
   }
