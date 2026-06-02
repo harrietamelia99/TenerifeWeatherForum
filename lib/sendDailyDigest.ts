@@ -58,7 +58,9 @@ export async function sendDailyDigest(
   const { data: subscribers, error } = await supabase
     .from("subscribers")
     .select("email, unsubscribe_token")
-    .eq("daily_digest", true);
+    .eq("daily_digest", true)
+    .order("created_at", { ascending: true })
+    .limit(1000);
 
   if (error) throw new Error(`DB error: ${error.message}`);
   if (!subscribers || subscribers.length === 0) {
