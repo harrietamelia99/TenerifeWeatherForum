@@ -38,14 +38,18 @@ export async function POST(req: NextRequest) {
     // emails are dispatched. maxDuration: 60 gives enough headroom.
     // force=true ensures Kevin's manual forecast always goes out even if
     // the backup cron already sent a placeholder earlier that morning.
+    let emailsSent = 0;
+    let emailsFailed = 0;
     try {
       const result = await sendDailyDigest(forecast, true);
+      emailsSent = result.sent;
+      emailsFailed = result.failed;
       console.log(`[admin/forecast] Digest triggered: sent=${result.sent}, failed=${result.failed}`);
     } catch (err) {
       console.error("[admin/forecast] Digest send failed (non-fatal):", err);
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, emailsSent, emailsFailed });
   } catch (err) {
     console.error("[admin/forecast] Error:", err);
     return NextResponse.json({ error: "Failed to save forecast." }, { status: 500 });

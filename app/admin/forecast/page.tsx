@@ -11,6 +11,7 @@ export default function AdminForecastPage() {
   const [warnings, setWarnings] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [emailsSent, setEmailsSent] = useState<number | null>(null);
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
@@ -47,8 +48,9 @@ export default function AdminForecastPage() {
 
       localStorage.setItem(STORAGE_KEY, password);
       setAuthed(true);
+      setEmailsSent(data.emailsSent ?? null);
       setStatus("saved");
-      setTimeout(() => setStatus("idle"), 4000);
+      setTimeout(() => { setStatus("idle"); setEmailsSent(null); }, 6000);
     } catch {
       setStatus("error");
       setErrorMsg("Network error — please try again.");
@@ -143,9 +145,18 @@ export default function AdminForecastPage() {
           </button>
 
           {status === "saved" && (
-            <p className="text-emerald-400 text-sm text-center">
-              ✓ Forecast saved — it&apos;s now live on the site.
-            </p>
+            <div className="text-center">
+              <p className="text-emerald-400 text-sm font-medium">
+                ✓ Forecast saved — it&apos;s now live on the site.
+              </p>
+              {emailsSent !== null && (
+                <p className="text-slate-400 text-xs mt-1">
+                  {emailsSent > 0
+                    ? `📧 Newsletter sent to ${emailsSent} subscriber${emailsSent !== 1 ? "s" : ""}`
+                    : "📧 No subscribers to email yet"}
+                </p>
+              )}
+            </div>
           )}
           {status === "error" && (
             <p className="text-red-400 text-sm text-center">{errorMsg}</p>
