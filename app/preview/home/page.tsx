@@ -130,13 +130,11 @@ export default function PreviewHomePage() {
           HERO
       ══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative flex flex-col items-center justify-center text-center text-white overflow-hidden"
+        className="relative flex flex-col items-center justify-center text-center text-white overflow-hidden px-6"
         style={{
           minHeight: "92vh",
-          paddingTop: "120px",
+          paddingTop: "clamp(140px, 18vw, 200px)",
           paddingBottom: "80px",
-          paddingLeft: "24px",
-          paddingRight: "24px",
           background: "linear-gradient(160deg, #9fe7f5 0%, #429ebd 45%, #053f5c 100%)",
         }}
       >
@@ -190,11 +188,11 @@ export default function PreviewHomePage() {
         </p>
 
         {/* Feature list */}
-        <ul className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2.5 mb-10 text-left max-w-2xl w-full">
+        <ul className="relative z-10 flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 mb-10 text-left max-w-2xl w-full">
           {features.map((f) => (
-            <li key={f} className="flex items-center gap-2.5 text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+            <li key={f} className="flex items-start gap-2.5 text-sm leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>
               <span
-                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
                 style={{ background: "var(--color-sun)", color: "var(--color-deep)" }}
               >
                 ✓
@@ -205,15 +203,15 @@ export default function PreviewHomePage() {
         </ul>
 
         {/* CTAs */}
-        <div className="relative z-10 flex flex-wrap gap-3 justify-center">
-          <Link href="/weather" className="btn-primary text-sm sm:text-base px-7 py-3.5">
+        <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
+          <Link href="/weather" className="btn-primary text-sm sm:text-base px-7 py-3.5 justify-center">
             Today&apos;s Forecast <ArrowRight size={16} />
           </Link>
           <a
             href="https://www.facebook.com/groups/1826293804889186"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-ghost text-sm sm:text-base px-7 py-3.5"
+            className="btn-ghost text-sm sm:text-base px-7 py-3.5 justify-center"
           >
             Join Facebook Group
           </a>
