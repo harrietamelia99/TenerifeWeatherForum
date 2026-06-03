@@ -91,7 +91,9 @@ export async function sendDailyDigest(
       console.error("[sendDailyDigest] Batch send error:", error);
       failed = subscribers.length;
     } else {
-      sent = data?.length ?? subscribers.length;
+      // SDK returns { data: { data: [{id}, ...] } } — count the inner array
+      const inner = (data as unknown as { data?: unknown[] } | null)?.data;
+      sent = Array.isArray(inner) ? inner.length : subscribers.length;
       console.log(`[sendDailyDigest] Batch sent ${sent} emails`);
     }
   } catch (err) {
