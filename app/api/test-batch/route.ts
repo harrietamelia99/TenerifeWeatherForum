@@ -33,7 +33,7 @@ export async function GET() {
 
   return NextResponse.json({
     subscribers: subscribers.length,
-    batchResult: data?.length ?? 0,
+    rawData: data,
     error: batchError ?? null,
     emails: subscribers.map((s) => s.email),
   });
