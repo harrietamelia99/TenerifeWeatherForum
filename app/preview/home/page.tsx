@@ -15,8 +15,6 @@ import {
   Telescope,
   Waves,
   MapPin,
-  Sun,
-  Wind,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -111,13 +109,6 @@ const features = [
   "Airport and transport updates",
   "Excursions and things to do",
   "Community of 6,000+ Tenerife enthusiasts on Facebook",
-];
-
-const stats = [
-  { icon: <Sun size={18} />,   value: "300+",   label: "Sunny days per year" },
-  { icon: <MapPin size={18} />, value: "7",      label: "Distinct microclimates" },
-  { icon: <Wind size={18} />,  value: "Daily",   label: "Expert forecast posted" },
-  { icon: <Waves size={18} />, value: "21°C",    label: "Average sea temperature" },
 ];
 
 /* ─── Page ───────────────────────────────────────────────────────────────── */
@@ -224,28 +215,6 @@ export default function PreviewHomePage() {
           </svg>
         </div>
       </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          STATS STRIP
-      ══════════════════════════════════════════════════════════════════ */}
-      <div style={{ background: "var(--color-deep)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="max-w-5xl mx-auto px-6 py-6 grid grid-cols-2 sm:grid-cols-4 gap-6">
-          {stats.map((s) => (
-            <div key={s.label} className="flex items-center gap-3">
-              <div
-                className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl"
-                style={{ background: "rgba(247,173,25,0.15)", color: "var(--color-sun)" }}
-              >
-                {s.icon}
-              </div>
-              <div>
-                <div className="text-white font-bold text-base leading-none">{s.value}</div>
-                <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>{s.label}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── MAIN CONTENT ─────────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
