@@ -69,31 +69,34 @@ export async function sendDailyDigest(
 
   const forecast = forecastOverride ?? await getForecast();
 
-  const BATCH = 50;
+  const subject = dailyDigestSubject(forecast);
+
+  // Build the batch payload — one object per subscriber
+  const emailPayloads = subscribers.map((sub) => ({
+    from: FROM_EMAIL,
+    to: sub.email,
+    subject,
+    html: dailyDigestHtml({ forecast, subscriberToken: sub.unsubscribe_token }),
+  }));
+
+  // Send all emails in a single API call — avoids concurrency issues
+  // that caused only a random subset to be delivered when firing
+  // 18 simultaneous individual requests.
   let sent = 0;
   let failed = 0;
 
-  for (let i = 0; i < subscribers.length; i += BATCH) {
-    const batch = subscribers.slice(i, i + BATCH);
-    await Promise.all(
-      batch.map(async (sub) => {
-        try {
-          await resend.emails.send({
-            from: FROM_EMAIL,
-            to: sub.email,
-            subject: dailyDigestSubject(forecast),
-            html: dailyDigestHtml({
-              forecast,
-              subscriberToken: sub.unsubscribe_token,
-            }),
-          });
-          sent++;
-        } catch (err) {
-          console.error(`[sendDailyDigest] Failed to send to ${sub.email}:`, err);
-          failed++;
-        }
-      })
-    );
+  try {
+    const { data, error } = await resend.batch.send(emailPayloads);
+    if (error) {
+      console.error("[sendDailyDigest] Batch send error:", error);
+      failed = subscribers.length;
+    } else {
+      sent = data?.length ?? subscribers.length;
+      console.log(`[sendDailyDigest] Batch sent ${sent} emails`);
+    }
+  } catch (err) {
+    console.error("[sendDailyDigest] Batch send threw:", err);
+    failed = subscribers.length;
   }
 
   // Mark as sent so the cron doesn't double-send later in the day
