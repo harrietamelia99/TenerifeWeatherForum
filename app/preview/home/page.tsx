@@ -263,10 +263,30 @@ export default async function PreviewHomePage() {
                   Forum
                 </h1>
 
-                <p className="text-base md:text-lg lg:text-xl text-white/75 leading-relaxed">
-                  Daily forecasts, microclimates and travel info — all in one place.
-                  Trusted by UK travellers and Tenerife residents.
+                <p className="text-base md:text-lg text-white/75 leading-relaxed">
+                  An independent Tenerife weather and travel community providing daily forecasts,
+                  travel guides, local information, airport updates and holiday advice for visitors and residents.
                 </p>
+
+                <ul className="flex flex-col gap-2">
+                  {[
+                    "Daily Tenerife weather forecasts",
+                    "Travel guides and local information",
+                    "Airport and transport updates",
+                    "Excursions and things to do",
+                    "Community of 6,000+ Tenerife enthusiasts on Facebook",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2.5 text-sm text-white/80">
+                      <span
+                        className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs"
+                        style={{ background: "var(--color-sun)", color: "var(--color-deep)" }}
+                      >
+                        ✓
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
 
                 <div className="flex gap-3">
                   <ForecastButton className="btn-primary text-sm lg:text-base px-5 lg:px-8 py-3 lg:py-3.5" />
@@ -528,7 +548,7 @@ export default async function PreviewHomePage() {
                   Tenerife weather, straight to your inbox
                 </h2>
                 <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-6">
-                  Get a daily morning digest or a monthly guide to the weather, events and what to expect on the island.
+                  Join thousands of visitors and residents who get their daily Tenerife weather forecast and monthly travel guide delivered straight to their inbox — completely free.
                 </p>
                 <div className="flex flex-col gap-3 text-sm text-white/70">
                   <div className="flex items-center gap-2">
