@@ -61,36 +61,42 @@ const excursions = [
     title: "Siam Park",
     desc: "Asia-inspired water park voted world's best. Slides, wave pools and lazy rivers for all ages.",
     gradient: "linear-gradient(135deg, #9fe7f5, #429ebd)",
+    href: "https://gyg.me/DaRn8YVu",
   },
   {
     icon: <Anchor size={24} />,
     title: "Whale & Dolphin Watching",
     desc: "Year-round sightings of pilot whales and bottlenose dolphins off the southwest coast.",
     gradient: "linear-gradient(135deg, #429ebd, #053f5c)",
+    href: "https://gyg.me/zPK1aMuo",
   },
   {
     icon: <Mountain size={24} />,
     title: "Mount Teide Tour",
     desc: "Cable car to Spain's highest peak at 3,718m with breathtaking views across the Canary Islands.",
     gradient: "linear-gradient(135deg, #f7ad19, #429ebd)",
+    href: "https://gyg.me/IXLcOg8V",
   },
   {
     icon: <Car size={24} />,
     title: "Jeep Safari Adventure",
     desc: "Off-road through volcanic landscapes, banana plantations and hidden valleys.",
     gradient: "linear-gradient(135deg, #9fe7f5, #f7ad19)",
+    href: "https://gyg.me/UFq9ct9V",
   },
   {
     icon: <Sailboat size={24} />,
     title: "Sunset Boat Trip",
     desc: "Sail along the south coast as the sun sets over the Atlantic. Cocktails and sea views included.",
     gradient: "linear-gradient(135deg, #f7ad19, #053f5c)",
+    href: "https://gyg.me/CvkPIN9C",
   },
   {
     icon: <Telescope size={24} />,
     title: "Stargazing at Teide",
     desc: "One of the world's finest stargazing locations. Expert guides and professional telescopes provided.",
     gradient: "linear-gradient(135deg, #053f5c, #429ebd)",
+    href: "https://gyg.me/Wgr2pcgZ",
   },
 ];
 
@@ -272,18 +278,13 @@ export default function PreviewHomePage() {
             EXCURSIONS
         ════════════════════════════════════════════════════════════════ */}
         <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="excursions-heading">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 id="excursions-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
-                Excursions &amp; Activities
-              </h2>
-              <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
-                Hand-picked experiences for every type of visitor
-              </p>
-            </div>
-            <span className="btn-chip flex-shrink-0" style={{ pointerEvents: "none" }}>
-              Affiliate links coming soon
-            </span>
+          <div className="mb-6">
+            <h2 id="excursions-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
+              Excursions &amp; Activities
+            </h2>
+            <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
+              Hand-picked experiences for every type of visitor
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -303,12 +304,6 @@ export default function PreviewHomePage() {
                   >
                     {ex.icon}
                   </div>
-                  <span
-                    className="absolute bottom-2 right-3 text-xs"
-                    style={{ color: "rgba(255,255,255,0.5)" }}
-                  >
-                    Photo placeholder
-                  </span>
                 </div>
                 <div className="p-5">
                   <h3 className="font-bold text-base mb-1.5" style={{ color: "var(--color-deep)" }}>
@@ -317,7 +312,13 @@ export default function PreviewHomePage() {
                   <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-muted)" }}>
                     {ex.desc}
                   </p>
-                  <a href="#" className="btn-primary text-xs px-5 py-2.5 inline-flex" style={{ width: "fit-content" }}>
+                  <a
+                    href={ex.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary text-xs px-5 py-2.5 inline-flex"
+                    style={{ width: "fit-content" }}
+                  >
                     Book Activity
                   </a>
                 </div>
