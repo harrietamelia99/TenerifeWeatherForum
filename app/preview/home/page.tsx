@@ -8,12 +8,6 @@ import {
   Luggage,
   CloudSun,
   Map,
-  Anchor,
-  Mountain,
-  Car,
-  Sailboat,
-  Telescope,
-  Waves,
   MapPin,
 } from "lucide-react";
 
@@ -57,45 +51,39 @@ const guides = [
 
 const excursions = [
   {
-    icon: <Waves size={24} />,
     title: "Siam Park",
     desc: "Asia-inspired water park voted world's best. Slides, wave pools and lazy rivers for all ages.",
-    gradient: "linear-gradient(135deg, #9fe7f5, #429ebd)",
+    img: "/images/excursion-siam-park.png",
     href: "https://gyg.me/DaRn8YVu",
   },
   {
-    icon: <Anchor size={24} />,
     title: "Whale & Dolphin Watching",
     desc: "Year-round sightings of pilot whales and bottlenose dolphins off the southwest coast.",
-    gradient: "linear-gradient(135deg, #429ebd, #053f5c)",
+    img: "/images/excursion-whale-watching.png",
     href: "https://gyg.me/zPK1aMuo",
   },
   {
-    icon: <Mountain size={24} />,
     title: "Mount Teide Tour",
     desc: "Cable car to Spain's highest peak at 3,718m with breathtaking views across the Canary Islands.",
-    gradient: "linear-gradient(135deg, #f7ad19, #429ebd)",
+    img: "/images/excursion-teide-tour.png",
     href: "https://gyg.me/IXLcOg8V",
   },
   {
-    icon: <Car size={24} />,
     title: "Jeep Safari Adventure",
     desc: "Off-road through volcanic landscapes, banana plantations and hidden valleys.",
-    gradient: "linear-gradient(135deg, #9fe7f5, #f7ad19)",
+    img: "/images/excursion-jeep-safari.png",
     href: "https://gyg.me/UFq9ct9V",
   },
   {
-    icon: <Sailboat size={24} />,
     title: "Sunset Boat Trip",
     desc: "Sail along the south coast as the sun sets over the Atlantic. Cocktails and sea views included.",
-    gradient: "linear-gradient(135deg, #f7ad19, #053f5c)",
+    img: "/images/excursion-sunset-boat.png",
     href: "https://gyg.me/CvkPIN9C",
   },
   {
-    icon: <Telescope size={24} />,
     title: "Stargazing at Teide",
     desc: "One of the world's finest stargazing locations. Expert guides and professional telescopes provided.",
-    gradient: "linear-gradient(135deg, #053f5c, #429ebd)",
+    img: "/images/excursion-stargazing.png",
     href: "https://gyg.me/Wgr2pcgZ",
   },
 ];
@@ -294,16 +282,18 @@ export default function PreviewHomePage() {
                 className="card card-hover overflow-hidden"
                 style={{ borderRadius: "1.5rem" }}
               >
-                {/* Gradient image placeholder */}
-                <div
-                  className="relative flex items-center justify-center"
-                  style={{ height: 140, background: ex.gradient }}
-                >
+                {/* Activity photo */}
+                <div className="relative overflow-hidden" style={{ height: 180 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={ex.img}
+                    alt={ex.title}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-white glass"
-                  >
-                    {ex.icon}
-                  </div>
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: "linear-gradient(to top, rgba(5,63,92,0.3) 0%, transparent 50%)" }}
+                  />
                 </div>
                 <div className="p-5">
                   <h3 className="font-bold text-base mb-1.5" style={{ color: "var(--color-deep)" }}>
