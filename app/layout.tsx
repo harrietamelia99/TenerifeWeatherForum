@@ -6,6 +6,7 @@ import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import WeatherTicker from "@/components/ui/WeatherTicker";
 import ForecastModal from "@/components/ui/ForecastModal";
+import CookieBanner from "@/components/ui/CookieBanner";
 
 const GA_ID = "G-4BK6V9K96C";
 
@@ -72,6 +73,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <ForecastModal />
+        <CookieBanner />
       </body>
     </html>
   );
