@@ -297,6 +297,9 @@ export default function HomePage() {
             <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
               Hand-picked experiences for every type of visitor
             </p>
+            <p className="text-xs mt-2" style={{ color: "var(--color-text-muted)", opacity: 0.7 }}>
+              Some links below are affiliate links — if you book we may earn a small commission at no extra cost to you.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
