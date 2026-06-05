@@ -92,36 +92,42 @@ const webcams = [
     label: "Playa de Fañabé",
     sublabel: "Costa Adeje",
     img: "/images/playa-teresitas.png",
+    videoId: "HhsnBkfur2Q",
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-de-fanabe.html",
   },
   {
     label: "Playa del Duque",
     sublabel: "Costa Adeje",
     img: "/images/coast-sunset.png",
+    videoId: "i0rRlLXyvAA",
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-del-duque.html",
   },
   {
     label: "Los Cristianos",
     sublabel: "Tenerife South",
     img: "/images/playa-jardin.png",
+    videoId: "gi-V3xD7oII",
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-los-cristianos.html",
   },
   {
     label: "Puerto de la Cruz",
     sublabel: "Tenerife North",
     img: "/images/puerto-de-la-cruz.png",
+    videoId: "nScDG_5gkT0",
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/tenerife-puerto-de-la-cruz.html",
   },
   {
     label: "Los Gigantes",
     sublabel: "West Tenerife",
     img: "/images/santa-cruz-sunset.png",
+    videoId: "Vx0jimhalAU",
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/los-gigantes.html",
   },
   {
     label: "Las Vistas Beach",
     sublabel: "Los Cristianos",
     img: "/images/palm-promenade.png",
+    videoId: "wJBWZEn59kE",
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/las-vistas-beach.html",
   },
 ];
@@ -370,14 +376,22 @@ export default function PreviewHomePage() {
                 style={{ borderRadius: "1.5rem" }}
               >
                 <div className="relative overflow-hidden" style={{ aspectRatio: "16/9" }}>
-                  {/* Location photo */}
+                  {/* Fallback photo (shown while video loads or if autoplay blocked) */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={cam.img}
                     alt={cam.label}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                  {/* Dark gradient overlay */}
+                  {/* YouTube video — muted, looping, no controls */}
+                  <iframe
+                    src={`https://www.youtube.com/embed/${cam.videoId}?autoplay=1&mute=1&loop=1&playlist=${cam.videoId}&controls=0&rel=0&modestbranding=1&playsinline=1`}
+                    allow="autoplay; encrypted-media"
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    style={{ border: "none" }}
+                    title={cam.label}
+                  />
+                  {/* Gradient overlay */}
                   <div
                     className="absolute inset-0"
                     style={{ background: "linear-gradient(to top, rgba(5,63,92,0.88) 0%, rgba(5,63,92,0.3) 55%, transparent 100%)" }}
