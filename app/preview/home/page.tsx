@@ -91,44 +91,38 @@ const webcams = [
   {
     label: "Playa de Fañabé",
     sublabel: "Costa Adeje",
-    img: "/images/playa-teresitas.png",
-    videoId: "HhsnBkfur2Q",
+    photogramId: 383,
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-de-fanabe.html",
   },
   {
     label: "Playa del Duque",
     sublabel: "Costa Adeje",
-    img: "/images/coast-sunset.png",
-    videoId: "i0rRlLXyvAA",
+    photogramId: 1073,
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-del-duque.html",
   },
   {
     label: "Los Cristianos",
     sublabel: "Tenerife South",
-    img: "/images/playa-jardin.png",
-    videoId: "gi-V3xD7oII",
+    photogramId: 340,
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-los-cristianos.html",
   },
   {
     label: "Puerto de la Cruz",
     sublabel: "Tenerife North",
-    img: "/images/puerto-de-la-cruz.png",
-    videoId: "nScDG_5gkT0",
+    photogramId: 1043,
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/tenerife-puerto-de-la-cruz.html",
   },
   {
     label: "Los Gigantes",
     sublabel: "West Tenerife",
-    img: "/images/santa-cruz-sunset.png",
-    videoId: "Vx0jimhalAU",
+    photogramId: 715,
     href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/los-gigantes.html",
   },
   {
     label: "Las Vistas Beach",
     sublabel: "Los Cristianos",
-    img: "/images/palm-promenade.png",
-    videoId: "wJBWZEn59kE",
-    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/las-vistas-beach.html",
+    photogramId: 339,
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-las-vistas.html",
   },
 ];
 
@@ -376,29 +370,12 @@ export default function PreviewHomePage() {
                 style={{ borderRadius: "1.5rem" }}
               >
                 <div className="relative overflow-hidden" style={{ aspectRatio: "16/9" }}>
-                  {/* Fallback photo (shown while video loads or if autoplay blocked) */}
+                  {/* Live photogram from SkylineWebcams — real snapshot, updates every 5 minutes */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={cam.img}
-                    alt={cam.label}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  {/* YouTube video — muted, looping, no controls.
-                      Oversized and shifted up so the title card at the top
-                      and control chrome at the bottom are clipped by overflow-hidden. */}
-                  <iframe
-                    src={`https://www.youtube.com/embed/${cam.videoId}?autoplay=1&mute=1&loop=1&playlist=${cam.videoId}&controls=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&cc_load_policy=0&fs=0`}
-                    allow="autoplay; encrypted-media"
-                    style={{
-                      position: "absolute",
-                      top: "-40%",
-                      left: 0,
-                      width: "100%",
-                      height: "180%",
-                      border: "none",
-                      pointerEvents: "none",
-                    }}
-                    title={cam.label}
+                    src={`https://embed.skylinewebcams.com/img/${cam.photogramId}.jpg`}
+                    alt={`Live webcam — ${cam.label}`}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Gradient overlay */}
                   <div
