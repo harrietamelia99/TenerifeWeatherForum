@@ -391,10 +391,10 @@ export default function PreviewHomePage() {
                     allow="autoplay; encrypted-media"
                     style={{
                       position: "absolute",
-                      top: "-20%",
+                      top: "-40%",
                       left: 0,
                       width: "100%",
-                      height: "140%",
+                      height: "180%",
                       border: "none",
                       pointerEvents: "none",
                     }}
