@@ -8,7 +8,6 @@ import {
   Luggage,
   CloudSun,
   Map,
-  MapPin,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -89,12 +88,42 @@ const excursions = [
 ];
 
 const webcams = [
-  { label: "Costa Adeje", sublabel: "Playa de las Américas" },
-  { label: "Santa Cruz", sublabel: "City Harbour" },
-  { label: "Mount Teide", sublabel: "Summit View" },
-  { label: "El Médano", sublabel: "Surf Beach" },
-  { label: "Puerto de la Cruz", sublabel: "Old Town" },
-  { label: "Los Gigantes", sublabel: "Cliffs & Marina" },
+  {
+    label: "Playa de Fañabé",
+    sublabel: "Costa Adeje",
+    img: "/images/playa-teresitas.png",
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-de-fanabe.html",
+  },
+  {
+    label: "Playa del Duque",
+    sublabel: "Costa Adeje",
+    img: "/images/coast-sunset.png",
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-del-duque.html",
+  },
+  {
+    label: "Los Cristianos",
+    sublabel: "Tenerife South",
+    img: "/images/playa-jardin.png",
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/playa-los-cristianos.html",
+  },
+  {
+    label: "Puerto de la Cruz",
+    sublabel: "Tenerife North",
+    img: "/images/puerto-de-la-cruz.png",
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/tenerife-puerto-de-la-cruz.html",
+  },
+  {
+    label: "Los Gigantes",
+    sublabel: "West Tenerife",
+    img: "/images/santa-cruz-sunset.png",
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/los-gigantes.html",
+  },
+  {
+    label: "Las Vistas Beach",
+    sublabel: "Los Cristianos",
+    img: "/images/palm-promenade.png",
+    href: "https://www.skylinewebcams.com/en/webcam/espana/canarias/santa-cruz-de-tenerife/las-vistas-beach.html",
+  },
 ];
 
 const features = [
@@ -332,45 +361,46 @@ export default function PreviewHomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {webcams.map((cam) => (
-              <div key={cam.label} className="card card-hover overflow-hidden" style={{ borderRadius: "1.5rem" }}>
-                {/* Dark video placeholder */}
-                <div
-                  className="relative flex flex-col items-center justify-center gap-3"
-                  style={{ aspectRatio: "16/9", background: "linear-gradient(145deg, #053f5c, #1a6080)" }}
-                >
-                  <div
-                    className="absolute inset-0 pointer-events-none opacity-[0.03]"
-                    style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,1) 3px, rgba(255,255,255,1) 4px)",
-                    }}
+              <a
+                key={cam.label}
+                href={cam.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="card card-hover overflow-hidden block group"
+                style={{ borderRadius: "1.5rem" }}
+              >
+                <div className="relative overflow-hidden" style={{ aspectRatio: "16/9" }}>
+                  {/* Location photo */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={cam.img}
+                    alt={cam.label}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="glass w-12 h-12 rounded-2xl flex items-center justify-center" style={{ color: "rgba(255,255,255,0.6)" }}>
-                    <Camera size={22} />
-                  </div>
-                  <div className="text-center z-10">
-                    <p className="text-white font-semibold text-sm">{cam.label}</p>
-                    <p className="text-xs mt-0.5 text-white/45">{cam.sublabel}</p>
-                  </div>
+                  {/* Dark gradient overlay */}
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(5,63,92,0.88) 0%, rgba(5,63,92,0.3) 55%, transparent 100%)" }}
+                  />
+                  {/* LIVE badge */}
                   <div
                     className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-                    style={{
-                      background: "rgba(255,255,255,0.1)",
-                      border: "1px solid rgba(255,255,255,0.18)",
-                      color: "rgba(255,255,255,0.5)",
-                    }}
+                    style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.3)", color: "white" }}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
-                    Coming soon
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                    LIVE
+                  </div>
+                  {/* Location info + Watch Live button */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <p className="text-white font-bold text-sm leading-tight mb-0.5">{cam.label}</p>
+                    <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.6)" }}>{cam.sublabel}</p>
+                    <span className="btn-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 pointer-events-none">
+                      <Camera size={12} />
+                      Watch Live
+                    </span>
                   </div>
                 </div>
-                <div className="px-4 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin size={13} style={{ color: "var(--color-mid)" }} />
-                    <span className="text-sm font-semibold" style={{ color: "var(--color-deep)" }}>{cam.label}</span>
-                  </div>
-                  <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>{cam.sublabel}</span>
-                </div>
-              </div>
+              </a>
             ))}
           </div>
         </section>
