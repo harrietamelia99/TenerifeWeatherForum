@@ -383,12 +383,21 @@ export default function PreviewHomePage() {
                     alt={cam.label}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                  {/* YouTube video — muted, looping, no controls */}
+                  {/* YouTube video — muted, looping, no controls.
+                      Oversized and shifted up so the title card at the top
+                      and control chrome at the bottom are clipped by overflow-hidden. */}
                   <iframe
-                    src={`https://www.youtube.com/embed/${cam.videoId}?autoplay=1&mute=1&loop=1&playlist=${cam.videoId}&controls=0&rel=0&modestbranding=1&playsinline=1`}
+                    src={`https://www.youtube.com/embed/${cam.videoId}?autoplay=1&mute=1&loop=1&playlist=${cam.videoId}&controls=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&cc_load_policy=0&fs=0`}
                     allow="autoplay; encrypted-media"
-                    className="absolute inset-0 w-full h-full pointer-events-none"
-                    style={{ border: "none" }}
+                    style={{
+                      position: "absolute",
+                      top: "-20%",
+                      left: 0,
+                      width: "100%",
+                      height: "140%",
+                      border: "none",
+                      pointerEvents: "none",
+                    }}
                     title={cam.label}
                   />
                   {/* Gradient overlay */}
