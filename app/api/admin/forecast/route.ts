@@ -9,11 +9,12 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { password, text, hasWarnings, warnings } = body as {
+    const { password, text, hasWarnings, warnings, warningLevel } = body as {
       password: string;
       text: string;
       hasWarnings: boolean;
       warnings: string;
+      warningLevel: "yellow" | "amber" | "red";
     };
 
     if (!password || password !== process.env.ADMIN_PASSWORD) {
@@ -28,7 +29,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please enter the warning details." }, { status: 400 });
     }
 
-    await saveManualForecast(text.trim(), hasWarnings, warnings?.trim() ?? "");
+    await saveManualForecast(
+      text.trim(),
+      hasWarnings,
+      warnings?.trim() ?? "",
+      warningLevel ?? "yellow"
+    );
 
     // Build the forecast object now (KV write is confirmed) and pass it
     // directly to sendDailyDigest to avoid a race condition on the KV read.

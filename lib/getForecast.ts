@@ -226,6 +226,7 @@ function makePlaceholder(): DailyUpdate {
     north: { emoji: "⛅", label: "Tenerife North (Santa Cruz / Puerto de la Cruz)", temperature: 18, high: 21, conditions: "Forecast loading — check back shortly.", wind: "18–30 km/h" },
     warnings: "There are no active weather warnings for Tenerife today.",
     hasWarnings: false,
+    warningLevel: "yellow" as const,
     forecast: "Today's forecast is loading. Please check back shortly.",
     postedAt: new Date().toISOString(),
     source: "Placeholder",
@@ -272,6 +273,7 @@ async function generate(): Promise<DailyUpdate> {
         ? (manual.warnings || "Active weather warning in place for Tenerife.")
         : "There are no active weather warnings for Tenerife today.",
       hasWarnings: manual?.hasWarnings ?? false,
+      warningLevel: manual?.warningLevel ?? "yellow",
       // If a manual forecast has been submitted today, use it; otherwise show pending.
       forecast: manual?.text
         ?? "Today's forecast will be posted here shortly — check back soon.",

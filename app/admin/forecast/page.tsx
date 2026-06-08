@@ -9,6 +9,7 @@ export default function AdminForecastPage() {
   const [text, setText] = useState("");
   const [hasWarnings, setHasWarnings] = useState(false);
   const [warnings, setWarnings] = useState("");
+  const [warningLevel, setWarningLevel] = useState<"yellow" | "amber" | "red">("yellow");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [emailsSent, setEmailsSent] = useState<number | null>(null);
@@ -31,7 +32,7 @@ export default function AdminForecastPage() {
       const res = await fetch("/api/admin/forecast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, text, hasWarnings, warnings }),
+        body: JSON.stringify({ password, text, hasWarnings, warnings, warningLevel }),
       });
 
       const data = await res.json();
@@ -120,18 +121,45 @@ export default function AdminForecastPage() {
             </button>
 
             {hasWarnings && (
-              <div className="bg-slate-800 px-4 pb-4 pt-3">
-                <label className="block text-xs font-medium text-amber-300 mb-2">
-                  Warning details
-                </label>
-                <textarea
-                  value={warnings}
-                  onChange={(e) => setWarnings(e.target.value)}
-                  rows={3}
-                  placeholder="e.g. Heatwave warning in place for Tenerife. Temperatures expected to exceed 40°C in inland areas. Calima (dust from the Sahara) forecast to affect visibility across the island."
-                  className="w-full rounded-lg bg-slate-700 border border-amber-500/30 text-white px-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y leading-relaxed"
-                  required={hasWarnings}
-                />
+              <div className="bg-slate-800 px-4 pb-4 pt-3 space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-amber-300 mb-2">
+                    Warning level
+                  </label>
+                  <div className="flex gap-2">
+                    {(["yellow", "amber", "red"] as const).map((lvl) => {
+                      const colours = {
+                        yellow: { active: "bg-yellow-400/20 border-yellow-400 text-yellow-300", idle: "border-slate-600 text-slate-400 hover:border-yellow-400/50" },
+                        amber:  { active: "bg-amber-500/20 border-amber-500 text-amber-300",   idle: "border-slate-600 text-slate-400 hover:border-amber-500/50" },
+                        red:    { active: "bg-red-500/20 border-red-500 text-red-300",         idle: "border-slate-600 text-slate-400 hover:border-red-500/50" },
+                      };
+                      const isActive = warningLevel === lvl;
+                      return (
+                        <button
+                          key={lvl}
+                          type="button"
+                          onClick={() => setWarningLevel(lvl)}
+                          className={`flex-1 py-2 rounded-lg border text-xs font-semibold uppercase tracking-wider transition-colors ${isActive ? colours[lvl].active : colours[lvl].idle}`}
+                        >
+                          {lvl}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-amber-300 mb-2">
+                    Warning details
+                  </label>
+                  <textarea
+                    value={warnings}
+                    onChange={(e) => setWarnings(e.target.value)}
+                    rows={3}
+                    placeholder="e.g. Yellow wind warning in force for Tenerife today. Gusts possible near exposed coastal areas and at altitude."
+                    className="w-full rounded-lg bg-slate-700 border border-amber-500/30 text-white px-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y leading-relaxed"
+                    required={hasWarnings}
+                  />
+                </div>
               </div>
             )}
           </div>

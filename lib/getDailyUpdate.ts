@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import type { AlertLevel } from "@/types/weather";
 
 export interface DailyUpdateSection {
   emoji: string;
@@ -16,6 +17,7 @@ export interface DailyUpdate {
   north: DailyUpdateSection;
   warnings: string;
   hasWarnings: boolean;
+  warningLevel: AlertLevel;
   forecast: string;
   postedAt: string;
   source: string;
@@ -126,6 +128,7 @@ export function parseFacebookPost(text: string): DailyUpdate {
     },
     warnings: warningText || "No active weather warnings for Tenerife today.",
     hasWarnings,
+    warningLevel: "yellow",
     forecast: forecastLines.join("\n\n"),
     postedAt: new Date().toISOString(),
     source: "Daily Update",

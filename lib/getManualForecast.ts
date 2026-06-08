@@ -1,4 +1,5 @@
 import { kv } from "@vercel/kv";
+import type { AlertLevel } from "@/types/weather";
 
 const KV_KEY = "manual-forecast-text";
 
@@ -6,6 +7,7 @@ interface ManualForecastData {
   text: string;
   hasWarnings: boolean;
   warnings: string;
+  warningLevel: AlertLevel;
   date: string; // YYYY-MM-DD in Canary time
 }
 
@@ -17,6 +19,7 @@ export interface ManualForecastResult {
   text: string;
   hasWarnings: boolean;
   warnings: string;
+  warningLevel: AlertLevel;
 }
 
 // Returns today's manually saved forecast data, or null if not posted yet.
@@ -24,7 +27,12 @@ export async function getManualForecastData(): Promise<ManualForecastResult | nu
   try {
     const data = await kv.get<ManualForecastData>(KV_KEY);
     if (!data || data.date !== todayCanary()) return null;
-    return { text: data.text, hasWarnings: data.hasWarnings, warnings: data.warnings };
+    return {
+      text: data.text,
+      hasWarnings: data.hasWarnings,
+      warnings: data.warnings,
+      warningLevel: data.warningLevel ?? "yellow",
+    };
   } catch (err) {
     console.error("[getManualForecast] KV read error:", err);
     return null;
@@ -34,7 +42,8 @@ export async function getManualForecastData(): Promise<ManualForecastResult | nu
 export async function saveManualForecast(
   text: string,
   hasWarnings: boolean,
-  warnings: string
+  warnings: string,
+  warningLevel: AlertLevel
 ): Promise<void> {
-  await kv.set(KV_KEY, { text, hasWarnings, warnings, date: todayCanary() });
+  await kv.set(KV_KEY, { text, hasWarnings, warnings, warningLevel, date: todayCanary() });
 }

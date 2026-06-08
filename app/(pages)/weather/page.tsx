@@ -32,15 +32,10 @@ export default async function WeatherPage({
     getForecast(),
   ]);
 
-  // Active alerts — update or clear as conditions change
-  const alerts: WeatherAlert[] = [
-    {
-      id: "wind-yellow-20260608",
-      level: "yellow",
-      message:
-        "Yellow wind warning in force for Tenerife today. Gusts possible, take care near exposed coastal areas and at altitude. Check AEMET for the latest updates.",
-    },
-  ];
+  // Derive active alert directly from Kevin's daily forecast — single source of truth
+  const alerts: WeatherAlert[] = dailyUpdate.hasWarnings && dailyUpdate.warnings
+    ? [{ id: "daily-warning", level: dailyUpdate.warningLevel, message: dailyUpdate.warnings }]
+    : [];
 
   return (
     <div className="min-h-screen" style={{ background: "var(--color-bg)" }}>
