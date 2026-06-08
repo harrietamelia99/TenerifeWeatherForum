@@ -59,7 +59,7 @@ export interface RegionData {
   gradient: string;
 }
 
-export type AlertLevel = "info" | "amber" | "red";
+export type AlertLevel = "info" | "yellow" | "amber" | "red";
 
 export interface WeatherAlert {
   level: AlertLevel;

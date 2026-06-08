@@ -32,8 +32,15 @@ export default async function WeatherPage({
     getForecast(),
   ]);
 
-  // Active alerts — add entries here when needed
-  const alerts: WeatherAlert[] = [];
+  // Active alerts — update or clear as conditions change
+  const alerts: WeatherAlert[] = [
+    {
+      id: "wind-yellow-20260608",
+      level: "yellow",
+      message:
+        "Yellow wind warning in force for Tenerife today. Gusts possible, take care near exposed coastal areas and at altitude. Check AEMET for the latest updates.",
+    },
+  ];
 
   return (
     <div className="min-h-screen" style={{ background: "var(--color-bg)" }}>

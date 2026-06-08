@@ -225,36 +225,33 @@ export default function WeatherTabsClient({
               className="flex gap-2 mb-8 overflow-x-auto pb-1"
               style={{ scrollbarWidth: "none" }}
             >
-              {weeklyForecast.map((day, i) => (
+              {weeklyForecast.slice(1).map((day, i) => (
                 <div
                   key={day.day + i}
                   className="flex-shrink-0 rounded-2xl px-3 py-4 flex flex-col items-center gap-2"
                   style={{
                     minWidth: 72,
-                    background: i === 0 ? "var(--gradient-sky)" : "var(--color-surface)",
-                    border: i === 0 ? "none" : "1px solid var(--color-border)",
-                    boxShadow:
-                      i === 0
-                        ? "0 4px 16px rgba(66,158,189,0.25)"
-                        : "0 1px 4px rgba(5,63,92,0.05)",
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
+                    boxShadow: "0 1px 4px rgba(5,63,92,0.05)",
                   }}
                 >
                   <p
                     className="text-xs font-700 uppercase tracking-wider"
-                    style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-text-muted)" }}
+                    style={{ color: "var(--color-text-muted)" }}
                   >
-                    {i === 0 ? "Today" : day.shortDay}
+                    {day.shortDay}
                   </p>
                   <WeatherIcon condition={day.condition} size={32} />
                   <p
                     className="tabular-nums font-700 text-base"
-                    style={{ color: i === 0 ? "var(--color-deep)" : "var(--color-sun)" }}
+                    style={{ color: "var(--color-sun)" }}
                   >
                     {day.high}°
                   </p>
                   <p
                     className="tabular-nums text-xs"
-                    style={{ color: i === 0 ? "rgba(255,255,255,0.75)" : "var(--color-text-muted)" }}
+                    style={{ color: "var(--color-text-muted)" }}
                   >
                     {day.low}°
                   </p>
@@ -264,15 +261,13 @@ export default function WeatherTabsClient({
 
             {/* Detailed day cards with written summaries */}
             <div className="flex flex-col gap-4">
-              {weeklyForecast.map((day, i) => (
+              {weeklyForecast.slice(1).map((day, i) => (
                 <div
                   key={day.day + i + "detail"}
                   className="rounded-3xl p-5 sm:p-6"
                   style={{
-                    background: i === 0 ? "rgba(159,231,245,0.12)" : "var(--color-surface)",
-                    border: i === 0
-                      ? "1.5px solid rgba(66,158,189,0.35)"
-                      : "1px solid var(--color-border)",
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
                     boxShadow: "0 2px 10px rgba(5,63,92,0.05)",
                   }}
                 >
@@ -285,7 +280,7 @@ export default function WeatherTabsClient({
                           className="font-700 text-base"
                           style={{ color: "var(--color-deep)" }}
                         >
-                          {i === 0 ? "Today" : day.day}
+                          {day.day}
                         </span>
                         <span
                           className="text-xs font-500"
@@ -419,8 +414,8 @@ export default function WeatherTabsClient({
                   No Active Weather Alerts
                 </h3>
                 <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-                  Conditions are stable across Tenerife. This panel will show amber and red warnings
-                  when issued.
+                  Conditions are stable across Tenerife. This panel will show yellow, amber and red
+                  warnings when issued.
                 </p>
               </div>
             ) : (

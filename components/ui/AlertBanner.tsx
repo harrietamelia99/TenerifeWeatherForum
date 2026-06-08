@@ -21,6 +21,15 @@ const alertConfig = {
     label: "Information",
     icon: Info,
   },
+  yellow: {
+    bg: "rgba(253,224,71,0.15)",
+    border: "rgba(234,179,8,0.45)",
+    text: "#3d2e00",
+    iconBg: "rgba(253,224,71,0.25)",
+    iconColor: "#ca8a04",
+    label: "Yellow Weather Warning",
+    icon: AlertTriangle,
+  },
   amber: {
     bg: "rgba(247,173,25,0.15)",
     border: "rgba(247,173,25,0.5)",
