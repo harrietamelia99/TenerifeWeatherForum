@@ -120,12 +120,13 @@ const webcams = [
   },
 ];
 
-const features = [
-  "Daily Tenerife weather forecasts",
-  "Travel guides and local information",
-  "Airport and transport updates",
-  "Excursions and things to do",
-  "Community of 6,000+ Tenerife enthusiasts on Facebook",
+const features: { label: string; href: string; external?: boolean }[] = [
+  { label: "Daily Tenerife weather forecasts",                        href: "/weather" },
+  { label: "Travel guides and local information",                     href: "#section-guides" },
+  { label: "Airport and transport updates",                           href: "/resources" },
+  { label: "Excursions and things to do",                             href: "#section-excursions" },
+  { label: "Live webcams",                                            href: "#section-webcams" },
+  { label: "Trusted by over 37,000 people across our social media channels", href: "https://www.facebook.com/groups/1826293804889186", external: true },
 ];
 
 /* ─── Page ───────────────────────────────────────────────────────────────── */
@@ -200,14 +201,21 @@ export default function HomePage() {
         {/* Feature list */}
         <ul className="relative z-10 flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 mb-10 text-left max-w-2xl w-full">
           {features.map((f) => (
-            <li key={f} className="flex items-start gap-2.5 text-sm leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>
-              <span
-                className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
-                style={{ background: "var(--color-sun)", color: "var(--color-deep)" }}
+            <li key={f.label}>
+              <a
+                href={f.href}
+                {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="flex items-start gap-2.5 text-sm leading-snug group"
+                style={{ color: "rgba(255,255,255,0.85)", textDecoration: "none" }}
               >
-                ✓
-              </span>
-              {f}
+                <span
+                  className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-transform duration-150 group-hover:scale-110"
+                  style={{ background: "var(--color-sun)", color: "var(--color-deep)" }}
+                >
+                  ✓
+                </span>
+                <span className="group-hover:underline underline-offset-2">{f.label}</span>
+              </a>
             </li>
           ))}
         </ul>
@@ -241,7 +249,7 @@ export default function HomePage() {
         {/* ════════════════════════════════════════════════════════════════
             GUIDES
         ════════════════════════════════════════════════════════════════ */}
-        <section className="py-10 sm:py-14 lg:py-16" aria-labelledby="guides-heading">
+        <section id="section-guides" className="py-10 sm:py-14 lg:py-16" aria-labelledby="guides-heading">
           <div className="mb-6">
             <h2 id="guides-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
               Essential Travel Guides
@@ -289,7 +297,7 @@ export default function HomePage() {
         {/* ════════════════════════════════════════════════════════════════
             EXCURSIONS
         ════════════════════════════════════════════════════════════════ */}
-        <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="excursions-heading">
+        <section id="section-excursions" className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="excursions-heading">
           <div className="mb-6">
             <h2 id="excursions-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
               Excursions &amp; Activities
@@ -342,7 +350,7 @@ export default function HomePage() {
         {/* ════════════════════════════════════════════════════════════════
             WEBCAMS
         ════════════════════════════════════════════════════════════════ */}
-        <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="webcams-heading">
+        <section id="section-webcams" className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="webcams-heading">
           <div className="mb-6">
             <h2 id="webcams-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
               Live Webcams
