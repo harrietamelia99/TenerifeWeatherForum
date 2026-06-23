@@ -199,13 +199,13 @@ export default function HomePage() {
         </p>
 
         {/* Feature list — styled as clickable pill buttons */}
-        <ul className="relative z-10 flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2.5 mb-10 w-full max-w-2xl">
-          {features.map((f) => (
-            <li key={f.label}>
+        <ul className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-10 w-full max-w-xl">
+          {features.map((f, i) => (
+            <li key={f.label} className={i === features.length - 1 ? "sm:col-span-2 flex justify-center" : ""}>
               <a
                 href={f.href}
                 {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 active:scale-95 text-white no-underline bg-white/15 border border-white/30 hover:bg-white/25 hover:border-white/50 backdrop-blur-sm"
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 active:scale-95 text-white no-underline bg-white/15 border border-white/30 hover:bg-white/25 hover:border-white/50 backdrop-blur-sm w-full justify-center sm:justify-start"
               >
                 <span
                   className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold"
