@@ -214,7 +214,7 @@ export default function HomePage() {
                   ✓
                 </span>
                 {f.label}
-                <ArrowRight size={16} className="opacity-75 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" />
+                <ArrowRight size={17} className="opacity-100 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" style={{ color: "white", strokeWidth: 2.5 }} />
               </a>
             </li>
           ))}
