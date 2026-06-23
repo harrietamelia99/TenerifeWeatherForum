@@ -126,7 +126,7 @@ const features: { label: string; href: string; external?: boolean }[] = [
   { label: "Airport and transport updates",                           href: "/resources" },
   { label: "Excursions and things to do",                             href: "/excursions" },
   { label: "Live webcams",                                            href: "/webcams" },
-  { label: "Trusted by over 37,000 people across our social media channels", href: "https://www.facebook.com/groups/1826293804889186", external: true },
+  { label: "37,000+ community members on social media", href: "https://www.facebook.com/groups/1826293804889186", external: true },
 ];
 
 /* ─── Page ───────────────────────────────────────────────────────────────── */
