@@ -200,8 +200,8 @@ export default function HomePage() {
 
         {/* Feature list — styled as clickable pill buttons */}
         <ul className="relative z-10 grid grid-cols-2 gap-2 sm:gap-2.5 mb-10 w-full max-w-xl">
-          {features.map((f, i) => (
-            <li key={f.label} className={i === features.length - 1 ? "col-span-2 flex justify-center" : ""}>
+          {features.map((f) => (
+            <li key={f.label}>
               <a
                 href={f.href}
                 {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
