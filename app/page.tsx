@@ -126,7 +126,7 @@ const features: { label: string; href: string; external?: boolean }[] = [
   { label: "Airport and transport updates",                           href: "/resources" },
   { label: "Excursions and things to do",                             href: "/excursions" },
   { label: "Live webcams",                                            href: "/webcams" },
-  { label: "37,000+ community members on social media", href: "https://www.facebook.com/groups/1826293804889186", external: true },
+  { label: "Join 37,000 community members on our socials", href: "https://www.facebook.com/groups/1826293804889186", external: true },
 ];
 
 /* ─── Page ───────────────────────────────────────────────────────────────── */
@@ -214,7 +214,7 @@ export default function HomePage() {
                   ✓
                 </span>
                 {f.label}
-                <ArrowRight size={13} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200" />
+                <ArrowRight size={16} className="opacity-75 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" />
               </a>
             </li>
           ))}
