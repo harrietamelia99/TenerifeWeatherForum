@@ -8,7 +8,9 @@ import { Menu, X, Facebook } from "lucide-react";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/weather", label: "Weather" },
-  { href: "/climate", label: "Climate Info" },
+  { href: "/excursions", label: "Excursions" },
+  { href: "/webcams", label: "Webcams" },
+  { href: "/climate", label: "Climate" },
   { href: "/blog", label: "Blog" },
   { href: "/resources", label: "Resources" },
 ];

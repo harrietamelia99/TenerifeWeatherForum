@@ -124,8 +124,8 @@ const features: { label: string; href: string; external?: boolean }[] = [
   { label: "Daily Tenerife weather forecasts",                        href: "/weather" },
   { label: "Travel guides and local information",                     href: "#section-guides" },
   { label: "Airport and transport updates",                           href: "/resources" },
-  { label: "Excursions and things to do",                             href: "#section-excursions" },
-  { label: "Live webcams",                                            href: "#section-webcams" },
+  { label: "Excursions and things to do",                             href: "/excursions" },
+  { label: "Live webcams",                                            href: "/webcams" },
   { label: "Trusted by over 37,000 people across our social media channels", href: "https://www.facebook.com/groups/1826293804889186", external: true },
 ];
 
@@ -198,23 +198,39 @@ export default function HomePage() {
           travel guides, local information, airport updates and holiday advice for visitors and residents.
         </p>
 
-        {/* Feature list */}
-        <ul className="relative z-10 flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 mb-10 text-left max-w-2xl w-full">
+        {/* Feature list — styled as clickable pill buttons */}
+        <ul className="relative z-10 flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2.5 mb-10 w-full max-w-2xl">
           {features.map((f) => (
             <li key={f.label}>
               <a
                 href={f.href}
                 {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="flex items-start gap-2.5 text-sm leading-snug group"
-                style={{ color: "rgba(255,255,255,0.85)", textDecoration: "none" }}
+                className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 active:scale-95"
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  border: "1px solid rgba(255,255,255,0.3)",
+                  color: "white",
+                  textDecoration: "none",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.25)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.5)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.15)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)";
+                }}
               >
                 <span
-                  className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-transform duration-150 group-hover:scale-110"
+                  className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold"
                   style={{ background: "var(--color-sun)", color: "var(--color-deep)" }}
                 >
                   ✓
                 </span>
-                <span className="group-hover:underline underline-offset-2">{f.label}</span>
+                {f.label}
+                <ArrowRight size={13} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200" />
               </a>
             </li>
           ))}
@@ -295,80 +311,88 @@ export default function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════
-            EXCURSIONS
+            EXCURSIONS TEASER
         ════════════════════════════════════════════════════════════════ */}
         <section id="section-excursions" className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="excursions-heading">
-          <div className="mb-6">
-            <h2 id="excursions-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
-              Excursions &amp; Activities
-            </h2>
-            <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
-              Hand-picked experiences for every type of visitor
-            </p>
-            <p className="text-xs mt-2" style={{ color: "var(--color-text-muted)", opacity: 0.7 }}>
-              Some links below are affiliate links — if you book we may earn a small commission at no extra cost to you.
-            </p>
+          <div className="flex items-end justify-between mb-6 gap-4">
+            <div>
+              <h2 id="excursions-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
+                Excursions &amp; Activities
+              </h2>
+              <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
+                Hand-picked experiences for every type of visitor
+              </p>
+            </div>
+            <Link
+              href="/excursions"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold"
+              style={{ color: "var(--color-mid)" }}
+            >
+              View all <ArrowRight size={14} />
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {excursions.map((ex) => (
-              <div key={ex.title} className="card card-hover overflow-hidden" style={{ borderRadius: "1.5rem" }}>
-                <div className="relative overflow-hidden" style={{ height: 180 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            {excursions.slice(0, 3).map((ex) => (
+              <Link
+                key={ex.title}
+                href="/excursions"
+                className="card card-hover overflow-hidden block group"
+                style={{ borderRadius: "1.5rem", textDecoration: "none" }}
+              >
+                <div className="relative overflow-hidden" style={{ height: 160 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={ex.img}
                     alt={ex.title}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ background: "linear-gradient(to top, rgba(5,63,92,0.3) 0%, transparent 50%)" }}
-                  />
+                  <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(5,63,92,0.4) 0%, transparent 60%)" }} />
                 </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-base mb-1.5" style={{ color: "var(--color-deep)" }}>
-                    {ex.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-muted)" }}>
-                    {ex.desc}
-                  </p>
-                  <a
-                    href={ex.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary text-xs px-5 py-2.5 inline-flex"
-                    style={{ width: "fit-content" }}
-                  >
-                    Book Activity
-                  </a>
+                <div className="p-4">
+                  <h3 className="font-bold text-sm" style={{ color: "var(--color-deep)" }}>{ex.title}</h3>
+                  <p className="text-xs mt-1 line-clamp-2 leading-relaxed" style={{ color: "var(--color-text-muted)" }}>{ex.desc}</p>
                 </div>
-              </div>
+              </Link>
             ))}
+          </div>
+
+          <div className="mt-5 text-center">
+            <Link href="/excursions" className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm">
+              See All 6 Excursions <ArrowRight size={14} />
+            </Link>
           </div>
         </section>
 
         {/* ════════════════════════════════════════════════════════════════
-            WEBCAMS
+            WEBCAMS TEASER
         ════════════════════════════════════════════════════════════════ */}
         <section id="section-webcams" className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="webcams-heading">
-          <div className="mb-6">
-            <h2 id="webcams-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
-              Live Webcams
-            </h2>
-            <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
-              See what the weather looks like right now across the island
-            </p>
+          <div className="flex items-end justify-between mb-6 gap-4">
+            <div>
+              <h2 id="webcams-heading" className="text-xl sm:text-2xl font-bold" style={{ color: "var(--color-deep)" }}>
+                Live Webcams
+              </h2>
+              <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
+                See what the weather looks like right now across the island
+              </p>
+            </div>
+            <Link
+              href="/webcams"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold"
+              style={{ color: "var(--color-mid)" }}
+            >
+              View all <ArrowRight size={14} />
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {webcams.map((cam) => (
-              <a
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            {webcams.slice(0, 3).map((cam) => (
+              <Link
                 key={cam.label}
-                href={cam.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/webcams"
                 className="card card-hover overflow-hidden block group"
-                style={{ borderRadius: "1.5rem" }}
+                style={{ borderRadius: "1.5rem", textDecoration: "none" }}
               >
                 <div className="relative overflow-hidden" style={{ aspectRatio: "16/9" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -377,28 +401,24 @@ export default function HomePage() {
                     alt={`Live webcam — ${cam.label}`}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(to top, rgba(5,63,92,0.88) 0%, rgba(5,63,92,0.3) 55%, transparent 100%)" }}
-                  />
-                  <div
-                    className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-                    style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.3)", color: "white" }}
-                  >
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(5,63,92,0.88) 0%, rgba(5,63,92,0.3) 55%, transparent 100%)" }} />
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.3)", color: "white" }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
                     LIVE
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p className="text-white font-bold text-sm leading-tight mb-0.5">{cam.label}</p>
-                    <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.6)" }}>{cam.sublabel}</p>
-                    <span className="btn-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 pointer-events-none">
-                      <Camera size={12} />
-                      Watch Live
-                    </span>
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <p className="text-white font-bold text-sm leading-tight">{cam.label}</p>
+                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>{cam.sublabel}</p>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
+          </div>
+
+          <div className="mt-5 text-center">
+            <Link href="/webcams" className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm">
+              <Camera size={14} /> View All 6 Webcams
+            </Link>
           </div>
         </section>
 
