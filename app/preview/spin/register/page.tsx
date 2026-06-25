@@ -67,7 +67,7 @@ export default function SpinRegisterPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 py-8"
+      className="min-h-screen flex items-center justify-center px-4 pt-20 pb-8"
       style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
     >
       <div className="w-full max-w-sm">
