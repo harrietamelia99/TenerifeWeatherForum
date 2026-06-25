@@ -43,18 +43,20 @@ export interface SpinWheelProps {
   spinning: boolean;
   /** Index of the winning segment (null while spinning / before first spin) */
   winnerIdx: number | null;
+  /** Display size in px — defaults to 460 */
+  size?: number;
 }
 
 /**
  * Pure visual component — just the SVG wheel.
  * No state, no button, no API calls. Compose with your own controls.
  */
-export default function SpinWheel({ rotation, spinning, winnerIdx }: SpinWheelProps) {
+export default function SpinWheel({ rotation, spinning, winnerIdx, size = 460 }: SpinWheelProps) {
   const hasWinner = winnerIdx !== null && !SPIN_SEGMENTS[winnerIdx]?.isSpinAgain;
 
   return (
-    <div className="relative select-none" style={{ width: 360, height: 360 }}>
-      <svg viewBox="0 0 500 500" width="360" height="360" style={{ overflow: "visible" }}>
+    <div className="relative select-none" style={{ width: size, height: size }}>
+      <svg viewBox="0 0 500 500" width={size} height={size} style={{ overflow: "visible" }}>
         {/* Outer glow ring */}
         <circle cx={CX} cy={CY} r={R + 20} fill="none" stroke="rgba(251,191,36,0.15)" strokeWidth="14" />
 

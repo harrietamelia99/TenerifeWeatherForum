@@ -154,7 +154,7 @@ export default function SpinPage() {
       </header>
 
       {/* ── 3-column layout ── */}
-      <main className="max-w-6xl mx-auto px-4 py-5">
+      <main className="max-w-7xl mx-auto px-4 py-5">
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8 justify-center">
 
           {/* ── LEFT: controls ── */}
@@ -238,7 +238,7 @@ export default function SpinPage() {
 
           {/* ── CENTRE: wheel ── */}
           <div className="flex-shrink-0 order-1 lg:order-2">
-            <SpinWheel rotation={rotation} spinning={spinning} winnerIdx={winnerIdx} />
+            <SpinWheel rotation={rotation} spinning={spinning} winnerIdx={winnerIdx} size={460} />
           </div>
 
           {/* ── RIGHT: leaderboard ── */}
