@@ -107,19 +107,14 @@ export default function SpinPage() {
       </header>
 
       {/* Main layout */}
-      <main className="max-w-6xl mx-auto px-4 py-8 lg:py-12">
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-start justify-center">
+      <main className="max-w-6xl mx-auto px-4 py-4 lg:py-6">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start justify-center">
 
           {/* Wheel column */}
-          <div className="flex flex-col items-center gap-6 w-full lg:w-auto">
-            <div className="text-center">
-              <h2 className="text-2xl sm:text-3xl font-black text-white mb-1">
-                Spin the Wheel, {displayName}!
-              </h2>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
-                One spin every 24 hours • Subscribe for a bonus spin
-              </p>
-            </div>
+          <div className="flex flex-col items-center gap-4 w-full lg:w-auto">
+            <p className="text-sm text-center" style={{ color: "rgba(255,255,255,0.45)" }}>
+              Welcome back, <strong style={{ color: "rgba(255,255,255,0.8)" }}>{displayName}</strong> · 1 spin per 24 hrs · Newsletter subscribers get a bonus spin
+            </p>
 
             <SpinWheel
               canSpin={userData.canSpin}
