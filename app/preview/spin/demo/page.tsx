@@ -152,7 +152,7 @@ export default function SpinDemoPage() {
   }, [spinning, rotation]);
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
+    <div className="min-h-screen pt-[128px]" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
       {showModal && result && <WinModal result={result} onDismiss={() => setShowModal(false)} />}
       {/* Banner */}
       <div className="w-full py-1.5 text-center text-xs font-bold uppercase tracking-widest" style={{ background: "#fbbf24", color: "#1a0500" }}>

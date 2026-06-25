@@ -73,7 +73,7 @@ export default function SpinPage() {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen pt-[128px]"
       style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
     >
       {/* Preview banner */}

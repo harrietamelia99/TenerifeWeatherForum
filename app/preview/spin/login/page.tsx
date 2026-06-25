@@ -33,7 +33,7 @@ export default function SpinLoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 pt-16"
+      className="min-h-screen flex items-center justify-center px-4 pt-[128px]"
       style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
     >
       <div className="w-full max-w-sm">

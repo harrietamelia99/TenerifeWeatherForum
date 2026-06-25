@@ -129,8 +129,8 @@ export default function SpinAdminPage() {
   if (!authed) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center px-4"
-        style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
+      className="min-h-screen flex items-center justify-center px-4 pt-[128px]"
+      style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
       >
         <div className="w-full max-w-xs">
           <h1 className="text-2xl font-black text-white text-center mb-2">Spin Admin</h1>
@@ -157,7 +157,7 @@ export default function SpinAdminPage() {
 
   // ─── Admin panel ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
+    <div className="min-h-screen pt-[128px]" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
