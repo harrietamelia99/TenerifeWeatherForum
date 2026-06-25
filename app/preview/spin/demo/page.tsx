@@ -41,6 +41,77 @@ function Lights({ spinning, won }: { spinning: boolean; won: boolean }) {
   );
 }
 
+// ─── Win Modal ────────────────────────────────────────────────────────────────
+function WinModal({ result, onDismiss }: { result: { label: string; pts: number; again: boolean; color: string }; onDismiss: () => void }) {
+  const sparkles = [
+    { x:"15%",y:"20%",size:8,delay:0 },{ x:"80%",y:"15%",size:12,delay:.1 },
+    { x:"10%",y:"65%",size:6,delay:.2 },{ x:"88%",y:"60%",size:10,delay:.15 },
+    { x:"50%",y:"8%", size:7,delay:.05},{ x:"25%",y:"85%",size:9,delay:.25 },
+    { x:"72%",y:"82%",size:11,delay:.3},{ x:"90%",y:"35%",size:6,delay:.18 },
+  ];
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
+      style={{ background:"rgba(2,15,30,0.85)", backdropFilter:"blur(6px)" }}
+      onClick={onDismiss}>
+      <style>{`
+        @keyframes popIn{0%{opacity:0;transform:scale(.4) translateY(24px)}65%{transform:scale(1.06) translateY(-6px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:1;transform:translateY(-12px) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-60px) scale(.5)}}
+        @keyframes shimmer{0%,100%{opacity:.6}50%{opacity:1}}
+      `}</style>
+      {!result.again && sparkles.map((s,i)=>(
+        <div key={i} className="absolute pointer-events-none rounded-full"
+          style={{ left:s.x,top:s.y,width:s.size,height:s.size,
+            background:i%2===0?"#fbbf24":"#ffffff",
+            animation:`floatUp 1.6s ease-out ${s.delay}s forwards` }} />
+      ))}
+      <div className="relative w-full max-w-sm rounded-3xl overflow-hidden text-center"
+        style={{ animation:"popIn .5s cubic-bezier(.34,1.56,.64,1) forwards",
+          background: result.again
+            ? "linear-gradient(160deg,#1a0505,#3b0808)"
+            : `linear-gradient(160deg,#051525,${result.color}22 60%,#051525)`,
+          border:`2px solid ${result.again?"rgba(239,68,68,.5)":"rgba(251,191,36,.5)"}`,
+          boxShadow: result.again
+            ? "0 0 60px rgba(239,68,68,.35),0 20px 60px rgba(0,0,0,.6)"
+            : "0 0 60px rgba(251,191,36,.3),0 20px 60px rgba(0,0,0,.6)" }}
+        onClick={e=>e.stopPropagation()}>
+        <div className="h-2 w-full" style={{ background: result.again ? "#dc2626" : result.color }} />
+        <div className="px-8 py-8">
+          <div className="text-6xl mb-3 leading-none" style={{animation:"shimmer 1.4s ease-in-out infinite"}}>
+            {result.again ? "🎰" : result.pts >= 150 ? "🌋" : result.pts >= 75 ? "🌟" : result.pts >= 30 ? "☀️" : "🎉"}
+          </div>
+          {result.again ? (
+            <>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"rgba(255,255,255,.45)"}}>Lucky!</p>
+              <h2 className="text-4xl font-black text-red-400 mb-2">Spin Again!</h2>
+              <p className="text-base" style={{color:"rgba(255,255,255,.6)"}}>You landed on <strong style={{color:"white"}}>Spin Again</strong> — spin for free right now!</p>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"rgba(255,255,255,.45)"}}>You won</p>
+              <p className="text-lg font-bold mb-1" style={{color:"rgba(255,255,255,.75)"}}>{result.label}</p>
+              <h2 className="text-7xl font-black tabular-nums mb-1"
+                style={{color:"#fbbf24",textShadow:"0 0 40px rgba(251,191,36,.7),0 0 80px rgba(251,191,36,.3)"}}>
+                +{result.pts}
+              </h2>
+              <p className="text-lg font-bold" style={{color:"rgba(255,255,255,.5)"}}>points</p>
+            </>
+          )}
+          <button onClick={onDismiss}
+            className="mt-7 w-full py-4 rounded-2xl font-black text-base uppercase tracking-wider active:scale-95"
+            style={{ background: result.again
+                ? "linear-gradient(135deg,#dc2626,#b91c1c)"
+                : "linear-gradient(135deg,#f59e0b,#ea580c)",
+              color:"#0c0a08",
+              boxShadow: result.again ? "0 0 30px rgba(220,38,38,.5)" : "0 0 30px rgba(245,158,11,.5)" }}>
+            {result.again ? "Spin Again Now! 🎰" : "Collect Points! ✦"}
+          </button>
+          <p className="text-xs mt-3" style={{color:"rgba(255,255,255,.2)"}}>tap anywhere to close</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Demo leaderboard data ─────────────────────────────────────────────────────
 const BOARD  = [{ r:1,n:"SunChaser99",p:4250 },{r:2,n:"TenerifeKev",p:3100},{r:3,n:"BeachLover",p:2875},{r:4,n:"AtlanticWave",p:1940},{r:5,n:"TeideTrekker",p:1605}];
 const PREV   = [{r:1,n:"VolcanoVibes",p:5820},{r:2,n:"IslaPerfect",p:4310},{r:3,n:"TeideStar",p:3050}];
@@ -52,12 +123,14 @@ export default function SpinDemoPage() {
   const [spinning, setSpinning]   = useState(false);
   const [points, setPoints]       = useState(350);
   const [winnerIdx, setWinnerIdx] = useState<number | null>(null);
-  const [result, setResult]       = useState<{ label: string; pts: number; again: boolean } | null>(null);
+  const [result, setResult]       = useState<{ label: string; pts: number; again: boolean; color: string } | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const wheelRef = useRef<SVGGElement>(null);
 
   const spin = useCallback(() => {
     if (spinning) return;
     setSpinning(true);
+    setShowModal(false);
     setResult(null);
     setWinnerIdx(null);
 
@@ -72,13 +145,15 @@ export default function SpinDemoPage() {
     setTimeout(() => {
       setWinnerIdx(idx);
       setSpinning(false);
-      setResult({ label: seg.label, pts: seg.points, again: !!seg.isSpinAgain });
+      setResult({ label: seg.label, pts: seg.points, again: !!seg.isSpinAgain, color: seg.color });
+      setShowModal(true);
       setPoints(p => p + seg.points);
     }, 6200);
   }, [spinning, rotation]);
 
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
+      {showModal && result && <WinModal result={result} onDismiss={() => setShowModal(false)} />}
       {/* Banner */}
       <div className="w-full py-1.5 text-center text-xs font-bold uppercase tracking-widest" style={{ background: "#fbbf24", color: "#1a0500" }}>
         ✎ Design preview — no auth · no database · resets on refresh
@@ -181,17 +256,13 @@ export default function SpinDemoPage() {
               </button>
             </div>
 
-            {/* Result */}
-            {result && !spinning && (
-              <div className="px-6 py-3 rounded-2xl text-center" style={{
-                background: result.again ? "rgba(220,38,38,0.2)" : "rgba(251,191,36,0.15)",
-                border: `1px solid ${result.again ? "rgba(220,38,38,0.5)" : "rgba(251,191,36,0.4)"}`,
-              }}>
-                {result.again
-                  ? <><p className="text-xl font-black text-red-400">🎰 Spin Again!</p><p className="text-sm mt-0.5" style={{color:"rgba(255,255,255,0.65)"}}>Lucky you — spin for free!</p></>
-                  : <><p className="text-sm font-bold" style={{color:"rgba(255,255,255,0.8)"}}>{result.label}</p><p className="text-3xl font-black" style={{color:"#fbbf24"}}>+{result.pts} pts</p></>
-                }
-              </div>
+            {/* Last result pill */}
+            {result && !spinning && !showModal && (
+              <button onClick={() => setShowModal(true)}
+                className="text-sm font-semibold px-4 py-1.5 rounded-full transition-opacity hover:opacity-80"
+                style={{ background:"rgba(255,255,255,0.07)", color:"rgba(255,255,255,0.5)", border:"1px solid rgba(255,255,255,0.12)" }}>
+                {result.again ? "🎰 Spin Again" : `+${result.pts} pts — ${result.label}`} · tap to view
+              </button>
             )}
 
             {/* Static countdown demo */}
