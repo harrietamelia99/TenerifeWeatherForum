@@ -187,8 +187,14 @@ function SpinTitle() {
       <div style={{
         fontSize: "clamp(22px,4.5vw,50px)", fontWeight: 900, color: "white",
         fontFamily: "system-ui,sans-serif", letterSpacing: "0.18em",
-        WebkitTextStroke: "2px #0c1f3a",
-        textShadow: "3px 3px 0 #0c1f3a,-1px -1px 0 #0c1f3a,0 0 18px rgba(255,255,255,0.25)",
+        textShadow: [
+          "2px 0 0 #0c1f3a", "-2px 0 0 #0c1f3a",
+          "0 2px 0 #0c1f3a", "0 -2px 0 #0c1f3a",
+          "2px 2px 0 #0c1f3a", "-2px -2px 0 #0c1f3a",
+          "2px -2px 0 #0c1f3a", "-2px 2px 0 #0c1f3a",
+          "3px 3px 0 #0c1f3a",
+          "0 0 18px rgba(255,255,255,0.25)",
+        ].join(","),
       }}>
         {"SUPER".split("").map((c, i) => (
           <span key={i} className="sls-char">{c}</span>
