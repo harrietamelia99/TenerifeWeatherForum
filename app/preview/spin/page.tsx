@@ -3,7 +3,6 @@
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { SPIN_SEGMENTS } from "@/lib/spinSegments";
 import SpinWheel from "@/components/spin/SpinWheel";
 import WinModal, { type WinResult } from "@/components/spin/WinModal";
 import SpinCountdown from "@/components/spin/SpinCountdown";
@@ -31,6 +30,7 @@ interface UserData {
   email:              string;
   displayName:        string | null;
   totalPoints:        number;
+  monthlyPoints:      number;
   canSpin:            boolean;
   nextSpinAt:         string | null;
   bonusSpinAvailable: boolean;
@@ -88,7 +88,7 @@ export default function SpinPage() {
       rotRef.current = newRot;
       setRotation(newRot);
 
-      setTimeout(() => {
+      setTimeout(async () => {
         setWinnerIdx(idx);
         setSpinning(false);
         const result: WinResult = {
@@ -99,18 +99,14 @@ export default function SpinPage() {
         };
         setModal(result);
         setLastWin(result);
-        setUserData(prev => prev ? {
-          ...prev,
-          totalPoints: data.newTotalPoints,
-          canSpin:     data.segment.isSpinAgain,
-          nextSpinAt:  data.segment.isSpinAgain ? prev.nextSpinAt : data.nextSpinAt,
-        } : prev);
+        // Re-fetch fresh user state — avoids manual state patching bugs
+        await fetchUserData();
       }, 6200);
     } catch {
       setError("Something went wrong. Please try again.");
       setSpinning(false);
     }
-  }, [spinning, userData]);
+  }, [spinning, userData, fetchUserData]);
 
   const handleCountdownExpired = useCallback(() => {
     setUserData(prev => prev ? { ...prev, canSpin: true, nextSpinAt: null } : prev);
@@ -140,7 +136,7 @@ export default function SpinPage() {
       {/* Preview banner */}
       <div className="w-full py-1.5 text-center text-xs font-bold uppercase tracking-widest"
         style={{ background:"#fbbf24", color:"#1a0500" }}>
-        Preview — not live
+        Preview — not live yet
       </div>
 
       {/* Header */}
@@ -173,10 +169,16 @@ export default function SpinPage() {
 
           {/* ── LEFT controls (desktop only) ── */}
           <div className="hidden lg:flex flex-col items-stretch gap-4 w-52 order-1 flex-shrink-0">
+            {/* Monthly points */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color:"rgba(255,255,255,0.45)" }}>Your Points</p>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color:"rgba(255,255,255,0.45)" }}>
+                This Month
+              </p>
               <p className="text-5xl font-black tabular-nums" style={{ color:"#fbbf24", textShadow:"0 0 28px rgba(251,191,36,0.55)" }}>
-                {userData.totalPoints.toLocaleString()}
+                {userData.monthlyPoints.toLocaleString()}
+              </p>
+              <p className="text-xs mt-1" style={{ color:"rgba(255,255,255,0.3)" }}>
+                {userData.totalPoints.toLocaleString()} lifetime pts
               </p>
             </div>
 
@@ -201,7 +203,9 @@ export default function SpinPage() {
               <SpinCountdown nextSpinAt={userData.nextSpinAt} bonusAvailable={false} onExpired={handleCountdownExpired} />
             )}
 
-            {error && <p className="text-xs text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">{error}</p>}
+            {error && (
+              <p className="text-xs text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">{error}</p>
+            )}
 
             {lastWin && !spinning && !modal && (
               <button onClick={() => setModal(lastWin)}
@@ -217,8 +221,8 @@ export default function SpinPage() {
                 How it works ▾
               </summary>
               <div className="mt-2 space-y-1 text-xs pl-1" style={{ color:"rgba(255,255,255,0.45)" }}>
-                <p>• Spin once every 24 hours.</p>
-                <p>• Points build on the leaderboard.</p>
+                <p>• One spin every 24 hours.</p>
+                <p>• Points count for this month's leaderboard.</p>
                 <p>• Top 3 each month win prizes.</p>
                 <p>• Newsletter subscribers get a bonus spin.</p>
                 <p>• Leaderboard resets on the 1st.</p>
@@ -230,15 +234,20 @@ export default function SpinPage() {
           <div className="flex flex-col items-center gap-4 order-1 lg:order-2 flex-shrink-0">
             <SpinWheel rotation={rotation} spinning={spinning} winnerIdx={winnerIdx} size={wheelSize} />
 
-            {/* Mobile controls — below wheel, hidden on lg */}
+            {/* Mobile controls */}
             <div className="lg:hidden w-full max-w-sm space-y-3">
-              {/* Points + Spin button */}
               <div className="flex items-center gap-3">
+                {/* Monthly points */}
                 <div className="flex-1 text-center rounded-2xl py-3"
                   style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)" }}>
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color:"rgba(255,255,255,0.4)" }}>Points</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color:"rgba(255,255,255,0.4)" }}>
+                    This Month
+                  </p>
                   <p className="text-3xl font-black tabular-nums" style={{ color:"#fbbf24", textShadow:"0 0 20px rgba(251,191,36,0.5)" }}>
-                    {userData.totalPoints.toLocaleString()}
+                    {userData.monthlyPoints.toLocaleString()}
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color:"rgba(255,255,255,0.3)" }}>
+                    {userData.totalPoints.toLocaleString()} lifetime
                   </p>
                 </div>
                 <button onClick={spin} disabled={!canPress}
@@ -263,7 +272,9 @@ export default function SpinPage() {
                 <SpinCountdown nextSpinAt={userData.nextSpinAt} bonusAvailable={false} onExpired={handleCountdownExpired} />
               )}
 
-              {error && <p className="text-xs text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">{error}</p>}
+              {error && (
+                <p className="text-xs text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">{error}</p>
+              )}
 
               {lastWin && !spinning && !modal && (
                 <button onClick={() => setModal(lastWin)}

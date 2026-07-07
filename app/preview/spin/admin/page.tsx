@@ -7,6 +7,7 @@ interface SpinUser {
   email:                 string;
   display_name:          string | null;
   total_points:          number;
+  monthly_points:        number;
   last_spin_at:          string | null;
   bonus_spin_available:  boolean;
   created_at:            string;
@@ -105,15 +106,28 @@ export default function SpinAdminPage() {
   }
 
   async function handleArchive() {
-    if (!confirm("Archive the current top-3 for this month? This will overwrite any existing archive for this month.")) return;
-    const res = await fetch("/api/spin/admin", {
+    if (!confirm("Archive the current top-3 and reset everyone's monthly points to zero?\n\nDo this at the END of each month. It saves the winners then clears the board for next month.")) return;
+    // Step 1: Archive
+    const archiveRes = await fetch("/api/spin/admin", {
       method:  "POST",
       headers: { ...headers, "Content-Type": "application/json" },
       body: JSON.stringify({ action: "archive" }),
     });
-    const data = await res.json();
-    alert(res.ok ? `Archived ${data.archived} winner(s).` : (data.error ?? "Failed."));
-    if (res.ok) loadData("winners");
+    const archiveData = await archiveRes.json();
+    if (!archiveRes.ok) { alert(archiveData.error ?? "Archive failed."); return; }
+
+    // Step 2: Reset monthly points
+    const resetRes = await fetch("/api/spin/admin", {
+      method:  "POST",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reset_monthly" }),
+    });
+    const resetData = await resetRes.json();
+    if (!resetRes.ok) { alert(resetData.error ?? "Reset failed."); return; }
+
+    alert(`Done! Archived ${archiveData.archived} winner(s) and reset all monthly points.`);
+    loadData("leaderboard");
+    loadData("winners");
   }
 
   async function handleGrantBonus(userId: string) {
@@ -169,7 +183,7 @@ export default function SpinAdminPage() {
             className="px-4 py-2 rounded-lg text-sm font-semibold"
             style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.35)" }}
           >
-            Archive this month&apos;s top 3
+            Archive &amp; Reset Month ↻
           </button>
         </div>
 
@@ -203,7 +217,9 @@ export default function SpinAdminPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
             <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#0c2340", border: "1px solid rgba(255,255,255,0.15)" }}>
               <h2 className="text-lg font-bold text-white mb-1">Adjust Points</h2>
-              <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>{adjustUser.email} · currently {adjustUser.total_points} pts</p>
+              <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+                {adjustUser.email} · {adjustUser.monthly_points} pts this month · {adjustUser.total_points} lifetime
+              </p>
               <input
                 type="number"
                 value={adjustDelta}
@@ -231,7 +247,8 @@ export default function SpinAdminPage() {
                   <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>#</th>
                   <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Name</th>
                   <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Email</th>
-                  <th className="px-4 py-3 text-right font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Points</th>
+                  <th className="px-4 py-3 text-right font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Monthly Pts</th>
+                  <th className="px-4 py-3 text-right font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Lifetime</th>
                 </tr>
               </thead>
               <tbody>
@@ -242,7 +259,8 @@ export default function SpinAdminPage() {
                     </td>
                     <td className="px-4 py-3 font-medium" style={{ color: "rgba(255,255,255,0.85)" }}>{u.display_name ?? "—"}</td>
                     <td className="px-4 py-3" style={{ color: "rgba(255,255,255,0.5)" }}>{u.email}</td>
-                    <td className="px-4 py-3 text-right font-black tabular-nums" style={{ color: "#fbbf24" }}>{u.total_points.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-right font-black tabular-nums" style={{ color: "#fbbf24" }}>{(u as SpinUser).monthly_points?.toLocaleString() ?? "—"}</td>
+                    <td className="px-4 py-3 text-right tabular-nums" style={{ color: "rgba(255,255,255,0.4)" }}>{u.total_points.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -260,7 +278,7 @@ export default function SpinAdminPage() {
               <table className="w-full text-sm min-w-[700px]">
                 <thead>
                   <tr style={{ background: "rgba(255,255,255,0.06)" }}>
-                    {["Email", "Display Name", "Points", "Last Spin", "Bonus", "Actions"].map((h) => (
+                    {["Email", "Display Name", "Monthly Pts", "Lifetime Pts", "Last Spin", "Bonus", "Actions"].map((h) => (
                       <th key={h} className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>{h}</th>
                     ))}
                   </tr>
@@ -270,7 +288,8 @@ export default function SpinAdminPage() {
                     <tr key={u.id} style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                       <td className="px-4 py-3" style={{ color: "rgba(255,255,255,0.75)" }}>{u.email}</td>
                       <td className="px-4 py-3" style={{ color: "rgba(255,255,255,0.55)" }}>{u.display_name ?? "—"}</td>
-                      <td className="px-4 py-3 font-black tabular-nums" style={{ color: "#fbbf24" }}>{u.total_points.toLocaleString()}</td>
+                      <td className="px-4 py-3 font-black tabular-nums" style={{ color: "#fbbf24" }}>{u.monthly_points.toLocaleString()}</td>
+                      <td className="px-4 py-3 tabular-nums" style={{ color: "rgba(255,255,255,0.45)" }}>{u.total_points.toLocaleString()}</td>
                       <td className="px-4 py-3" style={{ color: "rgba(255,255,255,0.4)" }}>
                         {u.last_spin_at
                           ? new Date(u.last_spin_at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })

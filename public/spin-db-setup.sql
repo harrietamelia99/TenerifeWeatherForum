@@ -10,10 +10,14 @@ CREATE TABLE IF NOT EXISTS spin_users (
   password_hash    TEXT        NOT NULL,
   display_name     TEXT,
   total_points     INTEGER     NOT NULL DEFAULT 0,
+  monthly_points   INTEGER     NOT NULL DEFAULT 0,
   last_spin_at     TIMESTAMPTZ,
   bonus_spin_available BOOLEAN NOT NULL DEFAULT FALSE,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- If the table already exists, add the monthly_points column:
+ALTER TABLE spin_users ADD COLUMN IF NOT EXISTS monthly_points INTEGER NOT NULL DEFAULT 0;
 
 -- Full history of every spin (for analytics / admin)
 CREATE TABLE IF NOT EXISTS spin_history (

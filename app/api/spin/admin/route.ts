@@ -19,8 +19,8 @@ export async function GET(req: NextRequest) {
   if (action === "users") {
     const { data, error } = await supabase
       .from("spin_users")
-      .select("id, email, display_name, total_points, last_spin_at, bonus_spin_available, created_at")
-      .order("total_points", { ascending: false });
+      .select("id, email, display_name, total_points, monthly_points, last_spin_at, bonus_spin_available, created_at")
+      .order("monthly_points", { ascending: false });
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ users: data });
@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
   if (action === "leaderboard") {
     const { data, error } = await supabase
       .from("spin_users")
-      .select("id, email, display_name, total_points")
-      .order("total_points", { ascending: false })
+      .select("id, email, display_name, total_points, monthly_points")
+      .order("monthly_points", { ascending: false })
       .limit(20);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ error: "Invalid action." }, { status: 400 });
 }
 
-// POST /api/spin/admin  { action: "adjust" | "archive", ... }
+// POST /api/spin/admin
 export async function POST(req: NextRequest) {
   if (!verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const supabase = createServerClient();
 
+  // ── Adjust a single user's points ───────────────────────────────────────────
   if (body.action === "adjust") {
     const { userId, points } = body;
     if (!userId || typeof points !== "number") {
@@ -68,24 +69,26 @@ export async function POST(req: NextRequest) {
 
     const { data: user, error: fetchErr } = await supabase
       .from("spin_users")
-      .select("total_points")
+      .select("total_points, monthly_points")
       .eq("id", userId)
       .single();
 
     if (fetchErr || !user) return NextResponse.json({ error: "User not found." }, { status: 404 });
 
-    const newPoints = Math.max(0, user.total_points + points);
+    const newTotal   = Math.max(0, user.total_points   + points);
+    const newMonthly = Math.max(0, user.monthly_points + points);
+
     const { error } = await supabase
       .from("spin_users")
-      .update({ total_points: newPoints })
+      .update({ total_points: newTotal, monthly_points: newMonthly })
       .eq("id", userId);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ success: true, newPoints });
+    return NextResponse.json({ success: true, newPoints: newTotal, newMonthlyPoints: newMonthly });
   }
 
+  // ── Archive current top-3 (monthly_points) ───────────────────────────────────
   if (body.action === "archive") {
-    // Archive current top-3 into spin_leaderboard_archive for a given month
     const month: string = body.month ?? (() => {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -93,27 +96,43 @@ export async function POST(req: NextRequest) {
 
     const { data: top3, error: fetchErr } = await supabase
       .from("spin_users")
-      .select("id, email, display_name, total_points")
-      .order("total_points", { ascending: false })
+      .select("id, email, display_name, monthly_points")
+      .order("monthly_points", { ascending: false })
+      .gt("monthly_points", 0)
       .limit(3);
 
     if (fetchErr) return NextResponse.json({ error: fetchErr.message }, { status: 500 });
+    if (!top3 || top3.length === 0) {
+      return NextResponse.json({ error: "No players with points this month." }, { status: 400 });
+    }
 
-    for (let i = 0; i < (top3?.length ?? 0); i++) {
-      const u = top3![i];
+    for (let i = 0; i < top3.length; i++) {
+      const u = top3[i];
       await supabase.from("spin_leaderboard_archive").upsert({
         month,
         rank:         i + 1,
         user_id:      u.id,
         email:        u.email,
         display_name: u.display_name,
-        points:       u.total_points,
+        points:       u.monthly_points,
       }, { onConflict: "month,rank" });
     }
 
-    return NextResponse.json({ success: true, archived: top3?.length ?? 0 });
+    return NextResponse.json({ success: true, archived: top3.length });
   }
 
+  // ── Reset monthly points for all users (do AFTER archiving) ─────────────────
+  if (body.action === "reset_monthly") {
+    const { error } = await supabase
+      .from("spin_users")
+      .update({ monthly_points: 0 })
+      .gte("monthly_points", 0); // matches all rows
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  // ── Grant bonus spin ─────────────────────────────────────────────────────────
   if (body.action === "grant_bonus") {
     const { userId } = body;
     if (!userId) return NextResponse.json({ error: "userId required." }, { status: 400 });

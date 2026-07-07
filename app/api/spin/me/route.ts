@@ -13,7 +13,7 @@ export async function GET() {
     const supabase = createServerClient();
     const { data: user, error } = await supabase
       .from("spin_users")
-      .select("email, display_name, total_points, last_spin_at, bonus_spin_available")
+      .select("email, display_name, total_points, monthly_points, last_spin_at, bonus_spin_available")
       .eq("id", session.user.id)
       .single();
 
@@ -34,6 +34,7 @@ export async function GET() {
       email:              user.email,
       displayName:        user.display_name,
       totalPoints:        user.total_points,
+      monthlyPoints:      user.monthly_points,
       canSpin,
       nextSpinAt,
       bonusSpinAvailable: user.bonus_spin_available,

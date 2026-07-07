@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     // Fetch current user state
     const { data: user, error: userErr } = await supabase
       .from("spin_users")
-      .select("total_points, last_spin_at, bonus_spin_available")
+      .select("total_points, monthly_points, last_spin_at, bonus_spin_available")
       .eq("id", userId)
       .single();
 
@@ -47,7 +47,8 @@ export async function POST(req: NextRequest) {
 
     // Update user — don't advance last_spin_at for Spin Again (grant free re-spin)
     const updates: Record<string, unknown> = {
-      total_points: user.total_points + segment.points,
+      total_points:   user.total_points   + segment.points,
+      monthly_points: user.monthly_points + segment.points,
     };
 
     if (!isSpinAgain) {
@@ -83,7 +84,8 @@ export async function POST(req: NextRequest) {
         points:      segment.points,
         isSpinAgain: isSpinAgain,
       },
-      newTotalPoints: user.total_points + segment.points,
+      newTotalPoints:   user.total_points   + segment.points,
+      newMonthlyPoints: user.monthly_points + segment.points,
       nextSpinAt: isSpinAgain
         ? null
         : usingBonus

@@ -5,20 +5,22 @@ export async function GET() {
   try {
     const supabase = createServerClient();
 
-    // Current month top 10
+    // Current month top 10 — sorted by monthly_points
     const { data: top10, error } = await supabase
       .from("spin_users")
-      .select("id, email, display_name, total_points")
-      .order("total_points", { ascending: false })
+      .select("id, email, display_name, monthly_points")
+      .order("monthly_points", { ascending: false })
       .limit(10);
 
     if (error) throw error;
 
-    const leaderboard = top10.map((u, i) => ({
-      rank:        i + 1,
-      displayName: u.display_name ?? u.email.split("@")[0],
-      points:      u.total_points,
-    }));
+    const leaderboard = top10
+      .filter((u) => u.monthly_points > 0)
+      .map((u, i) => ({
+        rank:        i + 1,
+        displayName: u.display_name ?? u.email.split("@")[0],
+        points:      u.monthly_points,
+      }));
 
     // Previous month's top-3 archive
     const now = new Date();
