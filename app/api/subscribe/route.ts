@@ -45,6 +45,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Could not save your subscription. Please try again." }, { status: 500 });
     }
 
+    // If this email already has a spin account, grant them a bonus spin
+    await supabase
+      .from("spin_users")
+      .update({ bonus_spin_available: true })
+      .eq("email", email.toLowerCase().trim());
+
     // Send confirmation email
     const types: string[] = [];
     if (daily_digest) types.push("Daily Weather Digest");

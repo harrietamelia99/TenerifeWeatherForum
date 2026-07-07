@@ -30,15 +30,23 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
 
+    // Check if this email is already a newsletter subscriber — if so, grant bonus spin on signup
+    const { data: subscriber } = await supabase
+      .from("subscribers")
+      .select("email")
+      .eq("email", emailLower)
+      .maybeSingle();
+
     const { error } = await supabase.from("spin_users").insert({
-      email:        emailLower,
-      password_hash: passwordHash,
-      display_name: displayName?.trim() || null,
+      email:                emailLower,
+      password_hash:        passwordHash,
+      display_name:         displayName?.trim() || null,
+      bonus_spin_available: !!subscriber,
     });
 
     if (error) throw error;
 
-    return NextResponse.json({ success: true }, { status: 201 });
+    return NextResponse.json({ success: true, bonusAwarded: !!subscriber }, { status: 201 });
   } catch (err) {
     console.error("[spin/register]", err);
     return NextResponse.json({ error: "Registration failed. Please try again." }, { status: 500 });
