@@ -58,7 +58,7 @@ function winnerEmailHtml(opts: {
         <!-- What happens next -->
         <tr><td style="padding:0 40px 24px">
           <h3 style="margin:0 0 12px;color:#0c2340;font-size:16px;font-weight:700">What happens next?</h3>
-          <p style="margin:0 0 12px;color:#475569;font-size:15px;line-height:1.6">Kevin from Tenerife Weather Forum will be in touch with you shortly to arrange your prize. Keep an eye on your inbox over the next few days.</p>
+          <p style="margin:0 0 12px;color:#475569;font-size:15px;line-height:1.6">We'll be in touch with you shortly to arrange your prize. Keep an eye on your inbox over the next few days.</p>
           <p style="margin:0;color:#475569;font-size:15px;line-height:1.6">In the meantime, the leaderboard has now reset — a brand new month has begun. Come back every day to spin, collect points and go for the top spot again!</p>
         </td></tr>
 
