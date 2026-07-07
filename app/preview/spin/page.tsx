@@ -7,16 +7,24 @@ import SpinWheel from "@/components/spin/SpinWheel";
 import WinModal, { type WinResult } from "@/components/spin/WinModal";
 import SpinLeaderboard from "@/components/spin/SpinLeaderboard";
 
-// ─── Responsive wheel size ────────────────────────────────────────────────────
+// ─── Responsive wheel size — fits inside the visible viewport ─────────────────
+// Fixed UI above the wheel: navbar (~128px) + preview banner (~28px) +
+// user header (~44px) + title (~110px) + pill (~80px) + gaps (~40px) ≈ 430px
+const CHROME_HEIGHT = 430;
+
 function useWheelSize() {
-  const [size, setSize] = useState(480);
+  const [size, setSize] = useState(380);
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
-      if (vw < 480)  setSize(Math.min(vw - 20, 340));
-      else if (vw < 768)  setSize(420);
-      else if (vw < 1200) setSize(460);
-      else setSize(500);
+      const vh = window.innerHeight;
+      const byHeight = Math.max(220, vh - CHROME_HEIGHT);
+      let byWidth: number;
+      if (vw < 480)       byWidth = vw - 20;
+      else if (vw < 768)  byWidth = 380;
+      else if (vw < 1200) byWidth = 420;
+      else                byWidth = 480;
+      setSize(Math.min(byWidth, byHeight));
     };
     update();
     window.addEventListener("resize", update);
@@ -105,128 +113,18 @@ function useSpinSound() {
 // ─── Tropical background ──────────────────────────────────────────────────────
 function TropicalBackground() {
   return (
-    <div className="fixed inset-0 overflow-hidden" style={{ zIndex: 0 }} aria-hidden="true">
-      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
-        style={{ width: "100%", height: "100%" }}>
-        <defs>
-          <linearGradient id="bgSky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#38bdf8" />
-            <stop offset="35%"  stopColor="#0284c7" />
-            <stop offset="70%"  stopColor="#0369a1" />
-            <stop offset="100%" stopColor="#0c4a6e" />
-          </linearGradient>
-          <linearGradient id="bgSea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#0369a1" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#06122b" />
-          </linearGradient>
-          <radialGradient id="sunHalo" cx="80%" cy="14%" r="22%">
-            <stop offset="0%"   stopColor="#fde68a" stopOpacity="0.55" />
-            <stop offset="100%" stopColor="#fde68a" stopOpacity="0"   />
-          </radialGradient>
-          <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
-            <stop offset="0%"   stopColor="transparent" />
-            <stop offset="100%" stopColor="rgba(0,0,0,0.5)" />
-          </radialGradient>
-        </defs>
-
-        {/* Sky */}
-        <rect width="1440" height="900" fill="url(#bgSky)" />
-        {/* Sun halo */}
-        <rect width="1440" height="900" fill="url(#sunHalo)" />
-        {/* Sun */}
-        <circle cx="1160" cy="110" r="44" fill="#fde68a" opacity="0.65" />
-        <circle cx="1160" cy="110" r="28" fill="#fbbf24" opacity="0.8"  />
-
-        {/* Mount Teide silhouette */}
-        <path d="M380,660 L600,260 L680,380 L730,210 L800,310 L880,390 L1060,660 Z"
-          fill="#1a2e1a" opacity="0.72" />
-        {/* Snow cap */}
-        <path d="M700,295 L730,210 L760,295 Z" fill="white" opacity="0.5" />
-
-        {/* Coast / green land strip */}
-        <path d="M0,695 Q180,678 400,695 Q620,712 820,688 Q1020,668 1200,682 Q1360,692 1440,672 L1440,900 L0,900 Z"
-          fill="#133913" opacity="0.55" />
-
-        {/* Sea */}
-        <path d="M0,728 Q200,712 440,728 Q660,744 880,720 Q1060,700 1260,716 Q1380,724 1440,710 L1440,900 L0,900 Z"
-          fill="url(#bgSea)" />
-        {/* Sea shimmer */}
-        <path d="M0,762 Q350,749 700,762 Q1050,775 1440,754"
-          stroke="rgba(255,255,255,0.14)" strokeWidth="2" fill="none" />
-        <path d="M0,795 Q350,783 700,796 Q1050,809 1440,788"
-          stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" fill="none" />
-
-        {/* LEFT palm trunk */}
-        <path d="M82,900 C79,810 86,730 78,648 C74,605 68,574 73,543"
-          stroke="#3d2b1f" strokeWidth="13" strokeLinecap="round" fill="none" />
-        {/* Left leaves */}
-        {[
-          "M73,543 C36,502 -12,482 -34,450",
-          "M73,543 C42,512 18,476 14,440",
-          "M73,543 C63,503 74,456 88,420",
-          "M73,543 C89,506 127,476 156,452",
-          "M73,543 C102,533 149,533 180,522",
-        ].map((d, i) => (
-          <path key={i} d={d} stroke={i % 2 === 0 ? "#1a5c1a" : "#206b20"}
-            strokeWidth="8" strokeLinecap="round" fill="none" />
-        ))}
-        {/* Left coconuts */}
-        <circle cx="70"  cy="556" r="7" fill="#7c4a1e" />
-        <circle cx="84"  cy="562" r="6" fill="#8b5e3c" />
-
-        {/* RIGHT palm trunk */}
-        <path d="M1358,900 C1361,810 1354,730 1362,648 C1366,605 1372,574 1367,543"
-          stroke="#3d2b1f" strokeWidth="13" strokeLinecap="round" fill="none" />
-        {/* Right leaves */}
-        {[
-          "M1367,543 C1404,502 1452,482 1474,450",
-          "M1367,543 C1398,512 1422,476 1426,440",
-          "M1367,543 C1377,503 1366,456 1352,420",
-          "M1367,543 C1351,506 1313,476 1284,452",
-          "M1367,543 C1338,533 1291,533 1260,522",
-        ].map((d, i) => (
-          <path key={i} d={d} stroke={i % 2 === 0 ? "#1a5c1a" : "#206b20"}
-            strokeWidth="8" strokeLinecap="round" fill="none" />
-        ))}
-        {/* Right coconuts */}
-        <circle cx="1370" cy="556" r="7" fill="#7c4a1e" />
-        <circle cx="1356" cy="562" r="6" fill="#8b5e3c" />
-
-        {/* Hibiscus — bottom left */}
-        {[0, 72, 144, 216, 288].map((deg) => (
-          <ellipse key={deg} cx="28" cy="718" rx="7" ry="15"
-            fill="#f43f5e" opacity="0.82"
-            transform={`rotate(${deg}, 28, 735)`} />
-        ))}
-        <circle cx="28" cy="735" r="5" fill="#fde047" />
-
-        {/* Hibiscus — upper left (smaller) */}
-        {[0, 72, 144, 216, 288].map((deg) => (
-          <ellipse key={deg} cx="130" cy="790" rx="5" ry="11"
-            fill="#fb7185" opacity="0.7"
-            transform={`rotate(${deg}, 130, 800)`} />
-        ))}
-        <circle cx="130" cy="800" r="4" fill="#fde047" />
-
-        {/* Hibiscus — bottom right */}
-        {[0, 72, 144, 216, 288].map((deg) => (
-          <ellipse key={deg} cx="1412" cy="742" rx="7" ry="15"
-            fill="#f43f5e" opacity="0.82"
-            transform={`rotate(${deg}, 1412, 758)`} />
-        ))}
-        <circle cx="1412" cy="758" r="5" fill="#fde047" />
-
-        {/* Hibiscus — upper right (smaller) */}
-        {[0, 72, 144, 216, 288].map((deg) => (
-          <ellipse key={deg} cx="1310" cy="792" rx="5" ry="11"
-            fill="#fb7185" opacity="0.7"
-            transform={`rotate(${deg}, 1310, 802)`} />
-        ))}
-        <circle cx="1310" cy="802" r="4" fill="#fde047" />
-
-        {/* Dark vignette edges */}
-        <rect width="1440" height="900" fill="url(#vignette)" />
-      </svg>
+    <div
+      className="fixed inset-0"
+      aria-hidden="true"
+      style={{
+        zIndex: 0,
+        backgroundImage: "url(/spin-bg.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center top",
+      }}
+    >
+      {/* Dark overlay so text/wheel stays readable */}
+      <div className="absolute inset-0" style={{ background: "rgba(0,10,28,0.45)" }} />
     </div>
   );
 }
@@ -234,7 +132,7 @@ function TropicalBackground() {
 // ─── "SUPER LUCKY SPIN" title ─────────────────────────────────────────────────
 function SpinTitle() {
   return (
-    <div className="text-center select-none" style={{ lineHeight: 1.05 }}>
+    <div className="text-center select-none" style={{ lineHeight: 1.0, marginBottom: -4 }}>
       <style>{`
         @keyframes twinkle { 0%,100%{opacity:.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.25)} }
         .spark { display:inline-block; animation: twinkle 1.8s ease-in-out infinite; }
@@ -432,11 +330,11 @@ export default function SpinPage() {
         </header>
 
         {/* Main */}
-        <main className="max-w-7xl mx-auto px-3 sm:px-4 py-6">
-          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 justify-center">
+        <main className="max-w-7xl mx-auto px-3 sm:px-4 py-3">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 justify-center">
 
             {/* ── CENTER: Title + Wheel + Bottom pill ── */}
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-2">
 
               <SpinTitle />
 
