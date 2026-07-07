@@ -72,6 +72,9 @@ export default function SpinWheel({ rotation, spinning, winnerIdx, size = 460 }:
           {SPIN_SEGMENTS.map((seg, i) => {
             const mid = i * DEG + DEG / 2 - 90;
             const textAngle = mid + 90;
+            // Segments where mid is 0°–180° have text rotated past 90° and become
+            // upside-down from the viewer's perspective. Add 180° to flip them back.
+            const isFlipped = mid > 0 && mid < 180;
             const words = seg.label.split(" ");
             const nameLine   = words[0];
             const pointsLine = seg.isSpinAgain ? words[1] : `+${seg.points}`;
@@ -80,7 +83,13 @@ export default function SpinWheel({ rotation, spinning, winnerIdx, size = 460 }:
               <g key={i}>
                 <path d={segPath(i)} fill={seg.color} stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
                 <g transform={`rotate(${textAngle}, ${CX}, ${CY})`}>
-                  <text x={CX} y={CY - TEXT_R} textAnchor="middle" fontFamily="system-ui,sans-serif" fill={seg.textColor}>
+                  <text
+                    x={CX} y={CY - TEXT_R}
+                    textAnchor="middle"
+                    fontFamily="system-ui,sans-serif"
+                    fill={seg.textColor}
+                    transform={isFlipped ? `rotate(180, ${CX}, ${CY - TEXT_R})` : undefined}
+                  >
                     <tspan x={CX} dy="-9"  fontSize="10" fontWeight="600" opacity="0.9">{nameLine}</tspan>
                     <tspan x={CX} dy="19"  fontSize="18" fontWeight="900">{pointsLine}</tspan>
                   </text>
