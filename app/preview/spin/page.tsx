@@ -41,14 +41,15 @@ export default function SpinPage() {
   const router    = useRouter();
   const wheelSize = useWheelSize();
 
-  const [userData,  setUserData]  = useState<UserData | null>(null);
-  const [loading,   setLoading]   = useState(true);
-  const [rotation,  setRotation]  = useState(0);
-  const [spinning,  setSpinning]  = useState(false);
-  const [winnerIdx, setWinnerIdx] = useState<number | null>(null);
-  const [modal,     setModal]     = useState<WinResult | null>(null);
-  const [lastWin,   setLastWin]   = useState<WinResult | null>(null);
-  const [error,     setError]     = useState<string | null>(null);
+  const [userData,   setUserData]   = useState<UserData | null>(null);
+  const [loading,    setLoading]    = useState(true);
+  const [rotation,   setRotation]   = useState(0);
+  const [spinning,   setSpinning]   = useState(false);
+  const [winnerIdx,  setWinnerIdx]  = useState<number | null>(null);
+  const [modal,      setModal]      = useState<WinResult | null>(null);
+  const [lastWin,    setLastWin]    = useState<WinResult | null>(null);
+  const [error,      setError]      = useState<string | null>(null);
+  const [spinCount,  setSpinCount]  = useState(0); // increments after each spin to refresh leaderboard
   const rotRef = useRef(0);
 
   // ─── Auth & load ───────────────────────────────────────────────────────────
@@ -99,6 +100,7 @@ export default function SpinPage() {
         };
         setModal(result);
         setLastWin(result);
+        setSpinCount(c => c + 1); // triggers leaderboard re-fetch
         // Re-fetch fresh user state — avoids manual state patching bugs
         await fetchUserData();
       }, 6200);
@@ -289,7 +291,7 @@ export default function SpinPage() {
 
           {/* ── RIGHT: leaderboard ── */}
           <div className="w-full sm:max-w-sm lg:max-w-none lg:w-72 order-3 flex-shrink-0">
-            <MobileLeaderboard />
+            <MobileLeaderboard spinCount={spinCount} />
           </div>
 
         </div>
@@ -299,7 +301,7 @@ export default function SpinPage() {
 }
 
 // ─── Collapsible leaderboard wrapper ─────────────────────────────────────────
-function MobileLeaderboard() {
+function MobileLeaderboard({ spinCount }: { spinCount: number }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-2xl overflow-hidden"
@@ -316,7 +318,8 @@ function MobileLeaderboard() {
         </span>
       </button>
       <div className={`px-5 pb-5 lg:block ${open ? "block" : "hidden"}`}>
-        <SpinLeaderboard />
+        {/* key=spinCount forces re-mount + re-fetch after each spin */}
+        <SpinLeaderboard key={spinCount} />
       </div>
     </div>
   );
