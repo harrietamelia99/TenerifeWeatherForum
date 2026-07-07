@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { SPIN_SEGMENTS } from "@/lib/spinSegments";
+import gsap from "gsap";
 
 export interface WinResult {
   segmentIndex: number;
@@ -22,16 +24,36 @@ interface WinModalProps {
 }
 
 export default function WinModal({ result, onDismiss }: WinModalProps) {
-  const color = SPIN_SEGMENTS[result.segmentIndex]?.color ?? "#053f5c";
+  const color   = SPIN_SEGMENTS[result.segmentIndex]?.color ?? "#053f5c";
+  const cardRef = useRef<HTMLDivElement>(null);
+  const bgRef   = useRef<HTMLDivElement>(null);
+
+  // GSAP entrance: background fades in, card bounces up from below
+  useEffect(() => {
+    const tl = gsap.timeline();
+    if (bgRef.current) {
+      tl.from(bgRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
+    }
+    if (cardRef.current) {
+      tl.from(cardRef.current, {
+        scale:   0.35,
+        opacity: 0,
+        y:       40,
+        duration: 0.65,
+        ease:    "elastic.out(1, 0.55)",
+      }, "-=0.1");
+    }
+    return () => { tl.kill(); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
+      ref={bgRef}
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
       style={{ background: "rgba(2,15,30,0.88)", backdropFilter: "blur(6px)" }}
       onClick={onDismiss}
     >
       <style>{`
-        @keyframes popIn  { 0%{opacity:0;transform:scale(.4) translateY(24px)} 65%{transform:scale(1.06) translateY(-6px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
         @keyframes floatUp{ 0%{opacity:0;transform:translateY(0) scale(0)} 20%{opacity:1;transform:translateY(-12px) scale(1)} 80%{opacity:1} 100%{opacity:0;transform:translateY(-60px) scale(.5)} }
         @keyframes shimmer{ 0%,100%{opacity:.6} 50%{opacity:1} }
       `}</style>
@@ -44,11 +66,11 @@ export default function WinModal({ result, onDismiss }: WinModalProps) {
             animation: `floatUp 1.6s ease-out ${s.delay}s forwards` }} />
       ))}
 
-      {/* Card */}
+      {/* Card — GSAP animates this via cardRef */}
       <div
+        ref={cardRef}
         className="relative w-full max-w-sm rounded-3xl overflow-hidden text-center"
         style={{
-          animation: "popIn .5s cubic-bezier(.34,1.56,.64,1) forwards",
           background: result.isSpinAgain
             ? "linear-gradient(160deg,#1a0505,#3b0808)"
             : `linear-gradient(160deg,#051525,${color}22 60%,#051525)`,
