@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 
 function verifyAdmin(req: NextRequest): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminPassword = process.env.ADMIN_PASSWORD_WHEEL;
   const provided = req.headers.get("x-admin-password");
   return !!adminPassword && provided === adminPassword;
 }
