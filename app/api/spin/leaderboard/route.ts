@@ -10,6 +10,7 @@ export async function GET() {
       .from("spin_users")
       .select("id, email, display_name, monthly_points")
       .order("monthly_points", { ascending: false })
+      .order("last_spin_at",   { ascending: true })  // tiebreaker: whoever got there first
       .limit(10);
 
     if (error) throw error;

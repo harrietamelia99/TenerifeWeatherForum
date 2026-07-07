@@ -178,13 +178,18 @@ export default function SpinAdminPage() {
             <h1 className="text-2xl font-black" style={{ color: "#fbbf24" }}>Lucky Spin Admin</h1>
             <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>Tenerife Weather Forum · Preview</p>
           </div>
-          <button
-            onClick={handleArchive}
-            className="px-4 py-2 rounded-lg text-sm font-semibold"
-            style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.35)" }}
-          >
-            Archive &amp; Reset Month ↻
-          </button>
+          <div className="text-right">
+            <button
+              onClick={handleArchive}
+              className="px-4 py-2 rounded-lg text-sm font-semibold"
+              style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.35)" }}
+            >
+              Archive &amp; Reset Month ↻
+            </button>
+            <p className="text-xs mt-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>
+              Ties broken by who reached the score first
+            </p>
+          </div>
         </div>
 
         {/* Tabs */}

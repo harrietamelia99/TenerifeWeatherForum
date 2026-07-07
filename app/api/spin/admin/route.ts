@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
       .from("spin_users")
       .select("id, email, display_name, total_points, monthly_points")
       .order("monthly_points", { ascending: false })
+      .order("last_spin_at",   { ascending: true })  // tiebreaker: whoever got there first
       .limit(20);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -98,6 +99,7 @@ export async function POST(req: NextRequest) {
       .from("spin_users")
       .select("id, email, display_name, monthly_points")
       .order("monthly_points", { ascending: false })
+      .order("last_spin_at",   { ascending: true })  // tiebreaker: whoever got there first
       .gt("monthly_points", 0)
       .limit(3);
 
