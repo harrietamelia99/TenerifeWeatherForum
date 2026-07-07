@@ -199,17 +199,17 @@ export default function PixiWheel({
         const w2 = rest.join(" ");
 
         // Icon emoji
-        add(seg.icon, { fontSize: 14 }, 170);
+        add(seg.icon, { fontSize: 19 }, 172);
         // Name line 1
-        add(w1.toUpperCase(), { fontSize: 8, fontWeight: "900", fill: seg.textColor }, 151);
+        add(w1.toUpperCase(), { fontSize: 10, fontWeight: "900", fill: seg.textColor }, 151);
         // Name line 2
-        if (w2) add(w2.toUpperCase(), { fontSize: 8, fontWeight: "900", fill: seg.textColor }, 140);
+        if (w2) add(w2.toUpperCase(), { fontSize: 10, fontWeight: "900", fill: seg.textColor }, 138);
         // Points or FREE
         if (seg.isSpinAgain) {
-          add("FREE", { fontSize: 14, fontWeight: "900", fill: "#ffffff" }, 118);
+          add("FREE", { fontSize: 17, fontWeight: "900", fill: "#ffffff" }, 114);
         } else {
-          add(`+${seg.points}`, { fontSize: 17, fontWeight: "900", fill: seg.textColor }, 118);
-          add("POINTS", { fontSize: 6.5, fontWeight: "700", fill: seg.textColor, letterSpacing: 0.5 }, 101);
+          add(`+${seg.points}`, { fontSize: 20, fontWeight: "900", fill: seg.textColor }, 114);
+          add("POINTS", { fontSize: 8, fontWeight: "700", fill: seg.textColor, letterSpacing: 0.5 }, 96);
         }
       });
 
