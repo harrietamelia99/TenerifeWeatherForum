@@ -42,12 +42,12 @@ export async function POST(req: NextRequest) {
 
     // Await the send so the serverless function doesn't terminate before
     // emails are dispatched. maxDuration: 60 gives enough headroom.
-    // force=true ensures Kevin's manual forecast always goes out even if
-    // the backup cron already sent a placeholder earlier that morning.
+    // No force flag — sendDailyDigest's "already sent today" guard prevents
+    // double-sending if Kevin saves the forecast after the backup cron has run.
     let emailsSent = 0;
     let emailsFailed = 0;
     try {
-      const result = await sendDailyDigest(forecast, true);
+      const result = await sendDailyDigest(forecast);
       emailsSent = result.sent;
       emailsFailed = result.failed;
       console.log(`[admin/forecast] Digest triggered: sent=${result.sent}, failed=${result.failed}`);
