@@ -248,21 +248,16 @@ export default function PixiWheel({
       hubMask.beginFill(0xffffff); hubMask.drawCircle(0, 0, 44); hubMask.endFill();
 
       try {
-        // Load logo; fromURL returns a Promise in PixiJS v7
-        const logoTex = await (PIXI.Texture as any).fromURL("/twf-logo.png");
+        // Load the pre-cropped 256×256 icon (square badge, no text — much sharper)
+        const logoTex = await (PIXI.Texture as any).fromURL("/twf-icon.png");
         const logo = new PIXI.Sprite(logoTex) as any;
 
-        // Scale so the image height fills the hub diameter (88px internal)
-        // Logo is 300×56px; icon is ~56×56 (leftmost portion)
-        const targetH = 92;
-        logo.height = targetH;
-        logo.scale.x = logo.scale.y; // preserve aspect ratio
-
-        // Icon centre is at ~half of original image height from left edge.
-        // After scaling, icon width ≈ targetH. Position left edge at -targetH/2
-        // so the icon is centred at (0,0).
-        logo.anchor.set(0, 0.5);
-        logo.x = -targetH / 2;
+        // Square icon — centre it and size to fill the hub mask area (88px diameter)
+        const targetSize = 90;
+        logo.width  = targetSize;
+        logo.height = targetSize;
+        logo.anchor.set(0.5, 0.5);
+        logo.x = 0;
         logo.y = 0;
 
         hub.addChild(hubMask);
