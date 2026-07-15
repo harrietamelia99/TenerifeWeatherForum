@@ -13,9 +13,8 @@ const PixiWheel = dynamic(() => import("@/components/spin/PixiWheel"), { ssr: fa
 
 // ─── Responsive wheel size ─────────────────────────────────────────────────────
 // Fixed chrome above/below the wheel in the left column:
-// navbar(128) + banner(28) + header(44) + title(100) + pill(80) + gaps(48) ≈ 428
-// Title is now full-width above the flex row, but still constrains total height.
-const CHROME_HEIGHT = 428;
+// navbar(100) + mini-bar(36) + title(100) + pill(80) + gaps(48) ≈ 364
+const CHROME_HEIGHT = 364;
 
 function useWheelSize() {
   const [size, setSize] = useState(380);
@@ -417,37 +416,24 @@ export default function SpinPage() {
     <>
       <TropicalBackground />
 
-      <div className="relative min-h-screen pt-[128px]" style={{ zIndex: 1 }}>
+      <div className="relative min-h-screen pt-[100px]" style={{ zIndex: 1 }}>
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
-        {/* Preview banner */}
-        <div className="w-full py-1.5 text-center text-xs font-bold uppercase tracking-widest"
-          style={{ background: "#fbbf24", color: "#1a0500" }}>
-          Preview — not live yet
-        </div>
-
-        {/* User header */}
-        <header className="flex items-center justify-between px-4 sm:px-6 py-2.5"
-          style={{ background: "rgba(4,15,32,0.75)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
-              Tenerife Weather Forum
-            </p>
-            <p className="text-sm font-black" style={{ color: "#fbbf24" }}>Lucky Spin ✦</p>
-          </div>
+        {/* Minimal top bar — sign out only */}
+        <div className="flex items-center justify-end px-4 py-2"
+          style={{ background: "rgba(4,15,32,0.6)", backdropFilter: "blur(10px)" }}>
           <div className="flex items-center gap-3">
-            <div className="hidden sm:block text-right">
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Signed in as</p>
-              <p className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.85)" }}>{displayName}</p>
-            </div>
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+              {displayName}
+            </span>
             <button
               onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold"
-              style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.12)" }}>
+              className="px-3 py-1 rounded-lg text-xs font-semibold"
+              style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)" }}>
               Sign out
             </button>
           </div>
-        </header>
+        </div>
 
         {/* Main */}
         <main className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-6">
