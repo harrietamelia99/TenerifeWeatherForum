@@ -7,6 +7,9 @@ import gsap from "gsap";
 // ─── Geometry constants (all in SVG-space pixels) ─────────────────────────────
 const SIZE = 500;
 const CX = 250, CY = 250, R = 205;
+// Extra canvas headroom so the halo glow rings (which extend ~25px above CY-R)
+// are never clipped at the canvas top edge.
+const TOP_PAD = 32;
 const DEG  = 30;
 const LC   = 36;     // marquee light count
 const LR   = 232;    // light ring radius
@@ -69,19 +72,25 @@ export default function PixiWheel({
       // would cause the wheel to appear off-centre in the page layout.
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const resolution = (size / SIZE) * dpr;
+      // Canvas is SIZE×(SIZE+TOP_PAD) internally; CSS height gets the same
+      // proportional extra pixels so the halo glow above the wheel is visible.
+      const cssTopPad = Math.round((size / SIZE) * TOP_PAD);
       const app = new (PIXI as any).Application({
-        width: SIZE, height: SIZE,
+        width: SIZE, height: SIZE + TOP_PAD,
         backgroundAlpha: 0,
         antialias: true,
         resolution,
-        autoDensity: false,   // we set the CSS size ourselves below
+        autoDensity: false,
       }) as any;
 
       const canvas = app.view as HTMLCanvasElement;
       canvas.style.width  = `${size}px`;
-      canvas.style.height = `${size}px`;
+      canvas.style.height = `${size + cssTopPad}px`;
       canvas.style.display = "block";
       hostRef.current.appendChild(canvas);
+
+      // Shift the entire scene down so glow/pointer clear the canvas top edge
+      app.stage.y = TOP_PAD;
 
       // ── Outer ambient glow ring (pre-baked — no shader needed) ───────────
       // A radial gradient of concentric transparent rings reads as "glow"
@@ -381,10 +390,11 @@ export default function PixiWheel({
     }
   }, [winnerIdx]);
 
+  const cssTopPad = Math.round((size / SIZE) * TOP_PAD);
   return (
     <div
       ref={hostRef}
-      style={{ width: size, height: size, position: "relative", flexShrink: 0 }}
+      style={{ width: size, height: size + cssTopPad, position: "relative", flexShrink: 0 }}
     />
   );
 }
