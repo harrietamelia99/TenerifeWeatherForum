@@ -40,11 +40,10 @@ export default function PixiWheel({
   // Everything PixiJS lives here; we use a plain object ref so it survives
   // across the rotation/winnerIdx effect without reinstalling the component.
   const px = useRef<{
-    app:        any;
-    wheel:      any;         // rotating PIXI.Container
-    pLayer:     any;         // particle layer
-    PIXI:       any;
-    GlowFilter: any;
+    app:         any;
+    wheel:       any;         // rotating PIXI.Container
+    pLayer:      any;         // particle layer
+    PIXI:        any;
     lightPeriod: { v: number }; // mutable speed for ticker
   } | null>(null);
 
@@ -56,32 +55,38 @@ export default function PixiWheel({
     let gone = false;
 
     (async () => {
-      const [PIXI, { GlowFilter }] = await Promise.all([
-        import("pixi.js"),
-        import("pixi-filters"),
-      ]);
+      // Only import PIXI — no GlowFilter (we replace shader-based glow with
+      // pre-baked circles, cutting render cost from ~4 GPU passes/frame to 0)
+      const PIXI = await import("pixi.js");
       if (gone || !hostRef.current) return;
 
-      // ── App ──────────────────────────────────────────────────────────────
+      // ── App — resolution fixed at 1 (not devicePixelRatio) ───────────────
+      // Using dpr=2 quadruples the pixel count and makes filters 4× slower.
+      // CSS scaling handles sharpness; 1:1 internal keeps the GPU load low.
       const app = new (PIXI as any).Application({
         width: SIZE, height: SIZE,
         backgroundAlpha: 0,
         antialias: true,
-        resolution: Math.min(window.devicePixelRatio || 1, 2),
-        autoDensity: true,
+        resolution: 1,
+        autoDensity: false,
       }) as any;
 
       const canvas = app.view as HTMLCanvasElement;
       canvas.style.display = "block";
       hostRef.current.appendChild(canvas);
 
-      // ── Outer ambient glow ring ──────────────────────────────────────────
+      // ── Outer ambient glow ring (pre-baked — no shader needed) ───────────
+      // A radial gradient of concentric transparent rings reads as "glow"
+      // without any per-frame GPU blur pass.
       const halo = new PIXI.Graphics();
-      halo.lineStyle(16, 0xfbbf24, 0.08);
-      halo.drawCircle(CX, CY, R + 54);
-      halo.filters = [
-        new GlowFilter({ color: 0xfbbf24, distance: 32, outerStrength: 1.2, innerStrength: 0 }),
-      ];
+      [
+        { r: R + 70, a: 0.03, w: 10 },
+        { r: R + 58, a: 0.06, w: 10 },
+        { r: R + 46, a: 0.10, w: 10 },
+      ].forEach(({ r, a, w }) => {
+        halo.lineStyle(w, 0xfbbf24, a);
+        halo.drawCircle(CX, CY, r);
+      });
       app.stage.addChild(halo);
 
       // ── Metallic gold rim (layered circles) ──────────────────────────────
@@ -99,23 +104,36 @@ export default function PixiWheel({
       });
       app.stage.addChild(rim);
 
-      // ── Marquee lights ───────────────────────────────────────────────────
+      // ── Marquee lights — pre-baked soft glow, no shader ──────────────────
+      // Each light = a large semi-transparent amber halo circle (static,
+      // drawn once) + a small bright core dot (alpha animated via ticker).
+      // Zero GlowFilter passes per frame.
       const lightsCtn = new PIXI.Container() as any;
       app.stage.addChild(lightsCtn);
       const lights: any[] = [];
-      // One shared GlowFilter instance on the container (cheaper)
-      lightsCtn.filters = [
-        new GlowFilter({ color: 0xfbbf24, distance: 16, outerStrength: 2.5, innerStrength: 0.8 }),
-      ];
 
       for (let i = 0; i < LC; i++) {
         const a  = toRad(i * (360 / LC) - 90);
+        const lx = CX + LR * Math.cos(a);
+        const ly = CY + LR * Math.sin(a);
+
+        // Static soft halo (drawn once, never changes)
+        const glowRing = new PIXI.Graphics();
+        glowRing.beginFill(0xfbbf24, 0.18);
+        glowRing.drawCircle(0, 0, 13);
+        glowRing.endFill();
+        glowRing.beginFill(0xfbbf24, 0.10);
+        glowRing.drawCircle(0, 0, 18);
+        glowRing.endFill();
+        glowRing.x = lx; glowRing.y = ly;
+        lightsCtn.addChild(glowRing);
+
+        // Animated bright core
         const lg = new PIXI.Graphics();
         lg.beginFill(0xfff8e1, 1);
         lg.drawCircle(0, 0, 5.5);
         lg.endFill();
-        lg.x = CX + LR * Math.cos(a);
-        lg.y = CY + LR * Math.sin(a);
+        lg.x = lx; lg.y = ly;
         lightsCtn.addChild(lg);
         lights.push(lg);
       }
@@ -234,12 +252,13 @@ export default function PixiWheel({
       mtn.endFill();
       hub.addChild(mtn);
 
-      // Sun with glow
+      // Sun — pre-baked soft glow (two concentric circles, no shader)
       const sun = new PIXI.Graphics();
-      sun.beginFill(0xfbbf24); sun.drawCircle(13, -18, 8); sun.endFill();
-      sun.filters = [new GlowFilter({ color: 0xfbbf24, distance: 12, outerStrength: 3, innerStrength: 1 })];
+      sun.beginFill(0xfbbf24, 0.3); sun.drawCircle(13, -18, 14); sun.endFill();
+      sun.beginFill(0xfbbf24, 0.5); sun.drawCircle(13, -18, 10); sun.endFill();
+      sun.beginFill(0xfef9c3, 1.0); sun.drawCircle(13, -18, 7);  sun.endFill();
       hub.addChild(sun);
-      gsap.to(sun, { alpha: 0.65, duration: 1.6, repeat: -1, yoyo: true, ease: "power2.inOut" });
+      gsap.to(sun, { alpha: 0.6, duration: 1.6, repeat: -1, yoyo: true, ease: "power2.inOut" });
 
       // Text
       const tnf = new PIXI.Text("Tenerife", { ...baseFont, fontSize: 7, fontWeight: "900", fill: "#ffffff" });
@@ -265,7 +284,10 @@ export default function PixiWheel({
       ptr.drawPolygon([0, 24, -17, 52, 17, 52]);
       ptr.beginFill(0xfbbf24); ptr.drawCircle(0, 24, 7); ptr.endFill();
       ptr.lineStyle(2, 0xffffff); ptr.drawCircle(0, 24, 6);
-      ptr.filters = [new GlowFilter({ color: 0xfbbf24, distance: 16, outerStrength: 3 })];
+      // Pre-baked pointer glow (no shader — just a larger transparent circle behind)
+      const ptrGlow = new PIXI.Graphics();
+      ptrGlow.beginFill(0xfbbf24, 0.22); ptrGlow.drawCircle(0, 28, 22); ptrGlow.endFill();
+      ptrWrap.addChild(ptrGlow);
       ptrWrap.addChild(ptr);
       app.stage.addChild(ptrWrap);
 
@@ -273,7 +295,7 @@ export default function PixiWheel({
       gsap.to(ptrWrap, { y: -6, duration: 1.3, repeat: -1, yoyo: true, ease: "power2.inOut" });
 
       // ── Store refs ───────────────────────────────────────────────────────
-      px.current = { app, wheel, pLayer, PIXI, GlowFilter, lightPeriod };
+      px.current = { app, wheel, pLayer, PIXI, lightPeriod };
     })();
 
     return () => {
@@ -311,7 +333,7 @@ export default function PixiWheel({
   // ── Win particle burst ───────────────────────────────────────────────────
   useEffect(() => {
     if (winnerIdx === null || !px.current) return;
-    const { PIXI, GlowFilter, pLayer } = px.current;
+    const { PIXI, pLayer } = px.current;
     const seg = SPIN_SEGMENTS[winnerIdx];
     const segHex = hexN(seg.color);
 
@@ -324,8 +346,7 @@ export default function PixiWheel({
         const w = 4 + Math.random() * 8, h = 3 + Math.random() * 4;
         g.beginFill(col, 0.92); g.drawRect(-w / 2, -h / 2, w, h); g.endFill();
       }
-      // Glow on first 25 particles only (performance)
-      if (i < 25) g.filters = [new GlowFilter({ color: col, distance: 10, outerStrength: 2 })];
+      // No GlowFilter on particles — they're fast-moving and briefly visible
 
       g.x = CX + (Math.random() - 0.5) * 120;
       g.y = CY + (Math.random() - 0.5) * 120;

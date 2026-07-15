@@ -12,9 +12,10 @@ import gsap from "gsap";
 const PixiWheel = dynamic(() => import("@/components/spin/PixiWheel"), { ssr: false });
 
 // ─── Responsive wheel size ─────────────────────────────────────────────────────
-// Fixed chrome above+below wheel: navbar(128) + banner(28) + header(44) +
-// title(110) + pill(80) + gaps(40) ≈ 430 px
-const CHROME_HEIGHT = 430;
+// Fixed chrome above/below the wheel in the left column:
+// navbar(128) + banner(28) + header(44) + title(100) + pill(80) + gaps(48) ≈ 428
+// Title is now full-width above the flex row, but still constrains total height.
+const CHROME_HEIGHT = 428;
 
 function useWheelSize() {
   const [size, setSize] = useState(380);
@@ -449,13 +450,17 @@ export default function SpinPage() {
         </header>
 
         {/* Main */}
-        <main className="max-w-7xl mx-auto px-3 sm:px-4 py-3">
+        <main className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-6">
+
+          {/* Title — full width, centred above the two-column layout */}
+          <div className="flex justify-center mb-4">
+            <SpinTitle />
+          </div>
+
           <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 justify-center">
 
-            {/* ── Centre column: Title + Wheel + Pill ── */}
+            {/* ── Left column: Wheel + Pill ── */}
             <div className="flex flex-col items-center gap-2">
-
-              <SpinTitle />
 
               {/* PixiJS GPU wheel */}
               <PixiWheel
