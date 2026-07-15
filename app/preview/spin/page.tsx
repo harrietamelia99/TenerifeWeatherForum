@@ -246,6 +246,90 @@ interface UserData {
   bonusSpinAvailable: boolean;
 }
 
+// ─── Top bar with burger menu on mobile ──────────────────────────────────────
+function TopBar({ displayName }: { displayName: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <div
+        className="flex items-center justify-between px-4 py-2 flex-shrink-0"
+        style={{ background: "rgba(4,15,32,0.65)", backdropFilter: "blur(14px)", minHeight: 48, position: "relative", zIndex: 50 }}
+      >
+        {/* Left: return to site */}
+        <a href="/" className="btn-primary text-sm py-1.5 px-4">
+          ← Return to site
+        </a>
+
+        {/* Desktop: username + sign out */}
+        <div className="hidden sm:flex items-center gap-3">
+          <span className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{displayName}</span>
+          <button
+            onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
+            className="btn-ghost text-sm py-1.5 px-4">
+            Sign out
+          </button>
+        </div>
+
+        {/* Mobile: hamburger */}
+        <button
+          className="sm:hidden flex flex-col justify-center items-center gap-[5px] p-2 rounded-lg"
+          style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
+          onClick={() => setOpen(o => !o)}
+          aria-label="Menu"
+        >
+          <span
+            style={{
+              display: "block", width: 20, height: 2, borderRadius: 2, background: "white",
+              transition: "transform 200ms, opacity 200ms",
+              transform: open ? "translateY(7px) rotate(45deg)" : "none",
+            }}
+          />
+          <span
+            style={{
+              display: "block", width: 20, height: 2, borderRadius: 2, background: "white",
+              transition: "opacity 200ms",
+              opacity: open ? 0 : 1,
+            }}
+          />
+          <span
+            style={{
+              display: "block", width: 20, height: 2, borderRadius: 2, background: "white",
+              transition: "transform 200ms, opacity 200ms",
+              transform: open ? "translateY(-7px) rotate(-45deg)" : "none",
+            }}
+          />
+        </button>
+      </div>
+
+      {/* Mobile dropdown */}
+      <div
+        className="sm:hidden flex-shrink-0 overflow-hidden transition-all duration-200"
+        style={{
+          maxHeight: open ? 120 : 0,
+          opacity: open ? 1 : 0,
+          background: "rgba(4,15,32,0.96)",
+          backdropFilter: "blur(14px)",
+          borderBottom: open ? "1px solid rgba(255,255,255,0.08)" : "none",
+          zIndex: 49,
+          position: "relative",
+        }}
+      >
+        <div className="px-5 py-4 flex flex-col gap-3">
+          <div className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
+            Signed in as <span style={{ color: "#fbbf24" }}>{displayName}</span>
+          </div>
+          <button
+            onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
+            className="btn-ghost text-sm py-2 px-4 w-full text-left"
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function SpinPage() {
   const { data: session, status } = useSession();
@@ -421,25 +505,8 @@ export default function SpinPage() {
       <div className="relative flex flex-col" style={{ zIndex: 1, height: "100dvh", overflow: "hidden" }}>
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
-        {/* Top bar — return to site + sign out */}
-        <div className="flex items-center justify-between px-4 py-2"
-          style={{ background: "rgba(4,15,32,0.60)", backdropFilter: "blur(12px)", minHeight: 48 }}>
-          {/* Left: return to site */}
-          <a href="/" className="btn-primary text-sm py-1.5 px-4">
-            ← Return to site
-          </a>
-          {/* Right: username + sign out */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs hidden sm:inline" style={{ color: "rgba(255,255,255,0.45)" }}>
-              {displayName}
-            </span>
-            <button
-              onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
-              className="btn-ghost text-sm py-1.5 px-4">
-              Sign out
-            </button>
-          </div>
-        </div>
+        {/* Top bar */}
+        <TopBar displayName={displayName} />
 
         {/* Main — desktop has top padding; mobile fills edge-to-edge */}
         <main className="flex-1 flex flex-col items-center justify-start lg:pt-10 lg:pb-4">
