@@ -458,19 +458,22 @@ export default function SpinPage() {
         </div>
 
         {/* Main — takes remaining height, centres content vertically + horizontally */}
-        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-4">
+        <main className="flex-1 flex flex-col items-center justify-center py-4 overflow-hidden">
 
-          {/* Title */}
-          <div className="flex justify-center mb-4">
-            <SpinTitle />
-          </div>
+          {/* ── Desktop layout — explicit fixed-width container, always centred ── */}
+          <div className="hidden lg:flex flex-col items-center">
 
-          {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
-          {/* CSS grid [1fr auto 1fr] guarantees the wheel sits on the true viewport midpoint */}
-          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "80px", alignItems: "center" }}>
+            {/* Title */}
+            <div className="mb-4">
+              <SpinTitle />
+            </div>
 
-            {/* ── Left: unified spin-controls card (mirrors leaderboard style) ── */}
-            <div className="justify-self-end" style={{ width: 220 }}>
+            {/* Three columns: explicit widths so the wheel is always centred */}
+            {/* Total = 220(left) + 80(gap) + 40(pad) + wheel + 40(pad) + 80(gap) + 220(right) */}
+            <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+
+              {/* ── Left: unified spin-controls card ── */}
+              <div style={{ width: 220, flexShrink: 0, marginRight: 80 }}>
               <div style={{
                 borderRadius: 20, overflow: "hidden",
                 background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
@@ -585,8 +588,8 @@ export default function SpinPage() {
               </div>
             </div>
 
-            {/* ── Centre: Wheel — 20px transparent padding each side keeps halo off the panels ── */}
-            <div className="flex-shrink-0" style={{ padding: "0 20px" }}>
+            {/* ── Centre: Wheel ── */}
+            <div style={{ flexShrink: 0, padding: "0 20px" }}>
               <PixiWheel
                 rotation={rotation}
                 spinning={spinning}
@@ -596,14 +599,20 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="justify-self-start" style={{ width: 220 }}>
+            <div style={{ width: 220, flexShrink: 0, marginLeft: 80 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
-          </div>
+            </div>{/* end three-columns row */}
+          </div>{/* end desktop flex container */}
 
           {/* ── Mobile / tablet: full-screen app layout ── */}
           <div className="flex lg:hidden flex-col flex-1 min-h-0 w-full">
+
+            {/* Compact title */}
+            <div className="flex justify-center flex-shrink-0 pt-1 pb-1">
+              <SpinTitle />
+            </div>
 
             {/* Wheel — grows to fill available space */}
             <div className="flex-1 min-h-0 flex items-center justify-center">
