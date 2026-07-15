@@ -455,7 +455,7 @@ export default function SpinPage() {
           </div>
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
-          <div className="flex flex-col lg:flex-row items-center gap-5 justify-center w-full">
+          <div className="flex flex-col lg:flex-row items-center gap-10 justify-center w-full">
 
             {/* ── Left column: spin controls ── */}
             <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-48 flex-shrink-0 order-2 lg:order-1">
