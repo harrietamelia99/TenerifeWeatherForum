@@ -482,7 +482,7 @@ export default function SpinPage() {
                 {/* Header */}
                 <div className="px-5 py-4">
                   <span className="text-sm font-bold uppercase tracking-widest" style={{ color: "#fbbf24" }}>
-                    ⭐ Your Points
+                    ⭐ Monthly Points
                   </span>
                 </div>
 
