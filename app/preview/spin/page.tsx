@@ -424,34 +424,20 @@ export default function SpinPage() {
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
         {/* Top bar — return to site + sign out */}
-        <div className="flex items-center justify-between px-4 py-1.5"
-          style={{ background: "rgba(4,15,32,0.60)", backdropFilter: "blur(12px)", minHeight: 42 }}>
+        <div className="flex items-center justify-between px-4 py-2"
+          style={{ background: "rgba(4,15,32,0.60)", backdropFilter: "blur(12px)", minHeight: 48 }}>
           {/* Left: return to site */}
-          <a href="/"
-            className="px-3 py-1 rounded-lg text-xs font-bold"
-            style={{
-              background: "rgba(56,189,248,0.18)",
-              color: "#7dd3fc",
-              border: "1px solid rgba(56,189,248,0.35)",
-              textDecoration: "none",
-              letterSpacing: "0.04em",
-            }}>
+          <a href="/" className="btn-primary text-sm py-1.5 px-4">
             ← Return to site
           </a>
           {/* Right: username + sign out */}
           <div className="flex items-center gap-3">
-            <span className="text-xs hidden sm:inline" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <span className="text-xs hidden sm:inline" style={{ color: "rgba(255,255,255,0.45)" }}>
               {displayName}
             </span>
             <button
               onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
-              className="px-3 py-1 rounded-lg text-xs font-bold"
-              style={{
-                background: "rgba(251,191,36,0.18)",
-                color: "#fbbf24",
-                border: "1px solid rgba(251,191,36,0.45)",
-                letterSpacing: "0.04em",
-              }}>
+              className="btn-ghost text-sm py-1.5 px-4">
               Sign out
             </button>
           </div>
