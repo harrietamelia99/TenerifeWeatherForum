@@ -668,7 +668,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Mobile bottom card ── */}
-            <div className="flex-shrink-0 px-3 pb-2" style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+            <div className="flex-shrink-0 px-3 pb-1" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
 
               {/* Main action card */}
               <div style={{
@@ -680,9 +680,9 @@ export default function SpinPage() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                   {/* Points */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 24 }}>⭐</span>
+                    <span style={{ fontSize: 22 }}>⭐</span>
                     <div>
-                      <div style={{ fontSize: 26, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
+                      <div style={{ fontSize: 24, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
                         fontFamily: "system-ui,sans-serif", textShadow: "0 0 14px rgba(251,191,36,0.5)" }}>
                         {userData.monthlyPoints.toLocaleString()}
                       </div>
@@ -692,22 +692,22 @@ export default function SpinPage() {
                   </div>
 
                   {/* Divider */}
-                  <div style={{ width: 1, height: 40, background: "rgba(255,255,255,0.08)", margin: "0 4px" }} />
+                  <div style={{ width: 1, height: 36, background: "rgba(255,255,255,0.1)", margin: "0 8px" }} />
 
                   {/* Countdown */}
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.35)",
-                      letterSpacing: "2px", marginBottom: 4, fontFamily: "system-ui,sans-serif" }}>
+                      letterSpacing: "2px", marginBottom: 3, fontFamily: "system-ui,sans-serif" }}>
                       📅 NEXT SPIN IN
                     </div>
                     {showCountdown ? (
-                      <div style={{ fontSize: 22, fontWeight: 900, color: "#fbbf24",
+                      <div style={{ fontSize: 20, fontWeight: 900, color: "#fbbf24",
                         fontFamily: "system-ui,sans-serif", letterSpacing: "0.04em", lineHeight: 1,
                         textShadow: "0 0 12px rgba(251,191,36,0.4)" }}>
                         {countdownDisplay}
                       </div>
                     ) : (
-                      <div style={{ fontSize: 22, fontWeight: 900, color: "#34d399",
+                      <div style={{ fontSize: 20, fontWeight: 900, color: "#34d399",
                         fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
                         READY!
                       </div>
@@ -715,7 +715,7 @@ export default function SpinPage() {
                   </div>
                 </div>
 
-                {/* SPIN button — full width, prominent */}
+                {/* SPIN button */}
                 <button
                   ref={btnRef}
                   onClick={handleSpinClick}
@@ -738,23 +738,25 @@ export default function SpinPage() {
                   1 FREE SPIN EVERY 24 HOURS
                 </div>
 
-                {/* Bonus / error / last result */}
+                {/* Bonus / error */}
                 {userData.bonusSpinAvailable && (
-                  <div style={{ marginTop: 10, textAlign: "center" }}>
+                  <div style={{ marginTop: 8, textAlign: "center" }}>
                     <span style={{ fontSize: 12, fontWeight: 700, color: "#34d399" }}>✦ Bonus spin available!</span>
                   </div>
                 )}
                 {error && (
                   <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
                     border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
-                    padding: "6px 12px", margin: "10px 0 0", textAlign: "center" }}>
+                    padding: "6px 12px", margin: "8px 0 0", textAlign: "center" }}>
                     {error}
                   </p>
                 )}
               </div>
+            </div>
 
-              {/* Leaderboard toggle strip */}
-              <MobileLeaderboard spinCount={spinCount} />
+            {/* Leaderboard toggle strip — bottom sheet opens above everything */}
+            <div className="flex-shrink-0 px-3 pb-2">
+              <BottomSheetLeaderboard spinCount={spinCount} />
             </div>
           </div>
         </main>
@@ -763,7 +765,7 @@ export default function SpinPage() {
   );
 }
 
-// ─── Collapsible leaderboard wrapper ─────────────────────────────────────────
+// ─── Desktop leaderboard card (inline, always open on lg) ────────────────────
 function MobileLeaderboard({ spinCount }: { spinCount: number }) {
   const [open, setOpen] = useState(false);
   return (
@@ -782,19 +784,92 @@ function MobileLeaderboard({ spinCount }: { spinCount: number }) {
           {open ? "▲ hide" : "▼ show"}
         </span>
       </button>
-      {/* Scrollable content — max-height so it doesn't overflow the fixed viewport */}
-      <div
-        className="lg:block"
-        style={{
-          display: open ? "block" : "none",
-          overflowY: "auto",
-          maxHeight: "38vh",
-          WebkitOverflowScrolling: "touch",
-          padding: "0 20px 16px",
-        }}
-      >
+      <div className={`lg:block ${open ? "block" : "hidden"}`} style={{ padding: "0 20px 16px" }}>
         <SpinLeaderboard key={spinCount} />
       </div>
     </div>
+  );
+}
+
+// ─── Mobile bottom-sheet leaderboard ─────────────────────────────────────────
+// Uses position:fixed so it escapes the page's overflow:hidden container
+// and can scroll freely on iOS Safari.
+function BottomSheetLeaderboard({ spinCount }: { spinCount: number }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {/* Toggle pill */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "14px 20px", borderRadius: 20, touchAction: "manipulation",
+          background: "rgba(4,12,28,0.88)", border: "1px solid rgba(255,255,255,0.12)",
+          backdropFilter: "blur(18px)", cursor: "pointer",
+        }}>
+        <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
+          color: "#fbbf24", textTransform: "uppercase" }}>
+          🏆 Leaderboard
+        </span>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>
+          {open ? "▲ hide" : "▼ show"}
+        </span>
+      </button>
+
+      {/* Dim backdrop */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 998,
+            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(2px)",
+          }}
+        />
+      )}
+
+      {/* Bottom sheet — fixed, scrollable, bypasses all overflow:hidden */}
+      <div
+        style={{
+          position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 999,
+          background: "rgba(4,10,28,0.98)",
+          borderTop: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "22px 22px 0 0",
+          maxHeight: "65vh",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          transform: open ? "translateY(0)" : "translateY(100%)",
+          transition: "transform 280ms cubic-bezier(0.32,0.72,0,1)",
+          willChange: "transform",
+        } as React.CSSProperties}
+      >
+        {/* Drag handle */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 4px" }}>
+          <div style={{ width: 40, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.18)" }} />
+        </div>
+        {/* Header */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "8px 20px 12px",
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          position: "sticky", top: 0,
+          background: "rgba(4,10,28,0.98)",
+        }}>
+          <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px",
+            color: "#fbbf24", textTransform: "uppercase" }}>
+            🏆 Leaderboard
+          </span>
+          <button
+            onClick={() => setOpen(false)}
+            style={{ fontSize: 20, lineHeight: 1, color: "rgba(255,255,255,0.35)",
+              background: "none", border: "none", cursor: "pointer", padding: "4px 8px" }}>
+            ✕
+          </button>
+        </div>
+        {/* Content */}
+        <div style={{ padding: "4px 20px 40px" }}>
+          <SpinLeaderboard key={spinCount} />
+        </div>
+      </div>
+    </>
   );
 }
