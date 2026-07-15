@@ -233,7 +233,7 @@ export default function PixiWheel({
         const w2 = rest.join(" ");
 
         // Icon emoji
-        add(seg.icon, { fontSize: 19 }, 172);
+        add(seg.icon, { fontSize: 24 }, 172);
         // Name line 1
         add(w1.toUpperCase(), { fontSize: 10, fontWeight: "900", fill: seg.textColor }, 151);
         // Name line 2
