@@ -60,19 +60,26 @@ export default function PixiWheel({
       const PIXI = await import("pixi.js");
       if (gone || !hostRef.current) return;
 
-      // ── App — match device pixel ratio for crisp rendering ───────────────
-      // GlowFilters are gone so dpr=2 no longer hurts performance.
-      // autoDensity=true makes PixiJS scale the canvas CSS size automatically.
+      // ── App ─────────────────────────────────────────────────────────────────
+      // The internal coordinate space stays at SIZE×SIZE so all the hard-coded
+      // geometry constants (CX, CY, R, …) remain correct.
+      // We adjust `resolution` so the canvas pixel buffer = size×dpr, and then
+      // manually pin the canvas CSS size to exactly `size` px.
+      // This ensures the canvas fills the host div exactly — no overflow that
+      // would cause the wheel to appear off-centre in the page layout.
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const resolution = (size / SIZE) * dpr;
       const app = new (PIXI as any).Application({
         width: SIZE, height: SIZE,
         backgroundAlpha: 0,
         antialias: true,
-        resolution: dpr,
-        autoDensity: true,
+        resolution,
+        autoDensity: false,   // we set the CSS size ourselves below
       }) as any;
 
       const canvas = app.view as HTMLCanvasElement;
+      canvas.style.width  = `${size}px`;
+      canvas.style.height = `${size}px`;
       canvas.style.display = "block";
       hostRef.current.appendChild(canvas);
 
@@ -377,7 +384,7 @@ export default function PixiWheel({
   return (
     <div
       ref={hostRef}
-      style={{ width: size, height: size, position: "relative", flexShrink: 0 }}
+      style={{ width: size, height: size, position: "relative", flexShrink: 0, overflow: "hidden" }}
     />
   );
 }
