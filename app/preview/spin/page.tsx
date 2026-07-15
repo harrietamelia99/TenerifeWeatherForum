@@ -12,23 +12,23 @@ import gsap from "gsap";
 const PixiWheel = dynamic(() => import("@/components/spin/PixiWheel"), { ssr: false });
 
 // ─── Responsive wheel size ─────────────────────────────────────────────────────
-// Chrome above/below the wheel (no site navbar — hidden on spin routes):
-// bar(42) + pt(12) + title(~162) + mb(16) + gap(12) + pill(72) + pb(12) = ~328
-// Add 52px safety buffer → 380
-const CHROME_HEIGHT = 380;
+// 3-column layout: no pill below wheel — only bar(42)+pt(12)+title(~162)+mb(16)+pb(12)=244
+// Add 46px buffer → 290. Width capped so side columns fit alongside.
+const CHROME_HEIGHT = 290;
 
 function useWheelSize() {
-  const [size, setSize] = useState(400);
+  const [size, setSize] = useState(420);
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const byHeight = Math.max(240, vh - CHROME_HEIGHT);
+      const byHeight = Math.max(260, vh - CHROME_HEIGHT);
+      // On desktop the wheel column is centre of 3; cap width so all 3 columns fit
       let byWidth: number;
       if (vw < 480)       byWidth = vw - 24;
-      else if (vw < 768)  byWidth = Math.min(vw - 40, 400);
-      else if (vw < 1200) byWidth = 440;
-      else                byWidth = 460;
+      else if (vw < 768)  byWidth = Math.min(vw - 40, 420);
+      else if (vw < 1024) byWidth = 420;
+      else                byWidth = Math.min(vw - 560, 480); // 560 = left(200)+right(300)+gaps
       setSize(Math.min(byWidth, byHeight));
     };
     update();
@@ -458,124 +458,105 @@ export default function SpinPage() {
         {/* Main */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3">
 
-          {/* Title — full width, centred above the two-column layout */}
+          {/* Title — full width above the 3-column layout */}
           <div className="flex justify-center mb-4">
             <SpinTitle />
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 justify-center">
+          {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
+          <div className="flex flex-col lg:flex-row items-center lg:items-center gap-5 justify-center">
 
-            {/* ── Left column: Wheel + Pill ── */}
-            <div className="flex flex-col items-center gap-3">
+            {/* ── Left column: spin controls ── */}
+            <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-48 flex-shrink-0 order-2 lg:order-1">
 
-              {/* PixiJS GPU wheel */}
-              <PixiWheel
-                rotation={rotation}
-                spinning={spinning}
-                winnerIdx={winnerIdx}
-                size={wheelSize}
-              />
-
-              {/* ── Bottom pill bar ── */}
+              {/* Points card */}
               <div style={{
-                background:     "rgba(4,12,28,0.92)",
-                border:         "2px solid rgba(251,191,36,0.28)",
-                borderRadius:   "60px",
-                backdropFilter: "blur(16px)",
-                boxShadow:      "0 8px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.06)",
-                display:        "flex",
-                alignItems:     "center",
-                gap:            "10px",
-                padding:        "10px 16px",
-                width:          Math.min(wheelSize, 480),
-                maxWidth:       "calc(100vw - 24px)",
+                background: "rgba(4,12,28,0.85)", border: "1px solid rgba(251,191,36,0.25)",
+                borderRadius: 16, backdropFilter: "blur(16px)",
+                padding: "12px 16px", textAlign: "center", width: "100%",
               }}>
-                {/* Left: monthly points */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "0 0 auto" }}>
-                  <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>⭐</span>
-                  <div>
-                    <div style={{ fontSize: "clamp(16px,3.5vw,22px)", fontWeight: 900, color: "#fbbf24",
-                      lineHeight: 1, fontFamily: "system-ui,sans-serif",
-                      textShadow: "0 0 16px rgba(251,191,36,0.5)" }}>
-                      {userData.monthlyPoints.toLocaleString()}
-                    </div>
-                    <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.45)",
-                      letterSpacing: "1.5px", fontFamily: "system-ui,sans-serif" }}>
-                      POINTS
-                    </div>
-                  </div>
+                <div style={{ fontSize: 28, lineHeight: 1, marginBottom: 4 }}>⭐</div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
+                  fontFamily: "system-ui,sans-serif", textShadow: "0 0 20px rgba(251,191,36,0.55)" }}>
+                  {userData.monthlyPoints.toLocaleString()}
                 </div>
-
-                {/* Centre: SPIN button */}
-                <div style={{ flex: 1, textAlign: "center" }}>
-                  <button
-                    ref={btnRef}
-                    onClick={handleSpinClick}
-                    disabled={!canPress}
-                    style={{
-                      width:         "100%",
-                      padding:       "10px 8px 8px",
-                      borderRadius:  "40px",
-                      fontWeight:    900,
-                      fontSize:      "clamp(18px,4vw,26px)",
-                      letterSpacing: "0.12em",
-                      fontFamily:    "system-ui,sans-serif",
-                      cursor:        canPress ? "pointer" : "not-allowed",
-                      background:    canPress
-                        ? "linear-gradient(135deg,#fbbf24,#f97316)"
-                        : "rgba(255,255,255,0.08)",
-                      color:         canPress ? "#0c0a00" : "rgba(255,255,255,0.3)",
-                      border:        "none",
-                      opacity:       !canPress && !spinning ? 0.6 : 1,
-                      // No transform/boxShadow here — GSAP + CSS class manage those
-                    }}
-                  >
-                    {spinning ? "SPINNING…" : "SPIN"}
-                  </button>
-                  <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.35)",
-                    letterSpacing: "1.2px", marginTop: 4, fontFamily: "system-ui,sans-serif" }}>
-                    1 FREE SPIN EVERY 24 HOURS
-                  </div>
-                </div>
-
-                {/* Right: countdown / READY */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, flex: "0 0 auto", textAlign: "right" }}>
-                  <div>
-                    <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.45)",
-                      letterSpacing: "1.2px", fontFamily: "system-ui,sans-serif", textAlign: "right" }}>
-                      NEXT SPIN IN
-                    </div>
-                    {showCountdown ? (
-                      <div style={{ fontSize: "clamp(13px,2.5vw,18px)", fontWeight: 900, color: "#fbbf24",
-                        fontFamily: "system-ui,sans-serif", letterSpacing: "0.05em",
-                        textShadow: "0 0 14px rgba(251,191,36,0.4)", lineHeight: 1 }}>
-                        {countdownDisplay}
-                      </div>
-                    ) : (
-                      <div style={{ fontSize: "clamp(13px,2.5vw,17px)", fontWeight: 900, color: "#34d399",
-                        fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
-                        READY!
-                      </div>
-                    )}
-                  </div>
-                  <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0 }}>📅</span>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.4)",
+                  letterSpacing: "2px", marginTop: 3, fontFamily: "system-ui,sans-serif" }}>
+                  MONTHLY PTS
                 </div>
               </div>
 
-              {/* Bonus spin badge */}
+              {/* Spin button + subtitle */}
+              <div style={{ width: "100%", textAlign: "center" }}>
+                <button
+                  ref={btnRef}
+                  onClick={handleSpinClick}
+                  disabled={!canPress}
+                  style={{
+                    width:         "100%",
+                    padding:       "14px 8px",
+                    borderRadius:  "40px",
+                    fontWeight:    900,
+                    fontSize:      28,
+                    letterSpacing: "0.12em",
+                    fontFamily:    "system-ui,sans-serif",
+                    cursor:        canPress ? "pointer" : "not-allowed",
+                    background:    canPress
+                      ? "linear-gradient(135deg,#fbbf24,#f97316)"
+                      : "rgba(255,255,255,0.08)",
+                    color:         canPress ? "#0c0a00" : "rgba(255,255,255,0.3)",
+                    border:        "none",
+                    opacity:       !canPress && !spinning ? 0.6 : 1,
+                  }}
+                >
+                  {spinning ? "SPINNING…" : "SPIN"}
+                </button>
+                <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.3)",
+                  letterSpacing: "1.2px", marginTop: 6, fontFamily: "system-ui,sans-serif" }}>
+                  1 FREE SPIN EVERY 24 HOURS
+                </div>
+              </div>
+
+              {/* Countdown card */}
+              <div style={{
+                background: "rgba(4,12,28,0.85)", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 16, backdropFilter: "blur(16px)",
+                padding: "12px 16px", textAlign: "center", width: "100%",
+              }}>
+                <div style={{ fontSize: 20, lineHeight: 1, marginBottom: 4 }}>📅</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.4)",
+                  letterSpacing: "2px", marginBottom: 4, fontFamily: "system-ui,sans-serif" }}>
+                  NEXT SPIN IN
+                </div>
+                {showCountdown ? (
+                  <div style={{ fontSize: 20, fontWeight: 900, color: "#fbbf24",
+                    fontFamily: "system-ui,sans-serif", letterSpacing: "0.05em",
+                    textShadow: "0 0 14px rgba(251,191,36,0.4)", lineHeight: 1 }}>
+                    {countdownDisplay}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 20, fontWeight: 900, color: "#34d399",
+                    fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
+                    READY!
+                  </div>
+                )}
+              </div>
+
+              {/* Bonus badge */}
               {userData.bonusSpinAvailable && (
                 <div style={{ background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.35)",
-                  borderRadius: 12, padding: "6px 16px", textAlign: "center" }}>
-                  <p style={{ fontSize: 12, fontWeight: 700, color: "#34d399", margin: 0 }}>
-                    ✦ Newsletter bonus spin available!
+                  borderRadius: 12, padding: "8px 12px", textAlign: "center", width: "100%" }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: "#34d399", margin: 0 }}>
+                    ✦ Bonus spin available!
                   </p>
                 </div>
               )}
 
               {/* Error */}
               {error && (
-                <p style={{ fontSize: 12, color: "#f87171", background: "rgba(220,38,38,0.12)",
-                  border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10, padding: "6px 14px" }}>
+                <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
+                  border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
+                  padding: "6px 12px", margin: 0, width: "100%", textAlign: "center" }}>
                   {error}
                 </p>
               )}
@@ -583,34 +564,43 @@ export default function SpinPage() {
               {/* Last result replay */}
               {lastWin && !spinning && !modal && (
                 <button onClick={() => setModal(lastWin)}
-                  style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)",
+                  style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)",
                     background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 10, padding: "6px 16px", cursor: "pointer" }}>
+                    borderRadius: 10, padding: "6px 12px", cursor: "pointer", width: "100%" }}>
                   {lastWin.isSpinAgain ? "🎰 Spin Again" : `+${lastWin.points} pts`} — {lastWin.label}
                   <span style={{ display: "block", fontSize: 10, marginTop: 2, color: "rgba(255,255,255,0.25)" }}>
-                    tap to view result
+                    tap to view
                   </span>
                 </button>
               )}
 
               {/* How it works */}
-              <details style={{ width: Math.min(wheelSize, 480), maxWidth: "calc(100vw - 24px)" }}>
-                <summary style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.28)",
+              <details style={{ width: "100%" }}>
+                <summary style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.25)",
                   letterSpacing: "1.5px", textTransform: "uppercase", cursor: "pointer", textAlign: "center" }}>
                   How it works ▾
                 </summary>
-                <div style={{ marginTop: 8, fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, padding: "0 4px" }}>
-                  <p>• One free spin every 24 hours.</p>
-                  <p>• Points count towards this month&apos;s leaderboard.</p>
-                  <p>• Top 3 each month win prizes.</p>
-                  <p>• Newsletter subscribers get a bonus spin.</p>
-                  <p>• Leaderboard resets on the 1st of each month.</p>
+                <div style={{ marginTop: 8, fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }}>
+                  <p style={{ margin: "2px 0" }}>• One free spin every 24 hours.</p>
+                  <p style={{ margin: "2px 0" }}>• Points count towards the monthly leaderboard.</p>
+                  <p style={{ margin: "2px 0" }}>• Top 3 each month win prizes.</p>
+                  <p style={{ margin: "2px 0" }}>• Newsletter subscribers get a bonus spin.</p>
                 </div>
               </details>
             </div>
 
+            {/* ── Centre: Wheel ── */}
+            <div className="flex-shrink-0 order-1 lg:order-2">
+              <PixiWheel
+                rotation={rotation}
+                spinning={spinning}
+                winnerIdx={winnerIdx}
+                size={wheelSize}
+              />
+            </div>
+
             {/* ── Right: Leaderboard ── */}
-            <div className="w-full sm:max-w-sm lg:w-80 flex-shrink-0">
+            <div className="w-full sm:max-w-xs lg:w-64 flex-shrink-0 order-3">
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
