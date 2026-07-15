@@ -229,6 +229,12 @@ function SpinTitle() {
             transformOrigin: "center bottom",
           } as React.CSSProperties;
         };
+        const luckyGrad: React.CSSProperties = {
+          background: "linear-gradient(180deg, #fef9c3 0%, #fde68a 18%, #fbbf24 45%, #f59e0b 75%, #d97706 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        };
         return (
           <div style={{
             fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
@@ -241,12 +247,10 @@ function SpinTitle() {
           }}>
             <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em", marginBottom: 6 }}>✦</span>
             {chars.map((c, i) => (
-              // outer span: arch position (not touched by GSAP)
-              // inner span: GSAP target for entrance / shimmer animations
               <span key={i} style={arch(i)}>
                 <span
                   className="sls-lucky"
-                  style={c === " " ? { display: "inline-block", width: "0.3em" } : {}}
+                  style={c === " " ? { display: "inline-block", width: "0.3em" } : luckyGrad}
                 >
                   {c === " " ? "\u00A0" : c}
                 </span>
@@ -421,9 +425,9 @@ export default function SpinPage() {
       ease: "elastic.out(1.3, 0.5)",
     }, "-=0.15");
 
-    // Continuous golden shimmer across LUCKY SPIN
+    // Continuous shimmer across LUCKY SPIN (brightness works with gradient text)
     gsap.to(".sls-lucky", {
-      color: "#fff5c0",
+      filter: "brightness(1.55)",
       duration: 0.26,
       stagger: { each: 0.055, repeat: -1, yoyo: true, from: 0 },
       ease: "none",
@@ -441,6 +445,7 @@ export default function SpinPage() {
       tl.kill();
       gsap.killTweensOf(".sls-lucky");
       gsap.killTweensOf(".sls-star");
+      gsap.set(".sls-lucky", { clearProps: "filter" });
     };
   }, []);
 
