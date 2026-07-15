@@ -287,7 +287,7 @@ function SpinTitle() {
             } as React.CSSProperties;
           };
           const luckyGrad: React.CSSProperties = {
-            background: "linear-gradient(180deg, #fffde0 0%, #ffe766 12%, #ffd700 32%, #ffc200 55%, #f59e0b 80%, #d97706 100%)",
+            background: "linear-gradient(180deg, #fffff5 0%, #ffee00 7%, #ffd700 22%, #ffca00 62%, #f5a000 84%, #c97200 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
