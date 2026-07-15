@@ -28,7 +28,7 @@ function useWheelSize() {
         // Mobile stacked layout (no main pt-10/pb-4):
         //   topBar(48) + title(60) + bottomCard(~200) + leaderboardHeader(55) + gaps(25) ≈ 388
         // Add ~32px for PixiJS cssTopPad overhead → budget 360 total chrome.
-        const byHeight = Math.max(180, vh - 360);
+        const byHeight = Math.max(180, vh - 380);
         const byWidth  = Math.min(vw - 32, 460); // 16px side padding, cap for tablets
         setSize(Math.min(byWidth, byHeight));
       }
@@ -199,7 +199,7 @@ function SpinTitle() {
 
       {/* SUPER — modern chrome gradient */}
       <div style={{
-        fontSize: "clamp(16px,3vw,36px)", fontWeight: 900,
+        fontSize: "clamp(22px,3vw,36px)", fontWeight: 900,
         fontFamily: "system-ui,sans-serif", letterSpacing: "0.26em",
         background: "linear-gradient(180deg, #ffffff 0%, #d4eaff 45%, #8ab8e8 100%)",
         WebkitBackgroundClip: "text",
@@ -214,7 +214,7 @@ function SpinTitle() {
 
       {/* LUCKY SPIN */}
       <div style={{
-        fontSize: "clamp(24px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
+        fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
         fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
         textShadow: [
           "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
@@ -658,7 +658,7 @@ export default function SpinPage() {
           <div className="flex lg:hidden flex-col flex-1 min-h-0 w-full">
 
             {/* Title */}
-            <div className="flex justify-center flex-shrink-0 pt-1">
+            <div className="flex justify-center flex-shrink-0 pt-3">
               <SpinTitle />
             </div>
 
