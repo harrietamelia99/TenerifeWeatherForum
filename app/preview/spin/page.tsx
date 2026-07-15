@@ -193,20 +193,41 @@ function Sparkle({ size, style }: { size: number; style: React.CSSProperties }) 
 
 // ─── "SUPER LUCKY SPIN" title ─────────────────────────────────────────────────
 function SpinTitle() {
-  // CHAR_W must match the actual rendered letter advance, which depends on the
-  // font-size produced by clamp(38px, 5vw, 56px).  We read window.innerWidth so
-  // the arch stays perfect on every screen size.
-  const [charW, setCharW] = useState(34);
-  useEffect(() => {
-    const calc = () => {
-      const vw = window.innerWidth;
-      const fs = Math.min(56, Math.max(38, vw * 0.05)); // mirrors clamp(38,5vw,56)
-      setCharW(fs * 0.605); // bold uppercase advance ≈ 60.5% of font-size
-    };
-    calc();
-    window.addEventListener("resize", calc);
-    return () => window.removeEventListener("resize", calc);
+  // Measure actual rendered letter positions so the arch is pixel-perfect
+  // regardless of variable glyph widths (I, space, etc.).
+  const archSpanRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const applyArch = useCallback(() => {
+    const spans = archSpanRefs.current.filter(Boolean) as HTMLSpanElement[];
+    if (spans.length === 0) return;
+
+    // 1. Reset all transforms so letters sit at their natural flex positions
+    spans.forEach(s => { s.style.transform = "none"; s.style.transformOrigin = ""; });
+
+    // 2. Read actual centre-x of each letter (forces a layout flush)
+    const rects = spans.map(s => s.getBoundingClientRect());
+    const minX = rects[0].left;
+    const maxX = rects[rects.length - 1].right;
+    const centerX = (minX + maxX) / 2;
+
+    // 3. Compute true circular-arc theta from measured x and apply
+    const R = 380;
+    spans.forEach((span, i) => {
+      const x = (rects[i].left + rects[i].right) / 2 - centerX;
+      const theta = x / R;
+      const yDrop = R * (1 - Math.cos(theta));
+      const deg   = theta * (180 / Math.PI);
+      span.style.transform = `rotate(${deg.toFixed(2)}deg) translateY(${yDrop.toFixed(2)}px)`;
+      span.style.transformOrigin = "center bottom";
+    });
   }, []);
+
+  // Run after every render and on resize
+  useEffect(() => {
+    applyArch();
+    window.addEventListener("resize", applyArch);
+    return () => window.removeEventListener("resize", applyArch);
+  }, [applyArch]);
 
   return (
     <div className="text-center select-none" style={{ lineHeight: 1.0, marginBottom: -4 }}>
@@ -264,31 +285,9 @@ function SpinTitle() {
           ))}
         </div>
 
-        {/* ── LUCKY SPIN — arched gradient letters ── */}
+        {/* ── LUCKY SPIN — measurement-based arch ── */}
         {(() => {
           const chars = "LUCKY SPIN".split("");
-          const n = chars.length;
-          const center = (n - 1) / 2;
-          // True circular arch: each letter sits on a circle of radius R_ARC.
-          // charStep  = average advance per character in px (bold ~56 px font).
-          // theta     = arc angle for this character (radians).
-          // yDrop     = R*(1-cos θ)  → 0 at centre, positive (downward) at edges.
-          // rotation  = θ in degrees → letter leans tangent to the circle.
-          const R_ARC   = 380;   // circle radius (px) — same on all screens
-          const arch = (i: number) => {
-            const offset = i - center;
-            const theta  = (offset * charW) / R_ARC;           // radians
-            const yDrop  = R_ARC * (1 - Math.cos(theta));      // px drop
-            const deg    = theta * (180 / Math.PI);             // rotation °
-            return {
-              display: "inline-block",
-              transform: `rotate(${deg.toFixed(2)}deg) translateY(${yDrop.toFixed(2)}px)`,
-              transformOrigin: "center bottom",
-            } as React.CSSProperties;
-          };
-          // Keep filter on OUTER div and gradient on INNER spans.
-          // Putting both on the same element breaks rendering (filter creates a
-          // compositing layer that prevents background-clip:text from working).
           const goldGrad: React.CSSProperties = {
             display: "inline-block",
             background: "linear-gradient(180deg, #ffffff 0%, #ffe566 25%, #ffd700 50%, #f5a000 80%, #c97200 100%)",
@@ -298,7 +297,6 @@ function SpinTitle() {
           };
           return (
             <div style={{
-              // drop-shadow only here — no gradient/clip on this element
               filter: [
                 "drop-shadow(2px 2px 0 #b45309)",
                 "drop-shadow(2px 2px 0 #92400e)",
@@ -313,7 +311,12 @@ function SpinTitle() {
                 display: "flex", alignItems: "flex-end", justifyContent: "center",
               }}>
                 {chars.map((c, i) => (
-                  <span key={i} style={arch(i)}>
+                  // No initial transform — applyArch() sets it after measuring
+                  <span
+                    key={i}
+                    ref={el => { archSpanRefs.current[i] = el; }}
+                    style={{ display: "inline-block" }}
+                  >
                     <span
                       className="sls-lucky"
                       style={c === " " ? { display: "inline-block", width: "0.3em" } : goldGrad}
