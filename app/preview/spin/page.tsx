@@ -29,7 +29,8 @@ function useWheelSize() {
       if (vw < 480)       byWidth = vw - 24;
       else if (vw < 768)  byWidth = Math.min(vw - 40, 380);
       else if (vw < 1024) byWidth = 380;
-      else                byWidth = Math.min(vw - 660, 420); // 660 ≈ left+right+gaps(wider)
+      // 2 panels(240×2=480) + 2 gaps(64×2=128) = 608 reserved; wheel gets the rest, capped at 380
+      else                byWidth = Math.min(vw - 608, 380);
       setSize(Math.min(byWidth, byHeight));
     };
     update();
@@ -467,10 +468,10 @@ export default function SpinPage() {
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
           {/* CSS grid [1fr auto 1fr] guarantees the wheel sits on the true viewport midpoint */}
-          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "48px", alignItems: "center" }}>
+          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "64px", alignItems: "center" }}>
 
             {/* ── Left: unified spin-controls card (mirrors leaderboard style) ── */}
-            <div className="justify-self-end" style={{ width: 260 }}>
+            <div className="justify-self-end" style={{ width: 240 }}>
               <div style={{
                 borderRadius: 20, overflow: "hidden",
                 background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
@@ -596,7 +597,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="justify-self-start" style={{ width: 260 }}>
+            <div className="justify-self-start" style={{ width: 240 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
