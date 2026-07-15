@@ -591,7 +591,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="w-full sm:max-w-xs lg:w-64 flex-shrink-0 order-3">
+            <div className="w-full sm:max-w-xs lg:w-64 flex-shrink-0 order-3 lg:ml-8">
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
