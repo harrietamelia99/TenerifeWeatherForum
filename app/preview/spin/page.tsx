@@ -460,26 +460,22 @@ export default function SpinPage() {
         {/* Main — takes remaining height, centres content vertically + horizontally */}
         <main className="flex-1 flex flex-col items-center justify-center py-4 overflow-hidden">
 
-          {/* ── Desktop layout — explicit fixed-width container, always centred ── */}
-          <div className="hidden lg:flex flex-col items-center">
+          {/* ── Desktop layout ── */}
+          {/*
+            Strategy: title lives INSIDE the centre column so it's always
+            pixel-perfect above the wheel. Both side panels are identical
+            width (220px) with identical margins (64px), so the centre is
+            mathematically guaranteed to land on the viewport midpoint.
+          */}
+          <div className="hidden lg:flex items-center justify-center" style={{ width: "100%" }}>
 
-            {/* Title */}
-            <div className="mb-4">
-              <SpinTitle />
-            </div>
-
-            {/* Three columns: explicit widths so the wheel is always centred */}
-            {/* Total = 220(left) + 80(gap) + 40(pad) + wheel + 40(pad) + 80(gap) + 220(right) */}
-            <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
-
-              {/* ── Left: unified spin-controls card ── */}
-              <div style={{ width: 220, flexShrink: 0, marginRight: 80 }}>
+            {/* ── Left: spin-controls card ── */}
+            <div style={{ width: 220, flexShrink: 0, marginRight: 64 }}>
               <div style={{
                 borderRadius: 20, overflow: "hidden",
                 background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
                 backdropFilter: "blur(16px)",
               }}>
-                {/* Header */}
                 <div className="px-5 py-4">
                   <span className="text-sm font-bold uppercase tracking-widest" style={{ color: "#fbbf24" }}>
                     ⭐ Monthly Points
@@ -499,7 +495,6 @@ export default function SpinPage() {
                     </div>
                   </div>
 
-                  {/* Divider */}
                   <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
 
                   {/* SPIN button */}
@@ -528,7 +523,6 @@ export default function SpinPage() {
                     </div>
                   </div>
 
-                  {/* Divider */}
                   <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
 
                   {/* Countdown */}
@@ -551,7 +545,6 @@ export default function SpinPage() {
                     )}
                   </div>
 
-                  {/* Bonus badge */}
                   {userData.bonusSpinAvailable && (
                     <>
                       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
@@ -563,7 +556,6 @@ export default function SpinPage() {
                     </>
                   )}
 
-                  {/* Error */}
                   {error && (
                     <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
                       border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
@@ -572,7 +564,6 @@ export default function SpinPage() {
                     </p>
                   )}
 
-                  {/* Last result */}
                   {lastWin && !spinning && !modal && (
                     <button onClick={() => setModal(lastWin)}
                       style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)",
@@ -588,8 +579,11 @@ export default function SpinPage() {
               </div>
             </div>
 
-            {/* ── Centre: Wheel ── */}
-            <div style={{ flexShrink: 0, padding: "0 20px" }}>
+            {/* ── Centre: title stacked directly above wheel ── */}
+            <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div style={{ marginBottom: 14 }}>
+                <SpinTitle />
+              </div>
               <PixiWheel
                 rotation={rotation}
                 spinning={spinning}
@@ -599,12 +593,11 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div style={{ width: 220, flexShrink: 0, marginLeft: 80 }}>
+            <div style={{ width: 220, flexShrink: 0, marginLeft: 64 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
-            </div>{/* end three-columns row */}
-          </div>{/* end desktop flex container */}
+          </div>{/* end desktop row */}
 
           {/* ── Mobile / tablet: full-screen app layout ── */}
           <div className="flex lg:hidden flex-col flex-1 min-h-0 w-full">
