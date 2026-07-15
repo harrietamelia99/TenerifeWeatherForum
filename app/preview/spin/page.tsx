@@ -20,10 +20,9 @@ function useWheelSize() {
       const vh = window.innerHeight;
 
       if (vw >= 1024) {
-        // CSS Grid 1fr|auto|1fr: panels(220×2) + gaps(40×2) = 520 reserved.
-        // Wheel takes the auto column — allow up to 40% of viewport width.
-        const byWidth = Math.min(Math.floor(vw * 0.40), 440);
-        const byHeight = Math.max(260, vh - 380);
+        // CSS Grid 1fr|auto|1fr: panels(200×2) + gaps(70×2) = 540 reserved.
+        const byWidth = Math.min(Math.floor(vw * 0.44), 480);
+        const byHeight = Math.max(280, vh - 320);
         setSize(Math.min(byWidth, byHeight));
       } else {
         // Mobile/tablet stacked layout
@@ -472,13 +471,13 @@ export default function SpinPage() {
             <div style={{
               display: "grid",
               gridTemplateColumns: "1fr auto 1fr",
-              columnGap: 40,
+              columnGap: 70,
               alignItems: "start",
               width: "100%",
             }}>
 
               {/* ── Left: spin-controls card ── */}
-              <div style={{ justifySelf: "end", width: 220 }}>
+              <div style={{ justifySelf: "end", width: 200 }}>
                 <div style={{
                   borderRadius: 20, overflow: "hidden",
                   background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
@@ -589,7 +588,7 @@ export default function SpinPage() {
 
               {/* ── Centre: title directly above wheel in same column ── */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ marginBottom: 10 }}>
+                <div style={{ marginBottom: 20 }}>
                   <SpinTitle />
                 </div>
                 <PixiWheel
@@ -601,7 +600,7 @@ export default function SpinPage() {
               </div>
 
               {/* ── Right: Leaderboard ── */}
-              <div style={{ justifySelf: "start", width: 220 }}>
+              <div style={{ justifySelf: "start", width: 200 }}>
                 <MobileLeaderboard spinCount={spinCount} />
               </div>
 
