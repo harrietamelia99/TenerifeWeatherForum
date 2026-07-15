@@ -212,25 +212,50 @@ function SpinTitle() {
         ))}
       </div>
 
-      {/* LUCKY SPIN */}
-      <div style={{
-        fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
-        fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
-        textShadow: [
-          "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
-          "0 0 40px rgba(251,191,36,0.65)","0 0 80px rgba(251,191,36,0.25)",
-        ].join(","),
-      }}>
-        <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em" }}>✦</span>
-        {" "}
-        {"LUCKY SPIN".split("").map((c, i) => (
-          <span key={i} className="sls-lucky" style={c === " " ? { display: "inline-block", width: "0.3em" } : {}}>
-            {c === " " ? "\u00A0" : c}
-          </span>
-        ))}
-        {" "}
-        <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em" }}>✦</span>
-      </div>
+      {/* LUCKY SPIN — letters follow a gentle upward arch */}
+      {(() => {
+        const chars = "LUCKY SPIN".split("");
+        const n = chars.length;         // 10
+        const center = (n - 1) / 2;    // 4.5
+        // Arch geometry: each letter sits on a circle of radius ~900px.
+        // letter pitch ≈ 33px → x = offset * 33
+        // rotation  = x / R * (180/π)  ≈ offset * 33 / 900 * 57.3  ≈ offset * 2.1°
+        // translateY = x² / (2R)       ≈ offset² * 33² / 1800       ≈ offset² * 0.61px
+        const arch = (i: number) => {
+          const offset = i - center;
+          return {
+            display: "inline-block",
+            transform: `rotate(${(offset * 2.1).toFixed(2)}deg) translateY(${(offset * offset * 0.65).toFixed(2)}px)`,
+            transformOrigin: "center bottom",
+          } as React.CSSProperties;
+        };
+        return (
+          <div style={{
+            fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
+            fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
+            textShadow: [
+              "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
+              "0 0 40px rgba(251,191,36,0.65)","0 0 80px rgba(251,191,36,0.25)",
+            ].join(","),
+            display: "flex", alignItems: "flex-end", justifyContent: "center",
+          }}>
+            <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em", marginBottom: 6 }}>✦</span>
+            {chars.map((c, i) => (
+              // outer span: arch position (not touched by GSAP)
+              // inner span: GSAP target for entrance / shimmer animations
+              <span key={i} style={arch(i)}>
+                <span
+                  className="sls-lucky"
+                  style={c === " " ? { display: "inline-block", width: "0.3em" } : {}}
+                >
+                  {c === " " ? "\u00A0" : c}
+                </span>
+              </span>
+            ))}
+            <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em", marginBottom: 6 }}>✦</span>
+          </div>
+        );
+      })()}
     </div>
   );
 }
