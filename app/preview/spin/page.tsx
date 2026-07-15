@@ -469,7 +469,7 @@ export default function SpinPage() {
           <div className="flex flex-col lg:flex-row items-center gap-10 justify-center w-full">
 
             {/* ── Left column: spin controls ── */}
-            <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-48 flex-shrink-0 order-2 lg:order-1">
+            <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-56 flex-shrink-0 order-2 lg:order-1">
 
               {/* Points card */}
               <div style={{
@@ -603,7 +603,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="w-full sm:max-w-xs lg:w-64 flex-shrink-0 order-3 lg:ml-8">
+            <div className="w-full sm:max-w-xs lg:w-56 flex-shrink-0 order-3">
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
