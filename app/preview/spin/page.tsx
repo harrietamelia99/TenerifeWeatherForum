@@ -21,8 +21,8 @@ function useWheelSize() {
 
       if (vw >= 1024) {
         // CSS Grid 1fr|auto|1fr: panels(200×2) + gaps(70×2) = 540 reserved.
-        const byWidth = Math.min(Math.floor(vw * 0.44), 480);
-        const byHeight = Math.max(280, vh - 320);
+        const byWidth = Math.min(Math.floor(vw * 0.48), 520);
+        const byHeight = Math.max(300, vh - 280);
         setSize(Math.min(byWidth, byHeight));
       } else {
         // Mobile/tablet stacked layout
@@ -470,32 +470,36 @@ export default function SpinPage() {
           <div className="hidden lg:block" style={{ width: "100%", position: "relative" }}>
 
             {/* ── Left corner: spin-controls card ── */}
-            <div style={{ position: "absolute", top: 0, left: 20, width: 230, zIndex: 2 }}>
+            <div style={{ position: "absolute", top: 0, left: 20, width: 260, zIndex: 2 }}>
               <div style={{
-                borderRadius: 20, overflow: "hidden",
-                background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
-                backdropFilter: "blur(16px)",
+                borderRadius: 20,
+                background: "rgba(4,12,28,0.85)", border: "1px solid rgba(251,191,36,0.25)",
+                backdropFilter: "blur(18px)",
               }}>
-                <div className="px-5 py-4">
-                  <span className="text-sm font-bold uppercase tracking-widest" style={{ color: "#fbbf24" }}>
+                {/* Header */}
+                <div style={{ padding: "18px 22px 14px" }}>
+                  <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
+                    color: "#fbbf24", textTransform: "uppercase" }}>
                     ⭐ Monthly Points
                   </span>
                 </div>
 
-                <div className="px-5 pb-5 flex flex-col gap-4">
+                <div style={{ padding: "0 22px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
+                  {/* Points */}
                   <div style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: 42, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
-                      fontFamily: "system-ui,sans-serif", textShadow: "0 0 24px rgba(251,191,36,0.55)" }}>
+                    <div style={{ fontSize: 52, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
+                      fontFamily: "system-ui,sans-serif", textShadow: "0 0 28px rgba(251,191,36,0.55)" }}>
                       {userData.monthlyPoints.toLocaleString()}
                     </div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)",
-                      letterSpacing: "2.5px", marginTop: 4, fontFamily: "system-ui,sans-serif" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.3)",
+                      letterSpacing: "2.5px", marginTop: 6, fontFamily: "system-ui,sans-serif" }}>
                       MONTHLY POINTS
                     </div>
                   </div>
 
-                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }} />
 
+                  {/* SPIN button */}
                   <div style={{ textAlign: "center" }}>
                     <button
                       ref={btnRef}
@@ -503,40 +507,43 @@ export default function SpinPage() {
                       disabled={!canPress}
                       className={spinning ? "spin-btn-spinning" : ""}
                       style={{
-                        width: "100%", padding: "14px 8px", borderRadius: "40px",
-                        fontWeight: 900, fontSize: 28, letterSpacing: "0.12em",
+                        width: "100%", padding: "16px 8px", borderRadius: "50px",
+                        fontWeight: 900, fontSize: 30, letterSpacing: "0.14em",
                         fontFamily: "system-ui,sans-serif",
                         cursor: canPress ? "pointer" : "not-allowed",
                         background: canPress ? "linear-gradient(135deg,#fbbf24,#f97316)" : "rgba(255,255,255,0.07)",
-                        color: canPress ? "#0c0a00" : "rgba(255,255,255,0.25)",
+                        color: canPress ? "#0c0a00" : "rgba(255,255,255,0.22)",
                         border: "none",
-                        opacity: !canPress && !spinning ? 0.7 : 1,
+                        opacity: !canPress && !spinning ? 0.65 : 1,
+                        boxShadow: canPress ? "0 4px 24px rgba(251,191,36,0.35)" : "none",
                       }}
                     >
                       {spinning ? "⏳ SPINNING…" : "SPIN"}
                     </button>
-                    <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.25)",
-                      letterSpacing: "1.5px", marginTop: 6, fontFamily: "system-ui,sans-serif" }}>
+                    <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.22)",
+                      letterSpacing: "1.5px", marginTop: 8, fontFamily: "system-ui,sans-serif" }}>
                       1 FREE SPIN EVERY 24 HOURS
                     </div>
                   </div>
 
-                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }} />
 
+                  {/* Countdown */}
                   <div style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)",
-                      letterSpacing: "2.5px", marginBottom: 6, fontFamily: "system-ui,sans-serif" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.3)",
+                      letterSpacing: "2.5px", marginBottom: 8, fontFamily: "system-ui,sans-serif" }}>
                       📅 NEXT SPIN IN
                     </div>
                     {showCountdown ? (
-                      <div style={{ fontSize: 26, fontWeight: 900, color: "#fbbf24",
+                      <div style={{ fontSize: 32, fontWeight: 900, color: "#fbbf24",
                         fontFamily: "system-ui,sans-serif", letterSpacing: "0.05em",
-                        textShadow: "0 0 14px rgba(251,191,36,0.4)", lineHeight: 1 }}>
+                        textShadow: "0 0 16px rgba(251,191,36,0.4)", lineHeight: 1 }}>
                         {countdownDisplay}
                       </div>
                     ) : (
-                      <div style={{ fontSize: 26, fontWeight: 900, color: "#34d399",
-                        fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
+                      <div style={{ fontSize: 30, fontWeight: 900, color: "#34d399",
+                        fontFamily: "system-ui,sans-serif", lineHeight: 1,
+                        textShadow: "0 0 14px rgba(52,211,153,0.5)" }}>
                         READY!
                       </div>
                     )}
@@ -544,9 +551,9 @@ export default function SpinPage() {
 
                   {userData.bonusSpinAvailable && (
                     <>
-                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }} />
                       <div style={{ textAlign: "center" }}>
-                        <p style={{ fontSize: 11, fontWeight: 700, color: "#34d399", margin: 0 }}>
+                        <p style={{ fontSize: 12, fontWeight: 700, color: "#34d399", margin: 0 }}>
                           ✦ Bonus spin available!
                         </p>
                       </div>
@@ -556,7 +563,7 @@ export default function SpinPage() {
                   {error && (
                     <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
                       border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
-                      padding: "6px 12px", margin: 0, textAlign: "center" }}>
+                      padding: "8px 12px", margin: 0, textAlign: "center" }}>
                       {error}
                     </p>
                   )}
@@ -565,7 +572,7 @@ export default function SpinPage() {
                     <button onClick={() => setModal(lastWin)}
                       style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)",
                         background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 10, padding: "6px 12px", cursor: "pointer", width: "100%" }}>
+                        borderRadius: 10, padding: "8px 14px", cursor: "pointer", width: "100%" }}>
                       {lastWin.isSpinAgain ? "🎰 Spin Again" : `+${lastWin.points} pts`} — {lastWin.label}
                       <span style={{ display: "block", fontSize: 10, marginTop: 2, color: "rgba(255,255,255,0.25)" }}>
                         tap to view
@@ -590,7 +597,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right corner: Leaderboard ── */}
-            <div style={{ position: "absolute", top: 0, right: 20, width: 240, zIndex: 2 }}>
+            <div style={{ position: "absolute", top: 0, right: 20, width: 260, zIndex: 2 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
@@ -688,20 +695,22 @@ export default function SpinPage() {
 function MobileLeaderboard({ spinCount }: { spinCount: number }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderRadius: 20, overflow: "hidden",
-      background: "rgba(4,12,28,0.80)", border: "1px solid rgba(255,255,255,0.1)",
-      backdropFilter: "blur(16px)" }}>
+    <div style={{ borderRadius: 20,
+      background: "rgba(4,12,28,0.85)", border: "1px solid rgba(255,255,255,0.12)",
+      backdropFilter: "blur(18px)" }}>
       <button
-        className="flex items-center justify-between w-full px-5 py-4 lg:cursor-default"
+        className="flex items-center justify-between w-full lg:cursor-default"
+        style={{ padding: "18px 22px 14px" }}
         onClick={() => setOpen(o => !o)}>
-        <span className="text-sm font-bold uppercase tracking-widest" style={{ color: "#fbbf24" }}>
+        <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
+          color: "#fbbf24", textTransform: "uppercase" }}>
           🏆 Leaderboard
         </span>
         <span className="text-xs lg:hidden" style={{ color: "rgba(255,255,255,0.4)" }}>
           {open ? "▲ hide" : "▼ show"}
         </span>
       </button>
-      <div className={`px-5 pb-5 lg:block ${open ? "block" : "hidden"}`}>
+      <div className={`lg:block ${open ? "block" : "hidden"}`} style={{ padding: "0 22px 20px" }}>
         <SpinLeaderboard key={spinCount} />
       </div>
     </div>
