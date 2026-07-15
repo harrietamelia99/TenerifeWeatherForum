@@ -231,40 +231,48 @@ export default function PixiWheel({
         }
       });
 
-      // ── Hub — TWF logo ───────────────────────────────────────────────────
+      // ── Hub — TWF logo circle ────────────────────────────────────────────
+      // Logo PNG is 300×56px. The circular icon occupies the leftmost ~56px
+      // (full image height). We scale the sprite so the icon fills the hub
+      // and apply a circular mask to clip everything else out.
       const hub = new PIXI.Container() as any;
 
+      // White border ring
       const hubOuter = new PIXI.Graphics();
-      hubOuter.beginFill(0xffffff); hubOuter.drawCircle(0, 0, 48); hubOuter.endFill();
+      hubOuter.beginFill(0xffffff); hubOuter.drawCircle(0, 0, 50); hubOuter.endFill();
       hub.addChild(hubOuter);
 
-      const hubInner = new PIXI.Graphics();
-      hubInner.beginFill(0x0c2340); hubInner.drawCircle(0, 0, 44); hubInner.endFill();
-      hub.addChild(hubInner);
+      // Circular clip mask (radius 44 = display area inside the white ring)
+      const hubMask = new PIXI.Graphics();
+      hubMask.beginFill(0xffffff); hubMask.drawCircle(0, 0, 44); hubMask.endFill();
 
-      // Mountain silhouette
-      const mtn = new PIXI.Graphics();
-      mtn.beginFill(0x163d5f);
-      mtn.drawPolygon([-20, 12, 0, -18, 20, 12]);
-      mtn.endFill();
-      mtn.beginFill(0xffffff, 0.9);
-      mtn.drawPolygon([-7, -7, 0, -18, 7, -7]);
-      mtn.endFill();
-      hub.addChild(mtn);
+      try {
+        // Load logo; fromURL returns a Promise in PixiJS v7
+        const logoTex = await (PIXI.Texture as any).fromURL("/twf-logo.png");
+        const logo = new PIXI.Sprite(logoTex) as any;
 
-      // Sun — pre-baked soft glow (two concentric circles, no shader)
-      const sun = new PIXI.Graphics();
-      sun.beginFill(0xfbbf24, 0.3); sun.drawCircle(13, -18, 14); sun.endFill();
-      sun.beginFill(0xfbbf24, 0.5); sun.drawCircle(13, -18, 10); sun.endFill();
-      sun.beginFill(0xfef9c3, 1.0); sun.drawCircle(13, -18, 7);  sun.endFill();
-      hub.addChild(sun);
-      gsap.to(sun, { alpha: 0.6, duration: 1.6, repeat: -1, yoyo: true, ease: "power2.inOut" });
+        // Scale so the image height fills the hub diameter (88px internal)
+        // Logo is 300×56px; icon is ~56×56 (leftmost portion)
+        const targetH = 92;
+        logo.height = targetH;
+        logo.scale.x = logo.scale.y; // preserve aspect ratio
 
-      // Text
-      const tnf = new PIXI.Text("Tenerife", { ...baseFont, fontSize: 7, fontWeight: "900", fill: "#ffffff" });
-      tnf.anchor.set(0.5, 0.5); tnf.y = 20; hub.addChild(tnf);
-      const wf  = new PIXI.Text("Weather Forum", { ...baseFont, fontSize: 5, fontWeight: "600", fill: "rgba(255,255,255,0.75)" });
-      wf.anchor.set(0.5, 0.5); wf.y = 27; hub.addChild(wf);
+        // Icon centre is at ~half of original image height from left edge.
+        // After scaling, icon width ≈ targetH. Position left edge at -targetH/2
+        // so the icon is centred at (0,0).
+        logo.anchor.set(0, 0.5);
+        logo.x = -targetH / 2;
+        logo.y = 0;
+
+        hub.addChild(hubMask);
+        logo.mask = hubMask;
+        hub.addChild(logo);
+      } catch {
+        // Fallback if the image fails to load
+        hubMask.clear();
+        hubMask.beginFill(0x0c2340); hubMask.drawCircle(0, 0, 44); hubMask.endFill();
+        hub.addChild(hubMask);
+      }
 
       wheel.addChild(hub);
 
