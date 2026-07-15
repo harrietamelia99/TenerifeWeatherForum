@@ -410,7 +410,14 @@ export default function PixiWheel({
   const logoSize = Math.round(88 * size / SIZE);
 
   return (
-    <div style={{ position: "relative", width: size, height: size + cssTopPad, flexShrink: 0 }}>
+    <div style={{
+      position: "relative", width: size, height: size + cssTopPad, flexShrink: 0,
+      filter: [
+        "drop-shadow(0 24px 48px rgba(0,0,0,0.75))",
+        "drop-shadow(0 8px 20px rgba(0,0,0,0.60))",
+        "drop-shadow(0 0 60px rgba(251,191,36,0.18))",
+      ].join(" "),
+    }}>
       {/* PixiJS canvas host */}
       <div ref={hostRef} style={{ width: size, height: size + cssTopPad }} />
       {/* SVG logo overlay — rendered natively by the browser, always crisp */}
