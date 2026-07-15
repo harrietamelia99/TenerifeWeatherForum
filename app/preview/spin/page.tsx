@@ -466,10 +466,11 @@ export default function SpinPage() {
           </div>
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
-          <div className="flex flex-col lg:flex-row items-center gap-16 justify-center w-full">
+          {/* CSS grid [1fr auto 1fr] guarantees the wheel sits on the true viewport midpoint */}
+          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "40px", alignItems: "center" }}>
 
             {/* ── Left column: spin controls ── */}
-            <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-56 flex-shrink-0 order-2 lg:order-1">
+            <div className="flex flex-col items-center justify-center gap-3 justify-self-end" style={{ maxWidth: 220 }}>
 
               {/* Points card */}
               <div style={{
@@ -593,7 +594,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Centre: Wheel ── */}
-            <div className="flex-shrink-0 order-1 lg:order-2">
+            <div className="flex-shrink-0">
               <PixiWheel
                 rotation={rotation}
                 spinning={spinning}
@@ -603,10 +604,40 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="w-full sm:max-w-xs lg:w-56 flex-shrink-0 order-3">
+            <div className="justify-self-start" style={{ maxWidth: 220 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
+          </div>
+
+          {/* Mobile fallback: stack vertically */}
+          <div className="flex lg:hidden flex-col items-center gap-6 w-full">
+            <PixiWheel rotation={rotation} spinning={spinning} winnerIdx={winnerIdx} size={wheelSize} />
+            <div className="flex flex-row gap-4 w-full justify-center flex-wrap">
+              {/* points */}
+              <div style={{ background:"rgba(4,12,28,0.85)", border:"1px solid rgba(251,191,36,0.25)", borderRadius:16, backdropFilter:"blur(16px)", padding:"10px 16px", textAlign:"center", minWidth:100 }}>
+                <div style={{ fontSize:24, lineHeight:1, marginBottom:3 }}>⭐</div>
+                <div style={{ fontSize:24, fontWeight:900, color:"#fbbf24", lineHeight:1, fontFamily:"system-ui,sans-serif" }}>{userData.monthlyPoints.toLocaleString()}</div>
+                <div style={{ fontSize:9, fontWeight:700, color:"rgba(255,255,255,0.4)", letterSpacing:"2px", marginTop:3, fontFamily:"system-ui,sans-serif" }}>MONTHLY PTS</div>
+              </div>
+              {/* spin */}
+              <div style={{ textAlign:"center", minWidth:140 }}>
+                <button onClick={handleSpinClick} disabled={!canPress} className={spinning ? "spin-btn-spinning" : ""}
+                  style={{ width:"100%", padding:"12px 8px", borderRadius:"40px", fontWeight:900, fontSize:24, letterSpacing:"0.12em", fontFamily:"system-ui,sans-serif", cursor:canPress?"pointer":"not-allowed", background:canPress?"linear-gradient(135deg,#fbbf24,#f97316)":"rgba(255,255,255,0.08)", color:canPress?"#0c0a00":"rgba(255,255,255,0.3)", border:"none", opacity:!canPress&&!spinning?0.6:1 }}>
+                  {spinning ? "⏳ SPINNING…" : "SPIN"}
+                </button>
+                <div style={{ fontSize:9, fontWeight:600, color:"rgba(255,255,255,0.3)", letterSpacing:"1.2px", marginTop:4, fontFamily:"system-ui,sans-serif" }}>1 FREE SPIN EVERY 24 HOURS</div>
+              </div>
+              {/* countdown */}
+              <div style={{ background:"rgba(4,12,28,0.85)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:16, backdropFilter:"blur(16px)", padding:"10px 16px", textAlign:"center", minWidth:100 }}>
+                <div style={{ fontSize:18, lineHeight:1, marginBottom:3 }}>📅</div>
+                <div style={{ fontSize:9, fontWeight:700, color:"rgba(255,255,255,0.4)", letterSpacing:"2px", marginBottom:3, fontFamily:"system-ui,sans-serif" }}>NEXT SPIN IN</div>
+                {showCountdown
+                  ? <div style={{ fontSize:18, fontWeight:900, color:"#fbbf24", fontFamily:"system-ui,sans-serif", lineHeight:1 }}>{countdownDisplay}</div>
+                  : <div style={{ fontSize:18, fontWeight:900, color:"#34d399", fontFamily:"system-ui,sans-serif", lineHeight:1 }}>READY!</div>}
+              </div>
+            </div>
+            <div className="w-full max-w-sm"><MobileLeaderboard spinCount={spinCount} /></div>
           </div>
         </main>
       </div>
