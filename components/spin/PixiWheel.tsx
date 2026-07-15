@@ -247,10 +247,9 @@ export default function PixiWheel({
         }
       });
 
-      // ── Hub — TWF logo circle ────────────────────────────────────────────
-      // Logo PNG is 300×56px. The circular icon occupies the leftmost ~56px
-      // (full image height). We scale the sprite so the icon fills the hub
-      // and apply a circular mask to clip everything else out.
+      // ── Hub — white ring + light-blue fill (logo overlaid as HTML <img>) ──
+      // The actual logo SVG is rendered as a native HTML element on top of the
+      // canvas so it stays crisp at every DPR without any texture sampling.
       const hub = new PIXI.Container() as any;
 
       // White border ring
@@ -258,32 +257,10 @@ export default function PixiWheel({
       hubOuter.beginFill(0xffffff); hubOuter.drawCircle(0, 0, 50); hubOuter.endFill();
       hub.addChild(hubOuter);
 
-      // Circular clip mask (radius 44 = display area inside the white ring)
-      const hubMask = new PIXI.Graphics();
-      hubMask.beginFill(0xffffff); hubMask.drawCircle(0, 0, 44); hubMask.endFill();
-
-      try {
-        // Load the pre-cropped 256×256 icon (square badge, no text — much sharper)
-        const logoTex = await (PIXI.Texture as any).fromURL("/twf-icon.png");
-        const logo = new PIXI.Sprite(logoTex) as any;
-
-        // Square icon — centre it and size to fill the hub mask area
-        const targetSize = 96;
-        logo.width  = targetSize;
-        logo.height = targetSize;
-        logo.anchor.set(0.5, 0.5);
-        logo.x = 0;
-        logo.y = 0;
-
-        hub.addChild(hubMask);
-        logo.mask = hubMask;
-        hub.addChild(logo);
-      } catch {
-        // Fallback if the image fails to load
-        hubMask.clear();
-        hubMask.beginFill(0x0c2340); hubMask.drawCircle(0, 0, 44); hubMask.endFill();
-        hub.addChild(hubMask);
-      }
+      // Light-blue interior — matches logo-icon.svg background
+      const hubBg = new PIXI.Graphics();
+      hubBg.beginFill(0xdff0fb); hubBg.drawCircle(0, 0, 44); hubBg.endFill();
+      hub.addChild(hubBg);
 
       wheel.addChild(hub);
 
@@ -390,10 +367,33 @@ export default function PixiWheel({
   }, [winnerIdx]);
 
   const cssTopPad = Math.round((size / SIZE) * TOP_PAD);
+  // Hub centre in CSS px (relative to outer wrapper top-left):
+  //   x = size/2  (wheel is horizontally centred)
+  //   y = cssTopPad + size/2  (stage is shifted down by cssTopPad for glow headroom)
+  // Logo diameter matches inner hub area (radius 44 in SIZE-space → 88 SIZE-units)
+  const logoSize = Math.round(88 * size / SIZE);
+
   return (
-    <div
-      ref={hostRef}
-      style={{ width: size, height: size + cssTopPad, position: "relative", flexShrink: 0 }}
-    />
+    <div style={{ position: "relative", width: size, height: size + cssTopPad, flexShrink: 0 }}>
+      {/* PixiJS canvas host */}
+      <div ref={hostRef} style={{ width: size, height: size + cssTopPad }} />
+      {/* SVG logo overlay — rendered natively by the browser, always crisp */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/logo-icon.svg"
+        alt=""
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          width: logoSize,
+          height: logoSize,
+          left: size / 2 - logoSize / 2,
+          top: cssTopPad + size / 2 - logoSize / 2,
+          pointerEvents: "none",
+          userSelect: "none",
+          borderRadius: "50%",
+        }}
+      />
+    </div>
   );
 }
