@@ -193,6 +193,21 @@ function Sparkle({ size, style }: { size: number; style: React.CSSProperties }) 
 
 // ─── "SUPER LUCKY SPIN" title ─────────────────────────────────────────────────
 function SpinTitle() {
+  // CHAR_W must match the actual rendered letter advance, which depends on the
+  // font-size produced by clamp(38px, 5vw, 56px).  We read window.innerWidth so
+  // the arch stays perfect on every screen size.
+  const [charW, setCharW] = useState(34);
+  useEffect(() => {
+    const calc = () => {
+      const vw = window.innerWidth;
+      const fs = Math.min(56, Math.max(38, vw * 0.05)); // mirrors clamp(38,5vw,56)
+      setCharW(fs * 0.605); // bold uppercase advance ≈ 60.5% of font-size
+    };
+    calc();
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
+  }, []);
+
   return (
     <div className="text-center select-none" style={{ lineHeight: 1.0, marginBottom: -4 }}>
       <style>{`
@@ -259,11 +274,10 @@ function SpinTitle() {
           // theta     = arc angle for this character (radians).
           // yDrop     = R*(1-cos θ)  → 0 at centre, positive (downward) at edges.
           // rotation  = θ in degrees → letter leans tangent to the circle.
-          const R_ARC   = 380;   // circle radius (px)
-          const CHAR_W  = 34;    // avg character advance at ~56 px bold
+          const R_ARC   = 380;   // circle radius (px) — same on all screens
           const arch = (i: number) => {
             const offset = i - center;
-            const theta  = (offset * CHAR_W) / R_ARC;          // radians
+            const theta  = (offset * charW) / R_ARC;           // radians
             const yDrop  = R_ARC * (1 - Math.cos(theta));      // px drop
             const deg    = theta * (180 / Math.PI);             // rotation °
             return {
