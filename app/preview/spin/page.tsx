@@ -467,130 +467,122 @@ export default function SpinPage() {
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
           {/* CSS grid [1fr auto 1fr] guarantees the wheel sits on the true viewport midpoint */}
-          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "40px", alignItems: "center" }}>
+          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "48px", alignItems: "center" }}>
 
-            {/* ── Left column: spin controls ── */}
-            <div className="flex flex-col items-center justify-center gap-3 justify-self-end" style={{ maxWidth: 220 }}>
-
-              {/* Points card */}
+            {/* ── Left: unified spin-controls card (mirrors leaderboard style) ── */}
+            <div className="justify-self-end" style={{ width: 260 }}>
               <div style={{
-                background: "rgba(4,12,28,0.85)", border: "1px solid rgba(251,191,36,0.25)",
-                borderRadius: 16, backdropFilter: "blur(16px)",
-                padding: "12px 16px", textAlign: "center", width: "100%",
+                borderRadius: 20, overflow: "hidden",
+                background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
+                backdropFilter: "blur(16px)",
               }}>
-                <div style={{ fontSize: 28, lineHeight: 1, marginBottom: 4 }}>⭐</div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
-                  fontFamily: "system-ui,sans-serif", textShadow: "0 0 20px rgba(251,191,36,0.55)" }}>
-                  {userData.monthlyPoints.toLocaleString()}
-                </div>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.4)",
-                  letterSpacing: "2px", marginTop: 3, fontFamily: "system-ui,sans-serif" }}>
-                  MONTHLY PTS
-                </div>
-              </div>
-
-              {/* Spin button + subtitle */}
-              <div style={{ width: "100%", textAlign: "center" }}>
-                <button
-                  ref={btnRef}
-                  onClick={handleSpinClick}
-                  disabled={!canPress}
-                  className={spinning ? "spin-btn-spinning" : ""}
-                  style={{
-                    width:         "100%",
-                    padding:       "14px 8px",
-                    borderRadius:  "40px",
-                    fontWeight:    900,
-                    fontSize:      28,
-                    letterSpacing: "0.12em",
-                    fontFamily:    "system-ui,sans-serif",
-                    cursor:        canPress ? "pointer" : "not-allowed",
-                    background:    canPress
-                      ? "linear-gradient(135deg,#fbbf24,#f97316)"
-                      : "rgba(255,255,255,0.08)",
-                    color:         canPress ? "#0c0a00" : "rgba(255,255,255,0.3)",
-                    border:        "none",
-                    opacity:       !canPress && !spinning ? 0.6 : 1,
-                  }}
-                >
-                  {spinning ? "⏳ SPINNING…" : "SPIN"}
-                </button>
-                <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.3)",
-                  letterSpacing: "1.2px", marginTop: 6, fontFamily: "system-ui,sans-serif" }}>
-                  1 FREE SPIN EVERY 24 HOURS
-                </div>
-              </div>
-
-              {/* Countdown card */}
-              <div style={{
-                background: "rgba(4,12,28,0.85)", border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 16, backdropFilter: "blur(16px)",
-                padding: "12px 16px", textAlign: "center", width: "100%",
-              }}>
-                <div style={{ fontSize: 20, lineHeight: 1, marginBottom: 4 }}>📅</div>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.4)",
-                  letterSpacing: "2px", marginBottom: 4, fontFamily: "system-ui,sans-serif" }}>
-                  NEXT SPIN IN
-                </div>
-                {showCountdown ? (
-                  <div style={{ fontSize: 20, fontWeight: 900, color: "#fbbf24",
-                    fontFamily: "system-ui,sans-serif", letterSpacing: "0.05em",
-                    textShadow: "0 0 14px rgba(251,191,36,0.4)", lineHeight: 1 }}>
-                    {countdownDisplay}
-                  </div>
-                ) : (
-                  <div style={{ fontSize: 20, fontWeight: 900, color: "#34d399",
-                    fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
-                    READY!
-                  </div>
-                )}
-              </div>
-
-              {/* Bonus badge */}
-              {userData.bonusSpinAvailable && (
-                <div style={{ background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.35)",
-                  borderRadius: 12, padding: "8px 12px", textAlign: "center", width: "100%" }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: "#34d399", margin: 0 }}>
-                    ✦ Bonus spin available!
-                  </p>
-                </div>
-              )}
-
-              {/* Error */}
-              {error && (
-                <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
-                  border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
-                  padding: "6px 12px", margin: 0, width: "100%", textAlign: "center" }}>
-                  {error}
-                </p>
-              )}
-
-              {/* Last result replay */}
-              {lastWin && !spinning && !modal && (
-                <button onClick={() => setModal(lastWin)}
-                  style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)",
-                    background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 10, padding: "6px 12px", cursor: "pointer", width: "100%" }}>
-                  {lastWin.isSpinAgain ? "🎰 Spin Again" : `+${lastWin.points} pts`} — {lastWin.label}
-                  <span style={{ display: "block", fontSize: 10, marginTop: 2, color: "rgba(255,255,255,0.25)" }}>
-                    tap to view
+                {/* Header */}
+                <div className="px-5 py-4">
+                  <span className="text-sm font-bold uppercase tracking-widest" style={{ color: "#fbbf24" }}>
+                    ⭐ Your Points
                   </span>
-                </button>
-              )}
-
-              {/* How it works */}
-              <details style={{ width: "100%" }}>
-                <summary style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.25)",
-                  letterSpacing: "1.5px", textTransform: "uppercase", cursor: "pointer", textAlign: "center" }}>
-                  How it works ▾
-                </summary>
-                <div style={{ marginTop: 8, fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }}>
-                  <p style={{ margin: "2px 0" }}>• One free spin every 24 hours.</p>
-                  <p style={{ margin: "2px 0" }}>• Points count towards the monthly leaderboard.</p>
-                  <p style={{ margin: "2px 0" }}>• Top 3 each month win prizes.</p>
-                  <p style={{ margin: "2px 0" }}>• Newsletter subscribers get a bonus spin.</p>
                 </div>
-              </details>
+
+                <div className="px-5 pb-5 flex flex-col gap-4">
+                  {/* Points value */}
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 42, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
+                      fontFamily: "system-ui,sans-serif", textShadow: "0 0 24px rgba(251,191,36,0.55)" }}>
+                      {userData.monthlyPoints.toLocaleString()}
+                    </div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)",
+                      letterSpacing: "2.5px", marginTop: 4, fontFamily: "system-ui,sans-serif" }}>
+                      MONTHLY POINTS
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+
+                  {/* SPIN button */}
+                  <div style={{ textAlign: "center" }}>
+                    <button
+                      ref={btnRef}
+                      onClick={handleSpinClick}
+                      disabled={!canPress}
+                      className={spinning ? "spin-btn-spinning" : ""}
+                      style={{
+                        width: "100%", padding: "14px 8px", borderRadius: "40px",
+                        fontWeight: 900, fontSize: 28, letterSpacing: "0.12em",
+                        fontFamily: "system-ui,sans-serif",
+                        cursor: canPress ? "pointer" : "not-allowed",
+                        background: canPress ? "linear-gradient(135deg,#fbbf24,#f97316)" : "rgba(255,255,255,0.07)",
+                        color: canPress ? "#0c0a00" : "rgba(255,255,255,0.25)",
+                        border: "none",
+                        opacity: !canPress && !spinning ? 0.7 : 1,
+                      }}
+                    >
+                      {spinning ? "⏳ SPINNING…" : "SPIN"}
+                    </button>
+                    <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.25)",
+                      letterSpacing: "1.5px", marginTop: 6, fontFamily: "system-ui,sans-serif" }}>
+                      1 FREE SPIN EVERY 24 HOURS
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+
+                  {/* Countdown */}
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)",
+                      letterSpacing: "2.5px", marginBottom: 6, fontFamily: "system-ui,sans-serif" }}>
+                      📅 NEXT SPIN IN
+                    </div>
+                    {showCountdown ? (
+                      <div style={{ fontSize: 26, fontWeight: 900, color: "#fbbf24",
+                        fontFamily: "system-ui,sans-serif", letterSpacing: "0.05em",
+                        textShadow: "0 0 14px rgba(251,191,36,0.4)", lineHeight: 1 }}>
+                        {countdownDisplay}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 26, fontWeight: 900, color: "#34d399",
+                        fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
+                        READY!
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bonus badge */}
+                  {userData.bonusSpinAvailable && (
+                    <>
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+                      <div style={{ textAlign: "center" }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#34d399", margin: 0 }}>
+                          ✦ Bonus spin available!
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Error */}
+                  {error && (
+                    <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
+                      border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
+                      padding: "6px 12px", margin: 0, textAlign: "center" }}>
+                      {error}
+                    </p>
+                  )}
+
+                  {/* Last result */}
+                  {lastWin && !spinning && !modal && (
+                    <button onClick={() => setModal(lastWin)}
+                      style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)",
+                        background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 10, padding: "6px 12px", cursor: "pointer", width: "100%" }}>
+                      {lastWin.isSpinAgain ? "🎰 Spin Again" : `+${lastWin.points} pts`} — {lastWin.label}
+                      <span style={{ display: "block", fontSize: 10, marginTop: 2, color: "rgba(255,255,255,0.25)" }}>
+                        tap to view
+                      </span>
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* ── Centre: Wheel ── */}
@@ -604,7 +596,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="justify-self-start" style={{ maxWidth: 220 }}>
+            <div className="justify-self-start" style={{ width: 260 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
