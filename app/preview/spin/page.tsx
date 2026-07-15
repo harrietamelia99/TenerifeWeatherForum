@@ -535,11 +535,14 @@ export default function SpinPage() {
             <div style={{ position: "absolute", top: 0, left: 20, width: 260, zIndex: 2 }}>
               <div style={{
                 borderRadius: 20,
-                background: "rgba(4,12,28,0.85)", border: "1px solid rgba(251,191,36,0.25)",
-                backdropFilter: "blur(18px)",
+                background: "linear-gradient(160deg, rgba(12,28,56,0.95) 0%, rgba(4,12,28,0.92) 60%, rgba(8,20,42,0.95) 100%)",
+                border: "1px solid rgba(251,191,36,0.22)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)",
+                textAlign: "center",
               }}>
                 {/* Header */}
-                <div style={{ padding: "18px 22px 14px" }}>
+                <div style={{ padding: "18px 22px 14px", textAlign: "center" }}>
                   <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
                     color: "#fbbf24", textTransform: "uppercase" }}>
                     ⭐ Monthly Points
@@ -779,9 +782,14 @@ export default function SpinPage() {
 // ─── Desktop leaderboard card (always fully open) ────────────────────────────
 function MobileLeaderboard({ spinCount }: { spinCount: number }) {
   return (
-    <div style={{ borderRadius: 20,
-      background: "rgba(4,12,28,0.85)", border: "1px solid rgba(255,255,255,0.12)",
-      backdropFilter: "blur(18px)" }}>
+    <div style={{
+      borderRadius: 20,
+      background: "linear-gradient(160deg, rgba(12,28,56,0.95) 0%, rgba(4,12,28,0.92) 60%, rgba(8,20,42,0.95) 100%)",
+      border: "1px solid rgba(255,255,255,0.10)",
+      backdropFilter: "blur(20px)",
+      boxShadow: "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)",
+      textAlign: "center",
+    }}>
       <div style={{ padding: "16px 20px 8px" }}>
         <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
           color: "#fbbf24", textTransform: "uppercase" }}>
