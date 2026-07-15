@@ -249,79 +249,89 @@ interface UserData {
 // ─── Top bar with burger menu on mobile ──────────────────────────────────────
 function TopBar({ displayName }: { displayName: string }) {
   const [open, setOpen] = useState(false);
+
+  const pillBase: React.CSSProperties = {
+    display: "inline-flex", alignItems: "center", gap: 6,
+    borderRadius: 999, fontWeight: 700, cursor: "pointer",
+    backdropFilter: "blur(10px)", transition: "opacity 150ms",
+    border: "1px solid rgba(255,255,255,0.18)",
+    background: "rgba(255,255,255,0.10)",
+    color: "white", fontSize: 13, letterSpacing: "0.01em",
+    padding: "7px 14px", touchAction: "manipulation",
+  };
+
   return (
     <>
       <div
-        className="flex items-center justify-between px-4 py-2 flex-shrink-0"
-        style={{ background: "rgba(4,15,32,0.65)", backdropFilter: "blur(14px)", minHeight: 48, position: "relative", zIndex: 50 }}
+        className="flex items-center justify-between flex-shrink-0"
+        style={{
+          padding: "8px 12px",
+          background: "rgba(4,15,32,0.55)",
+          backdropFilter: "blur(14px)",
+          minHeight: 44,
+          position: "relative", zIndex: 50,
+        }}
       >
-        {/* Left: return to site */}
-        <a href="/" className="btn-primary text-sm py-1.5 px-4">
-          ← Return to site
+        {/* ← Return — compact on mobile, full text on desktop */}
+        <a href="/" style={pillBase}>
+          <span style={{ fontSize: 15, lineHeight: 1 }}>←</span>
+          <span className="hidden sm:inline">Return to site</span>
         </a>
 
         {/* Desktop: username + sign out */}
         <div className="hidden sm:flex items-center gap-3">
-          <span className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{displayName}</span>
+          <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{displayName}</span>
           <button
             onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
-            className="btn-ghost text-sm py-1.5 px-4">
+            style={{ ...pillBase, background: "rgba(255,255,255,0.07)" }}>
             Sign out
           </button>
         </div>
 
-        {/* Mobile: hamburger */}
+        {/* Mobile: hamburger pill — matches the back button style */}
         <button
-          className="sm:hidden flex flex-col justify-center items-center gap-[5px] p-2 rounded-lg"
-          style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
+          className="sm:hidden"
+          style={{ ...pillBase, padding: "7px 12px", flexDirection: "column", gap: 4 }}
           onClick={() => setOpen(o => !o)}
           aria-label="Menu"
         >
-          <span
-            style={{
-              display: "block", width: 20, height: 2, borderRadius: 2, background: "white",
-              transition: "transform 200ms, opacity 200ms",
-              transform: open ? "translateY(7px) rotate(45deg)" : "none",
-            }}
-          />
-          <span
-            style={{
-              display: "block", width: 20, height: 2, borderRadius: 2, background: "white",
-              transition: "opacity 200ms",
-              opacity: open ? 0 : 1,
-            }}
-          />
-          <span
-            style={{
-              display: "block", width: 20, height: 2, borderRadius: 2, background: "white",
-              transition: "transform 200ms, opacity 200ms",
-              transform: open ? "translateY(-7px) rotate(-45deg)" : "none",
-            }}
-          />
+          <span style={{
+            display: "block", width: 18, height: 2, borderRadius: 2, background: "white",
+            transition: "transform 220ms, opacity 220ms",
+            transform: open ? "translateY(6px) rotate(45deg)" : "none",
+          }} />
+          <span style={{
+            display: "block", width: 18, height: 2, borderRadius: 2, background: "white",
+            transition: "opacity 220ms", opacity: open ? 0 : 1,
+          }} />
+          <span style={{
+            display: "block", width: 18, height: 2, borderRadius: 2, background: "white",
+            transition: "transform 220ms, opacity 220ms",
+            transform: open ? "translateY(-6px) rotate(-45deg)" : "none",
+          }} />
         </button>
       </div>
 
       {/* Mobile dropdown */}
       <div
-        className="sm:hidden flex-shrink-0 overflow-hidden transition-all duration-200"
+        className="sm:hidden flex-shrink-0 overflow-hidden"
         style={{
-          maxHeight: open ? 120 : 0,
+          maxHeight: open ? 110 : 0,
           opacity: open ? 1 : 0,
-          background: "rgba(4,15,32,0.96)",
+          transition: "max-height 220ms ease, opacity 180ms ease",
+          background: "rgba(4,15,32,0.97)",
           backdropFilter: "blur(14px)",
-          borderBottom: open ? "1px solid rgba(255,255,255,0.08)" : "none",
-          zIndex: 49,
-          position: "relative",
+          borderBottom: open ? "1px solid rgba(255,255,255,0.07)" : "none",
+          position: "relative", zIndex: 49,
         }}
       >
-        <div className="px-5 py-4 flex flex-col gap-3">
-          <div className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
-            Signed in as <span style={{ color: "#fbbf24" }}>{displayName}</span>
-          </div>
+        <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>
+            Signed in as <strong style={{ color: "#fbbf24" }}>{displayName}</strong>
+          </span>
           <button
             onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
-            className="btn-ghost text-sm py-2 px-4 w-full text-left"
-          >
+            style={{ ...pillBase, background: "rgba(239,68,68,0.12)", borderColor: "rgba(239,68,68,0.3)", color: "#fca5a5" }}>
             Sign out
           </button>
         </div>
