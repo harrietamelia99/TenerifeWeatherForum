@@ -12,9 +12,10 @@ import gsap from "gsap";
 const PixiWheel = dynamic(() => import("@/components/spin/PixiWheel"), { ssr: false });
 
 // ─── Responsive wheel size ─────────────────────────────────────────────────────
-// 3-column layout: no pill below wheel — only bar(42)+pt(12)+title(~162)+mb(16)+pb(12)=244
-// Add 46px buffer → 290. Width capped so side columns fit alongside.
-const CHROME_HEIGHT = 290;
+// 3-col layout, vertically centred in viewport.
+// Chrome: bar(42) + title(~162) + mb(16) + vertical gaps/padding(~80) = ~300
+// Add safety buffer → 360 so the wheel + controls always fit without scrolling.
+const CHROME_HEIGHT = 360;
 
 function useWheelSize() {
   const [size, setSize] = useState(420);
@@ -22,13 +23,13 @@ function useWheelSize() {
     const update = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const byHeight = Math.max(260, vh - CHROME_HEIGHT);
-      // On desktop the wheel column is centre of 3; cap width so all 3 columns fit
+      const byHeight = Math.max(240, vh - CHROME_HEIGHT);
+      // On desktop cap width so the two side columns fit comfortably alongside
       let byWidth: number;
       if (vw < 480)       byWidth = vw - 24;
-      else if (vw < 768)  byWidth = Math.min(vw - 40, 420);
-      else if (vw < 1024) byWidth = 420;
-      else                byWidth = Math.min(vw - 560, 480); // 560 = left(200)+right(300)+gaps
+      else if (vw < 768)  byWidth = Math.min(vw - 40, 400);
+      else if (vw < 1024) byWidth = 400;
+      else                byWidth = Math.min(vw - 560, 460); // 560 ≈ left+right+gaps
       setSize(Math.min(byWidth, byHeight));
     };
     update();
@@ -417,8 +418,8 @@ export default function SpinPage() {
     <>
       <TropicalBackground />
 
-      {/* No pt offset — site navbar/ticker are hidden on spin routes */}
-      <div className="relative min-h-screen" style={{ zIndex: 1 }}>
+      {/* Full-screen flex column — content will be centred below the top bar */}
+      <div className="relative flex flex-col overflow-hidden" style={{ zIndex: 1, height: "100dvh" }}>
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
         {/* Top bar — return to site + sign out */}
@@ -455,16 +456,16 @@ export default function SpinPage() {
           </div>
         </div>
 
-        {/* Main */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3">
+        {/* Main — takes remaining height, centres content vertically + horizontally */}
+        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden">
 
-          {/* Title — full width above the 3-column layout */}
+          {/* Title */}
           <div className="flex justify-center mb-4">
             <SpinTitle />
           </div>
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
-          <div className="flex flex-col lg:flex-row items-center lg:items-center gap-5 justify-center">
+          <div className="flex flex-col lg:flex-row items-center gap-5 justify-center w-full">
 
             {/* ── Left column: spin controls ── */}
             <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-48 flex-shrink-0 order-2 lg:order-1">
