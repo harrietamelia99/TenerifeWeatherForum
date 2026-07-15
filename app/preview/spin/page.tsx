@@ -254,11 +254,21 @@ function SpinTitle() {
           const chars = "LUCKY SPIN".split("");
           const n = chars.length;
           const center = (n - 1) / 2;
+          // True circular arch: each letter sits on a circle of radius R_ARC.
+          // charStep  = average advance per character in px (bold ~56 px font).
+          // theta     = arc angle for this character (radians).
+          // yDrop     = R*(1-cos θ)  → 0 at centre, positive (downward) at edges.
+          // rotation  = θ in degrees → letter leans tangent to the circle.
+          const R_ARC   = 380;   // circle radius (px)
+          const CHAR_W  = 34;    // avg character advance at ~56 px bold
           const arch = (i: number) => {
             const offset = i - center;
+            const theta  = (offset * CHAR_W) / R_ARC;          // radians
+            const yDrop  = R_ARC * (1 - Math.cos(theta));      // px drop
+            const deg    = theta * (180 / Math.PI);             // rotation °
             return {
               display: "inline-block",
-              transform: `rotate(${(offset * 2.1).toFixed(2)}deg) translateY(${(offset * offset * 0.65).toFixed(2)}px)`,
+              transform: `rotate(${deg.toFixed(2)}deg) translateY(${yDrop.toFixed(2)}px)`,
               transformOrigin: "center bottom",
             } as React.CSSProperties;
           };
