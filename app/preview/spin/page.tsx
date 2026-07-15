@@ -13,23 +13,23 @@ const PixiWheel = dynamic(() => import("@/components/spin/PixiWheel"), { ssr: fa
 
 // ─── Responsive wheel size ─────────────────────────────────────────────────────
 // 3-col layout, vertically centred in viewport.
-// Chrome: bar(42) + title(~162) + mb(16) + vertical gaps/padding(~80) = ~300
-// Add safety buffer → 360 so the wheel + controls always fit without scrolling.
-const CHROME_HEIGHT = 360;
+// Chrome: bar(42) + title(~200) + mb(16) + padding(~60) = ~318; add 142 buffer → 460
+// This keeps the wheel small enough that title + wheel always fit in one viewport.
+const CHROME_HEIGHT = 460;
 
 function useWheelSize() {
-  const [size, setSize] = useState(420);
+  const [size, setSize] = useState(380);
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const byHeight = Math.max(240, vh - CHROME_HEIGHT);
-      // On desktop cap width so the two side columns fit comfortably alongside
+      const byHeight = Math.max(220, vh - CHROME_HEIGHT);
+      // Cap width so side columns comfortably flank the wheel
       let byWidth: number;
       if (vw < 480)       byWidth = vw - 24;
-      else if (vw < 768)  byWidth = Math.min(vw - 40, 400);
-      else if (vw < 1024) byWidth = 400;
-      else                byWidth = Math.min(vw - 560, 460); // 560 ≈ left+right+gaps
+      else if (vw < 768)  byWidth = Math.min(vw - 40, 380);
+      else if (vw < 1024) byWidth = 380;
+      else                byWidth = Math.min(vw - 580, 440); // 580 ≈ left+right+gaps
       setSize(Math.min(byWidth, byHeight));
     };
     update();
@@ -408,8 +408,8 @@ export default function SpinPage() {
     <>
       <TropicalBackground />
 
-      {/* Full-screen flex column — content will be centred below the top bar */}
-      <div className="relative flex flex-col overflow-hidden" style={{ zIndex: 1, height: "100dvh" }}>
+      {/* Full-screen flex column — content centred below the top bar, never clipped */}
+      <div className="relative flex flex-col" style={{ zIndex: 1, minHeight: "100dvh" }}>
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
         {/* Top bar — return to site + sign out */}
@@ -447,7 +447,7 @@ export default function SpinPage() {
         </div>
 
         {/* Main — takes remaining height, centres content vertically + horizontally */}
-        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden">
+        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-4">
 
           {/* Title */}
           <div className="flex justify-center mb-4">
