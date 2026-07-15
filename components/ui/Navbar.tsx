@@ -28,7 +28,7 @@ export default function Navbar() {
       {/* Floating pill — always pill-shaped */}
       {/* pointer-events-none on the outer wrapper so the invisible overflow of the
           collapsed mobile menu never blocks taps on page content below */}
-      <div className="fixed top-11 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-3 pointer-events-none">
+      <div data-site-chrome className="fixed top-11 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-3 pointer-events-none">
         <nav
           className="max-w-7xl mx-auto rounded-full pointer-events-auto"
           style={{

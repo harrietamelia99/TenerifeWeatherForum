@@ -19,7 +19,7 @@ function TikTokIcon() {
 
 export default function Footer() {
   return (
-    <footer style={{ background: "var(--gradient-ocean)" }} className="text-white relative overflow-hidden">
+    <footer data-site-chrome style={{ background: "var(--gradient-ocean)" }} className="text-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12 mb-12">
           {/* Brand */}

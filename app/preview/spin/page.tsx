@@ -12,22 +12,22 @@ import gsap from "gsap";
 const PixiWheel = dynamic(() => import("@/components/spin/PixiWheel"), { ssr: false });
 
 // ─── Responsive wheel size ─────────────────────────────────────────────────────
-// Fixed chrome above/below the wheel in the left column:
-// navbar(100) + mini-bar(36) + title(100) + pill(80) + gaps(48) ≈ 364
-const CHROME_HEIGHT = 364;
+// Chrome above/below the wheel in the left column (no site navbar — it's hidden):
+// mini-bar(42) + title(130) + pill(76) + gaps(60) ≈ 308
+const CHROME_HEIGHT = 308;
 
 function useWheelSize() {
-  const [size, setSize] = useState(380);
+  const [size, setSize] = useState(420);
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const byHeight = Math.max(220, vh - CHROME_HEIGHT);
+      const byHeight = Math.max(260, vh - CHROME_HEIGHT);
       let byWidth: number;
       if (vw < 480)       byWidth = vw - 20;
-      else if (vw < 768)  byWidth = 380;
-      else if (vw < 1200) byWidth = 420;
-      else                byWidth = 480;
+      else if (vw < 768)  byWidth = 420;
+      else if (vw < 1200) byWidth = 460;
+      else                byWidth = 520;
       setSize(Math.min(byWidth, byHeight));
     };
     update();
@@ -416,37 +416,38 @@ export default function SpinPage() {
     <>
       <TropicalBackground />
 
-      <div className="relative min-h-screen pt-[100px]" style={{ zIndex: 1 }}>
+      {/* No pt-[100px] — site navbar/ticker are hidden while on spin routes */}
+      <div className="relative min-h-screen" style={{ zIndex: 1 }}>
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
         {/* Minimal top bar — sign out only */}
-        <div className="flex items-center justify-end px-4 py-2"
-          style={{ background: "rgba(4,15,32,0.6)", backdropFilter: "blur(10px)" }}>
+        <div className="flex items-center justify-end px-5 py-2"
+          style={{ background: "rgba(4,15,32,0.55)", backdropFilter: "blur(12px)", minHeight: 42 }}>
           <div className="flex items-center gap-3">
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
               {displayName}
             </span>
             <button
               onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
               className="px-3 py-1 rounded-lg text-xs font-semibold"
-              style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)" }}>
+              style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.1)" }}>
               Sign out
             </button>
           </div>
         </div>
 
         {/* Main */}
-        <main className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-6">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-8">
 
           {/* Title — full width, centred above the two-column layout */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-6">
             <SpinTitle />
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 justify-center">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 justify-center">
 
             {/* ── Left column: Wheel + Pill ── */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-4">
 
               {/* PixiJS GPU wheel */}
               <PixiWheel
@@ -590,7 +591,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="w-full sm:max-w-sm lg:w-72 flex-shrink-0">
+            <div className="w-full sm:max-w-sm lg:w-80 flex-shrink-0">
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
