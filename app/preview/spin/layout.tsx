@@ -4,16 +4,43 @@ import { SessionProvider } from "next-auth/react";
 import { useEffect } from "react";
 
 // Hide the global site chrome (ticker, navbar, footer) while any spin page is
-// active, then restore everything when navigating away.
+// active. On desktop (≥1024px) the weather ticker is repositioned to the
+// bottom of the viewport instead of being hidden.
 function HideSiteChrome() {
   useEffect(() => {
-    const els = Array.from(
+    const isDesktop = window.innerWidth >= 1024;
+
+    const chromeEls = Array.from(
       document.querySelectorAll<HTMLElement>("[data-site-chrome]")
     );
-    els.forEach((el) => { el.style.visibility = "hidden"; el.style.pointerEvents = "none"; });
-    document.body.style.overflow = "hidden"; // prevent background scroll
+    const ticker = document.querySelector<HTMLElement>("[data-weather-ticker]");
+
+    chromeEls.forEach((el) => {
+      el.style.visibility = "hidden";
+      el.style.pointerEvents = "none";
+    });
+
+    // On desktop: show ticker pinned to bottom instead
+    if (isDesktop && ticker) {
+      ticker.style.visibility = "visible";
+      ticker.style.pointerEvents = "auto";
+      ticker.style.top = "auto";
+      ticker.style.bottom = "0";
+      ticker.style.zIndex = "40";
+    }
+
+    document.body.style.overflow = "hidden";
+
     return () => {
-      els.forEach((el) => { el.style.visibility = ""; el.style.pointerEvents = ""; });
+      chromeEls.forEach((el) => {
+        el.style.visibility = "";
+        el.style.pointerEvents = "";
+      });
+      if (ticker) {
+        ticker.style.top = "";
+        ticker.style.bottom = "";
+        ticker.style.zIndex = "";
+      }
       document.body.style.overflow = "";
     };
   }, []);

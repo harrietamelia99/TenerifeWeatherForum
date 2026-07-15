@@ -7,6 +7,7 @@ export default async function WeatherTicker() {
   return (
     <div
       data-site-chrome
+      data-weather-ticker
       className="overflow-hidden fixed top-0 left-0 right-0 z-[60]"
       style={{ background: "rgba(5,63,92,0.85)" }}
       aria-label="Live weather statistics"
