@@ -288,9 +288,9 @@ function TopBar({ displayName }: { displayName: string }) {
           </button>
         </div>
 
-        {/* Mobile: hamburger pill — matches the back button style */}
+        {/* Mobile: hamburger pill — wrapper div carries sm:hidden so inline display doesn't override */}
+        <div className="sm:hidden">
         <button
-          className="sm:hidden"
           style={{ ...pillBase, padding: "7px 12px", flexDirection: "column", gap: 4 }}
           onClick={() => setOpen(o => !o)}
           aria-label="Menu"
@@ -310,6 +310,7 @@ function TopBar({ displayName }: { displayName: string }) {
             transform: open ? "translateY(-6px) rotate(-45deg)" : "none",
           }} />
         </button>
+        </div>
       </div>
 
       {/* Mobile dropdown */}
