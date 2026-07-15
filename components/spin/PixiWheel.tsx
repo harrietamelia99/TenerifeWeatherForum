@@ -64,33 +64,32 @@ export default function PixiWheel({
       if (gone || !hostRef.current) return;
 
       // ── App ─────────────────────────────────────────────────────────────────
-      // The internal coordinate space stays at SIZE×SIZE so all the hard-coded
-      // geometry constants (CX, CY, R, …) remain correct.
-      // We adjust `resolution` so the canvas pixel buffer = size×dpr, and then
-      // manually pin the canvas CSS size to exactly `size` px.
-      // This ensures the canvas fills the host div exactly — no overflow that
-      // would cause the wheel to appear off-centre in the page layout.
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const resolution = (size / SIZE) * dpr;
-      // Canvas is SIZE×(SIZE+TOP_PAD) internally; CSS height gets the same
-      // proportional extra pixels so the halo glow above the wheel is visible.
-      const cssTopPad = Math.round((size / SIZE) * TOP_PAD);
+      // resolution = dpr (always full HiDPI — e.g. 2× on Retina).
+      // The PixiJS canvas is sized to `size` CSS pixels; autoDensity sets the
+      // CSS dimensions automatically.
+      // app.stage.scale maps the fixed SIZE-space geometry to the actual `size`
+      // without any sub-pixel resolution loss.
+      const dpr  = Math.min(window.devicePixelRatio || 1, 2);
+      const stageScale  = size / SIZE;
+      const cssTopPad   = Math.round(stageScale * TOP_PAD);
+
       const app = new (PIXI as any).Application({
-        width: SIZE, height: SIZE + TOP_PAD,
+        width:  size,
+        height: size + cssTopPad,
         backgroundAlpha: 0,
-        antialias: true,
-        resolution,
-        autoDensity: false,
+        antialias:  true,
+        resolution: dpr,
+        autoDensity: true,   // PixiJS pins the canvas CSS dimensions to width×height
       }) as any;
 
       const canvas = app.view as HTMLCanvasElement;
-      canvas.style.width  = `${size}px`;
-      canvas.style.height = `${size + cssTopPad}px`;
       canvas.style.display = "block";
       hostRef.current.appendChild(canvas);
 
-      // Shift the entire scene down so glow/pointer clear the canvas top edge
-      app.stage.y = TOP_PAD;
+      // Scale geometry from SIZE-space → size CSS pixels
+      app.stage.scale.set(stageScale);
+      // Shift down by cssTopPad canvas pixels for glow/pointer headroom at top
+      app.stage.y = cssTopPad;
 
       // ── Outer ambient glow ring (pre-baked — no shader needed) ───────────
       // A radial gradient of concentric transparent rings reads as "glow"
@@ -268,8 +267,8 @@ export default function PixiWheel({
         const logoTex = await (PIXI.Texture as any).fromURL("/twf-icon.png");
         const logo = new PIXI.Sprite(logoTex) as any;
 
-        // Square icon — centre it and size to fill the hub mask area (88px diameter)
-        const targetSize = 90;
+        // Square icon — centre it and size to fill the hub mask area
+        const targetSize = 96;
         logo.width  = targetSize;
         logo.height = targetSize;
         logo.anchor.set(0.5, 0.5);
