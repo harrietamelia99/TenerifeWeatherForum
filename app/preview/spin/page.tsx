@@ -20,9 +20,10 @@ function useWheelSize() {
       const vh = window.innerHeight;
 
       if (vw >= 1024) {
-        // Desktop 3-col budget: panels(220×2=440) + gaps(80×2=160) + wheel-padding(20×2=40) = 640
-        const byWidth = Math.min(vw - 640, 360);
-        const byHeight = Math.max(240, vh - 460);
+        // CSS Grid 1fr|auto|1fr: panels(220×2) + gaps(40×2) = 520 reserved.
+        // Wheel takes the auto column — allow up to 40% of viewport width.
+        const byWidth = Math.min(Math.floor(vw * 0.40), 440);
+        const byHeight = Math.max(260, vh - 380);
         setSize(Math.min(byWidth, byHeight));
       } else {
         // Mobile/tablet stacked layout
@@ -198,7 +199,7 @@ function SpinTitle() {
 
       {/* SUPER */}
       <div style={{
-        fontSize: "clamp(22px,4.5vw,50px)", fontWeight: 900, color: "white",
+        fontSize: "clamp(16px,3vw,36px)", fontWeight: 900, color: "white",
         fontFamily: "system-ui,sans-serif", letterSpacing: "0.18em",
         textShadow: [
           "2px 0 0 #0c1f3a", "-2px 0 0 #0c1f3a",
@@ -216,7 +217,7 @@ function SpinTitle() {
 
       {/* LUCKY SPIN */}
       <div style={{
-        fontSize: "clamp(32px,7vw,76px)", fontWeight: 900, color: "#fbbf24",
+        fontSize: "clamp(24px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
         fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
         textShadow: [
           "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
@@ -588,7 +589,7 @@ export default function SpinPage() {
 
               {/* ── Centre: title directly above wheel in same column ── */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ marginBottom: 14 }}>
+                <div style={{ marginBottom: 6 }}>
                   <SpinTitle />
                 </div>
                 <PixiWheel
