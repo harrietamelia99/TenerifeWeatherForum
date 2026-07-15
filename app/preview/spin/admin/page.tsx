@@ -143,7 +143,7 @@ export default function SpinAdminPage() {
   if (!authed) {
     return (
       <div
-      className="min-h-screen flex items-center justify-center px-4 pt-[128px]"
+      className="min-h-screen flex items-center justify-center px-4 py-12"
       style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
       >
         <div className="w-full max-w-xs">
@@ -171,17 +171,17 @@ export default function SpinAdminPage() {
 
   // ─── Admin panel ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen pt-[128px]" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen pt-6" style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}>
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-2xl font-black" style={{ color: "#fbbf24" }}>Lucky Spin Admin</h1>
+            <h1 className="text-xl font-black" style={{ color: "#fbbf24" }}>Lucky Spin Admin</h1>
             <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>Tenerife Weather Forum · Preview</p>
           </div>
-          <div className="text-right">
+          <div className="sm:text-right">
             <button
               onClick={handleArchive}
-              className="px-4 py-2 rounded-lg text-sm font-semibold"
+              className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-semibold"
               style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.35)" }}
             >
               Archive &amp; Reset Month ↻
@@ -193,7 +193,7 @@ export default function SpinAdminPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-6">
           {(["leaderboard", "users", "winners"] as Tab[]).map((tab) => (
             <button
               key={tab}

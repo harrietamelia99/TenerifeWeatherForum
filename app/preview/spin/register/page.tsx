@@ -47,7 +47,6 @@ export default function SpinRegisterPage() {
         return;
       }
 
-      // Auto sign-in after successful registration
       const result = await signIn("credentials", {
         email:    form.email,
         password: form.password,
@@ -67,116 +66,165 @@ export default function SpinRegisterPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 pt-[128px] pb-8"
-      style={{ background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)" }}
+      style={{
+        minHeight: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+        background: "linear-gradient(160deg, #020f1e 0%, #0c2340 55%, #07101e 100%)",
+        overflowY: "auto",
+      }}
     >
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
-            style={{ background: "rgba(251,191,36,0.15)", border: "2px solid rgba(251,191,36,0.4)" }}
-          >
-            <span className="text-3xl">🎰</span>
-          </div>
-          <h1 className="text-2xl font-black text-white">Lucky Spin</h1>
-          <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>
-            Create your account to play
-          </p>
-        </div>
-
-        <div
-          className="rounded-2xl p-7"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0">
+        <a href="/" className="btn-ghost text-sm py-1.5 px-4">← Return to site</a>
+        <Link
+          href="/preview/spin/login"
+          className="text-sm font-semibold hover:opacity-80"
+          style={{ color: "#fbbf24" }}
         >
-          <h2 className="text-lg font-bold text-white mb-5">Create account</h2>
+          Sign in →
+        </Link>
+      </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Email *
-              </label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={set("email")}
-                required
-                autoComplete="email"
-                className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Display name <span style={{ color: "rgba(255,255,255,0.3)" }}>(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={form.displayName}
-                onChange={set("displayName")}
-                maxLength={30}
-                className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
-                placeholder="Shown on leaderboard"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Password *
-              </label>
-              <input
-                type="password"
-                value={form.password}
-                onChange={set("password")}
-                required
-                minLength={8}
-                autoComplete="new-password"
-                className="w-full px-4 py-3 rounded-xl text-sm text-white outline-none"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
-                placeholder="Min. 8 characters"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Confirm password *
-              </label>
-              <input
-                type="password"
-                value={form.confirm}
-                onChange={set("confirm")}
-                required
-                autoComplete="new-password"
-                className="w-full px-4 py-3 rounded-xl text-sm text-white outline-none"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
-                placeholder="••••••••"
-              />
-            </div>
-
-            {error && (
-              <p className="text-sm text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-all disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#0c0a08" }}
+      {/* Form area — scrollable on very short screens */}
+      <div className="flex-1 flex items-center justify-center px-4 py-4">
+        <div className="w-full max-w-sm">
+          {/* Logo */}
+          <div className="text-center mb-5">
+            <div
+              className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-3"
+              style={{ background: "rgba(251,191,36,0.15)", border: "2px solid rgba(251,191,36,0.4)" }}
             >
-              {loading ? "Creating account…" : "Create Account & Play"}
-            </button>
-          </form>
+              <span className="text-2xl">🎰</span>
+            </div>
+            <h1 className="text-xl font-black text-white">Lucky Spin</h1>
+            <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+              Create your account to play
+            </p>
+          </div>
 
-          <p className="text-center text-sm mt-5" style={{ color: "rgba(255,255,255,0.4)" }}>
-            Already have an account?{" "}
-            <Link href="/preview/spin/login" className="font-semibold hover:opacity-80" style={{ color: "#fbbf24" }}>
-              Sign in
-            </Link>
+          {/* Card */}
+          <div
+            className="rounded-2xl p-5"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+          >
+            <h2 className="text-base font-bold text-white mb-4">Create account</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div>
+                <label
+                  className="block text-xs font-semibold uppercase tracking-wider mb-1"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={set("email")}
+                  required
+                  autoComplete="email"
+                  inputMode="email"
+                  className="w-full px-3 py-2.5 rounded-xl text-base text-white placeholder-white/30 outline-none focus:ring-2 focus:ring-yellow-400/40"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div>
+                <label
+                  className="block text-xs font-semibold uppercase tracking-wider mb-1"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Display name{" "}
+                  <span style={{ color: "rgba(255,255,255,0.3)", textTransform: "none", letterSpacing: 0 }}>
+                    (optional)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={form.displayName}
+                  onChange={set("displayName")}
+                  maxLength={30}
+                  className="w-full px-3 py-2.5 rounded-xl text-base text-white placeholder-white/30 outline-none focus:ring-2 focus:ring-yellow-400/40"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
+                  placeholder="Shown on leaderboard"
+                />
+              </div>
+
+              <div>
+                <label
+                  className="block text-xs font-semibold uppercase tracking-wider mb-1"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Password *
+                </label>
+                <input
+                  type="password"
+                  value={form.password}
+                  onChange={set("password")}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="w-full px-3 py-2.5 rounded-xl text-base text-white outline-none focus:ring-2 focus:ring-yellow-400/40"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
+                  placeholder="Min. 8 characters"
+                />
+              </div>
+
+              <div>
+                <label
+                  className="block text-xs font-semibold uppercase tracking-wider mb-1"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  Confirm password *
+                </label>
+                <input
+                  type="password"
+                  value={form.confirm}
+                  onChange={set("confirm")}
+                  required
+                  autoComplete="new-password"
+                  className="w-full px-3 py-2.5 rounded-xl text-base text-white outline-none focus:ring-2 focus:ring-yellow-400/40"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}
+                  placeholder="••••••••"
+                />
+              </div>
+
+              {error && (
+                <p className="text-sm text-red-400 bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 rounded-xl font-bold text-sm uppercase tracking-wider transition-all disabled:opacity-50 mt-1"
+                style={{
+                  background: "linear-gradient(135deg, #f59e0b, #ea580c)",
+                  color: "#0c0a08",
+                  touchAction: "manipulation",
+                }}
+              >
+                {loading ? "Creating account…" : "Create Account & Play"}
+              </button>
+            </form>
+
+            <p className="text-center text-sm mt-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Already have an account?{" "}
+              <Link
+                href="/preview/spin/login"
+                className="font-semibold hover:opacity-80"
+                style={{ color: "#fbbf24" }}
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+
+          <p className="text-center text-xs mt-4 pb-4" style={{ color: "rgba(255,255,255,0.2)" }}>
+            Preview build · not publicly linked
           </p>
         </div>
       </div>
