@@ -304,26 +304,62 @@ export default function PixiWheel({
       const pLayer = new PIXI.Container() as any;
       app.stage.addChild(pLayer);
 
-      // ── Pointer ──────────────────────────────────────────────────────────
+      // ── Pointer — 3-D gold location pin ──────────────────────────────────
+      // Shape: circle bulb at top, bezier curves tapering to a point below.
       const ptrWrap = new PIXI.Container() as any;
       ptrWrap.x = CX;
+
       const ptr = new PIXI.Graphics();
-      // Triangle: apex at top (0,24), base at bottom (±17, 52) → downward drip shape
-      ptr.beginFill(0xfbbf24);
-      ptr.drawPolygon([0, 24, -17, 52, 17, 52]);
+      const pinR = 16;   // bulb radius
+      const tipY = 48;   // tip Y relative to bulb centre (0,0)
+
+      // ① Dark brown outline (draw larger shape behind for border effect)
+      ptr.beginFill(0x3b1407, 1);
+      ptr.moveTo(0, tipY + 4);
+      ptr.bezierCurveTo(-(pinR+4)*0.42, (tipY+4)*0.60, -(pinR+4), pinR*0.70, -(pinR+4), 0);
+      ptr.arc(0, 0, pinR + 4, Math.PI, 0, false);
+      ptr.bezierCurveTo( (pinR+4), pinR*0.70,  (pinR+4)*0.42, (tipY+4)*0.60, 0, tipY + 4);
       ptr.endFill();
-      ptr.lineStyle(2.5, 0x1a0500);
-      ptr.drawPolygon([0, 24, -17, 52, 17, 52]);
-      ptr.beginFill(0xfbbf24); ptr.drawCircle(0, 24, 7); ptr.endFill();
-      ptr.lineStyle(2, 0xffffff); ptr.drawCircle(0, 24, 6);
-      // Pre-baked pointer glow (no shader — just a larger transparent circle behind)
+
+      // ② Main amber-gold fill
+      ptr.beginFill(0xe8960a, 1);
+      ptr.moveTo(0, tipY);
+      ptr.bezierCurveTo(-pinR*0.40, tipY*0.62, -pinR, pinR*0.66, -pinR, 0);
+      ptr.arc(0, 0, pinR, Math.PI, 0, false);
+      ptr.bezierCurveTo( pinR, pinR*0.66,  pinR*0.40, tipY*0.62, 0, tipY);
+      ptr.endFill();
+
+      // ③ Bright gold highlight on upper bulb (inner lighter fill)
+      ptr.beginFill(0xfbbf24, 0.70);
+      ptr.drawCircle(0, 0, pinR - 1);
+      ptr.endFill();
+
+      // ④ Shine spot — top-left glint
+      ptr.beginFill(0xfffbeb, 0.90);
+      ptr.drawCircle(-5, -6, 5);
+      ptr.endFill();
+      ptr.beginFill(0xffffff, 0.55);
+      ptr.drawCircle(-5.5, -7, 2.5);
+      ptr.endFill();
+
+      // ⑤ Centre hole (shadow depth)
+      ptr.beginFill(0xb45309, 1);
+      ptr.drawCircle(0, 0, 6.5);
+      ptr.endFill();
+      ptr.beginFill(0x7c2d12, 1);
+      ptr.drawCircle(0, 0, 3.5);
+      ptr.endFill();
+
+      // ⑥ Pre-baked ambient glow behind the pin
       const ptrGlow = new PIXI.Graphics();
-      ptrGlow.beginFill(0xfbbf24, 0.22); ptrGlow.drawCircle(0, 28, 22); ptrGlow.endFill();
+      ptrGlow.beginFill(0xfbbf24, 0.14); ptrGlow.drawCircle(0, 18, 34); ptrGlow.endFill();
+      ptrGlow.beginFill(0xfbbf24, 0.22); ptrGlow.drawCircle(0, 8,  20); ptrGlow.endFill();
+
       ptrWrap.addChild(ptrGlow);
       ptrWrap.addChild(ptr);
       app.stage.addChild(ptrWrap);
 
-      // Pointer idle bob
+      // Idle bob
       gsap.to(ptrWrap, { y: -6, duration: 1.3, repeat: -1, yoyo: true, ease: "power2.inOut" });
 
       // ── Store refs ───────────────────────────────────────────────────────
