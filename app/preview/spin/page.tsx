@@ -203,11 +203,6 @@ function SpinTitle() {
         ))}
       </div>
 
-      {/* Location pin */}
-      <div className="sls-pin" style={{ fontSize: "clamp(18px,3vw,28px)", margin: "-2px 0", display: "block" }}>
-        📍
-      </div>
-
       {/* LUCKY SPIN */}
       <div style={{
         fontSize: "clamp(32px,7vw,76px)", fontWeight: 900, color: "#fbbf24",
@@ -226,7 +221,6 @@ function SpinTitle() {
         ))}
         {" "}
         <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em" }}>✦</span>
-        <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.4em", marginLeft: 2 }}>✦</span>
       </div>
     </div>
   );
@@ -292,10 +286,6 @@ export default function SpinPage() {
       stagger: 0.07, duration: 0.55,
       ease: "back.out(2.5)",
     });
-    tl.from(".sls-pin", {
-      scale: 0, opacity: 0, rotation: -30,
-      duration: 0.4, ease: "back.out(3)",
-    }, "-=0.05");
     tl.from(".sls-lucky", {
       y: 65, opacity: 0, scale: 0.15,
       stagger: 0.033, duration: 0.62,
