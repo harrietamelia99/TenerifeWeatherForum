@@ -29,7 +29,7 @@ function useWheelSize() {
       if (vw < 480)       byWidth = vw - 24;
       else if (vw < 768)  byWidth = Math.min(vw - 40, 380);
       else if (vw < 1024) byWidth = 380;
-      else                byWidth = Math.min(vw - 580, 440); // 580 ≈ left+right+gaps
+      else                byWidth = Math.min(vw - 660, 420); // 660 ≈ left+right+gaps(wider)
       setSize(Math.min(byWidth, byHeight));
     };
     update();
@@ -466,7 +466,7 @@ export default function SpinPage() {
           </div>
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
-          <div className="flex flex-col lg:flex-row items-center gap-10 justify-center w-full">
+          <div className="flex flex-col lg:flex-row items-center gap-16 justify-center w-full">
 
             {/* ── Left column: spin controls ── */}
             <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:w-56 flex-shrink-0 order-2 lg:order-1">
