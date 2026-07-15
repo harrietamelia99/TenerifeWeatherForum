@@ -20,15 +20,16 @@ function useWheelSize() {
       const vh = window.innerHeight;
 
       if (vw >= 1024) {
-        // CSS Grid 1fr|auto|1fr: panels(200×2) + gaps(70×2) = 540 reserved.
+        // Absolute-positioned side cards (260×2) don't affect wheel centering.
         const byWidth = Math.min(Math.floor(vw * 0.48), 520);
         const byHeight = Math.max(300, vh - 280);
         setSize(Math.min(byWidth, byHeight));
       } else {
-        // Mobile/tablet stacked layout
-        // bar(42) + title(~70) + bottom-pill(76) + leaderboard-header(52) + gaps(~40) = 280
-        const byHeight = Math.max(200, vh - 280);
-        const byWidth  = Math.min(vw - 32, 520); // 16px padding each side, cap for tablets
+        // Mobile stacked layout (no main pt-10/pb-4):
+        //   topBar(48) + title(60) + bottomCard(~200) + leaderboardHeader(55) + gaps(25) ≈ 388
+        // Add ~32px for PixiJS cssTopPad overhead → budget 360 total chrome.
+        const byHeight = Math.max(180, vh - 360);
+        const byWidth  = Math.min(vw - 32, 460); // 16px side padding, cap for tablets
         setSize(Math.min(byWidth, byHeight));
       }
     };
@@ -443,8 +444,8 @@ export default function SpinPage() {
           </div>
         </div>
 
-        {/* Main — pinned to top; outer container handles overflow clipping */}
-        <main className="flex-1 flex flex-col items-center justify-start pt-10 pb-4">
+        {/* Main — desktop has top padding; mobile fills edge-to-edge */}
+        <main className="flex-1 flex flex-col items-center justify-start lg:pt-10 lg:pb-4">
 
           {/* ── Desktop layout ── */}
           {/*
@@ -592,8 +593,8 @@ export default function SpinPage() {
           {/* ── Mobile / tablet: full-screen app layout ── */}
           <div className="flex lg:hidden flex-col flex-1 min-h-0 w-full">
 
-            {/* Compact title */}
-            <div className="flex justify-center flex-shrink-0 pt-1 pb-1">
+            {/* Title */}
+            <div className="flex justify-center flex-shrink-0 pt-1">
               <SpinTitle />
             </div>
 
@@ -603,16 +604,16 @@ export default function SpinPage() {
             </div>
 
             {/* ── Mobile bottom card ── */}
-            <div className="flex-shrink-0 px-3 pb-3" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="flex-shrink-0 px-3 pb-2" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
 
               {/* Main action card */}
               <div style={{
                 background: "rgba(4,12,28,0.92)", border: "1px solid rgba(251,191,36,0.28)",
-                borderRadius: 24, backdropFilter: "blur(20px)",
-                padding: "16px 18px", boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
+                borderRadius: 20, backdropFilter: "blur(20px)",
+                padding: "12px 16px", boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
               }}>
                 {/* Top row: points left, countdown right */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                   {/* Points */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ fontSize: 24 }}>⭐</span>
@@ -657,8 +658,8 @@ export default function SpinPage() {
                   disabled={!canPress}
                   className={spinning ? "spin-btn-spinning" : ""}
                   style={{
-                    width: "100%", padding: "16px 8px", borderRadius: 50,
-                    fontWeight: 900, fontSize: 28, letterSpacing: "0.14em",
+                    width: "100%", padding: "13px 8px", borderRadius: 50,
+                    fontWeight: 900, fontSize: 24, letterSpacing: "0.14em",
                     fontFamily: "system-ui,sans-serif",
                     cursor: canPress ? "pointer" : "not-allowed",
                     background: canPress ? "linear-gradient(135deg,#fbbf24,#f97316)" : "rgba(255,255,255,0.07)",
@@ -669,7 +670,7 @@ export default function SpinPage() {
                   {spinning ? "⏳ SPINNING…" : "SPIN"}
                 </button>
                 <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.22)",
-                  letterSpacing: "1.5px", marginTop: 8, textAlign: "center", fontFamily: "system-ui,sans-serif" }}>
+                  letterSpacing: "1.5px", marginTop: 5, textAlign: "center", fontFamily: "system-ui,sans-serif" }}>
                   1 FREE SPIN EVERY 24 HOURS
                 </div>
 
