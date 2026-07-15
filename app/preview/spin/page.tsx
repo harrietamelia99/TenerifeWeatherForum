@@ -765,26 +765,19 @@ export default function SpinPage() {
   );
 }
 
-// ─── Desktop leaderboard card (inline, always open on lg) ────────────────────
+// ─── Desktop leaderboard card (always fully open) ────────────────────────────
 function MobileLeaderboard({ spinCount }: { spinCount: number }) {
-  const [open, setOpen] = useState(false);
   return (
     <div style={{ borderRadius: 20,
       background: "rgba(4,12,28,0.85)", border: "1px solid rgba(255,255,255,0.12)",
       backdropFilter: "blur(18px)" }}>
-      <button
-        className="flex items-center justify-between w-full lg:cursor-default"
-        style={{ padding: "16px 20px 12px" }}
-        onClick={() => setOpen(o => !o)}>
+      <div style={{ padding: "16px 20px 8px" }}>
         <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
           color: "#fbbf24", textTransform: "uppercase" }}>
           🏆 Leaderboard
         </span>
-        <span className="text-xs lg:hidden" style={{ color: "rgba(255,255,255,0.4)" }}>
-          {open ? "▲ hide" : "▼ show"}
-        </span>
-      </button>
-      <div className={`lg:block ${open ? "block" : "hidden"}`} style={{ padding: "0 20px 16px" }}>
+      </div>
+      <div style={{ padding: "0 20px 16px" }}>
         <SpinLeaderboard key={spinCount} />
       </div>
     </div>
