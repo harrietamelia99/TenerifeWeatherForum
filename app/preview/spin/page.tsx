@@ -197,18 +197,15 @@ function SpinTitle() {
         .sls-lucky{ display:inline-block; }
       `}</style>
 
-      {/* SUPER */}
+      {/* SUPER — modern chrome gradient */}
       <div style={{
-        fontSize: "clamp(16px,3vw,36px)", fontWeight: 900, color: "white",
-        fontFamily: "system-ui,sans-serif", letterSpacing: "0.18em",
-        textShadow: [
-          "2px 0 0 #0c1f3a", "-2px 0 0 #0c1f3a",
-          "0 2px 0 #0c1f3a", "0 -2px 0 #0c1f3a",
-          "2px 2px 0 #0c1f3a", "-2px -2px 0 #0c1f3a",
-          "2px -2px 0 #0c1f3a", "-2px 2px 0 #0c1f3a",
-          "3px 3px 0 #0c1f3a",
-          "0 0 18px rgba(255,255,255,0.25)",
-        ].join(","),
+        fontSize: "clamp(16px,3vw,36px)", fontWeight: 900,
+        fontFamily: "system-ui,sans-serif", letterSpacing: "0.26em",
+        background: "linear-gradient(180deg, #ffffff 0%, #d4eaff 45%, #8ab8e8 100%)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        backgroundClip: "text",
+        filter: "drop-shadow(0 2px 5px rgba(0,15,50,0.9)) drop-shadow(0 0 16px rgba(100,170,255,0.35))",
       }}>
         {"SUPER".split("").map((c, i) => (
           <span key={i} className="sls-char">{c}</span>
