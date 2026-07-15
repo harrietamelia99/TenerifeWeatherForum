@@ -200,6 +200,42 @@ export default function PixiWheel({
       });
       wheel.addChild(divs);
 
+      // ── Radial gradient overlay ──────────────────────────────────────────
+      // A single canvas sprite gives the flat segments a domed/3D feel:
+      // slightly dark at the centre, neutral mid-wheel, soft bright shimmer
+      // at the outer rim. Radially symmetric → looks fine while spinning.
+      (() => {
+        const GS = (R + 4) * 2;
+        const gc = document.createElement("canvas");
+        gc.width = gc.height = GS;
+        const gx = gc.getContext("2d")!;
+
+        // Radial depth gradient
+        const rg = gx.createRadialGradient(GS/2, GS/2, 0, GS/2, GS/2, GS/2);
+        rg.addColorStop(0,    "rgba(0,0,0,0.28)");        // dark hub
+        rg.addColorStop(0.28, "rgba(0,0,0,0.10)");
+        rg.addColorStop(0.58, "rgba(0,0,0,0.00)");        // neutral mid
+        rg.addColorStop(0.80, "rgba(255,255,255,0.09)");  // soft rim shine
+        rg.addColorStop(1.00, "rgba(255,255,255,0.00)");
+        gx.fillStyle = rg;
+        gx.fillRect(0, 0, GS, GS);
+
+        // Thin inner-edge highlight ring around the hub
+        const hg = gx.createRadialGradient(GS/2, GS/2, GS*0.14, GS/2, GS/2, GS*0.20);
+        hg.addColorStop(0, "rgba(255,255,255,0.00)");
+        hg.addColorStop(0.5, "rgba(255,255,255,0.12)");
+        hg.addColorStop(1, "rgba(255,255,255,0.00)");
+        gx.fillStyle = hg;
+        gx.fillRect(0, 0, GS, GS);
+
+        const gradTex = (PIXI.Texture as any).from(gc);
+        const ov = new PIXI.Sprite(gradTex) as any;
+        ov.anchor.set(0.5, 0.5);
+        ov.width = ov.height = GS;
+        ov.x = ov.y = 0;
+        wheel.addChild(ov);
+      })();
+
       // ── Segment text (icon + name + points) ─────────────────────────────
       const shadowStyle = {
         dropShadow: true,
