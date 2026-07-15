@@ -20,9 +20,9 @@ function useWheelSize() {
       const vh = window.innerHeight;
 
       if (vw >= 1024) {
-        // Desktop 3-col: panels(240×2) + gaps(64×2) = 608 reserved
-        const byWidth = Math.min(vw - 608, 380);
-        const byHeight = Math.max(240, vh - 460); // 460 = bar+title+padding
+        // Desktop 3-col budget: panels(220×2=440) + gaps(80×2=160) + wheel-padding(20×2=40) = 640
+        const byWidth = Math.min(vw - 640, 360);
+        const byHeight = Math.max(240, vh - 460);
         setSize(Math.min(byWidth, byHeight));
       } else {
         // Mobile/tablet stacked layout
@@ -467,10 +467,10 @@ export default function SpinPage() {
 
           {/* ── 3-column layout: Controls | Wheel | Leaderboard ── */}
           {/* CSS grid [1fr auto 1fr] guarantees the wheel sits on the true viewport midpoint */}
-          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "64px", alignItems: "center" }}>
+          <div className="hidden lg:grid w-full" style={{ gridTemplateColumns: "1fr auto 1fr", gap: "80px", alignItems: "center" }}>
 
             {/* ── Left: unified spin-controls card (mirrors leaderboard style) ── */}
-            <div className="justify-self-end" style={{ width: 240 }}>
+            <div className="justify-self-end" style={{ width: 220 }}>
               <div style={{
                 borderRadius: 20, overflow: "hidden",
                 background: "rgba(4,12,28,0.82)", border: "1px solid rgba(251,191,36,0.22)",
@@ -585,8 +585,8 @@ export default function SpinPage() {
               </div>
             </div>
 
-            {/* ── Centre: Wheel ── */}
-            <div className="flex-shrink-0">
+            {/* ── Centre: Wheel — 20px transparent padding each side keeps halo off the panels ── */}
+            <div className="flex-shrink-0" style={{ padding: "0 20px" }}>
               <PixiWheel
                 rotation={rotation}
                 spinning={spinning}
@@ -596,7 +596,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Right: Leaderboard ── */}
-            <div className="justify-self-start" style={{ width: 240 }}>
+            <div className="justify-self-start" style={{ width: 220 }}>
               <MobileLeaderboard spinCount={spinCount} />
             </div>
 
