@@ -168,14 +168,34 @@ function TropicalBackground() {
   );
 }
 
+// ─── Sparkle star helper ──────────────────────────────────────────────────────
+function Sparkle({ size, style }: { size: number; style: React.CSSProperties }) {
+  const glow = size * 0.35;
+  return (
+    <span
+      className="sls-star"
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        fontSize: size,
+        color: "#fde68a",
+        filter: `drop-shadow(0 0 ${glow}px #fbbf24) drop-shadow(0 0 ${glow * 2}px rgba(251,191,36,0.45))`,
+        lineHeight: 1,
+        pointerEvents: "none",
+        userSelect: "none",
+        ...style,
+      }}
+    >
+      ✦
+    </span>
+  );
+}
+
 // ─── "SUPER LUCKY SPIN" title ─────────────────────────────────────────────────
-// Each character is wrapped in its own inline-block span so GSAP can animate
-// them individually.
 function SpinTitle() {
   return (
     <div className="text-center select-none" style={{ lineHeight: 1.0, marginBottom: -4 }}>
       <style>{`
-        /* Glow pulse on the SPIN button (box-shadow only — scale handled by GSAP) */
         @keyframes spinBtnGlow {
           0%,100%{ box-shadow: 0 0 30px rgba(251,191,36,.55),0 4px 14px rgba(0,0,0,.4); }
           50%    { box-shadow: 0 0 70px rgba(251,191,36,1  ),0 0 130px rgba(251,191,36,.4),0 4px 20px rgba(0,0,0,.4); }
@@ -197,69 +217,81 @@ function SpinTitle() {
         .sls-lucky{ display:inline-block; }
       `}</style>
 
-      {/* SUPER — modern chrome gradient */}
-      <div style={{
-        fontSize: "clamp(22px,3vw,36px)", fontWeight: 900,
-        fontFamily: "system-ui,sans-serif", letterSpacing: "0.26em",
-        background: "linear-gradient(180deg, #ffffff 0%, #d4eaff 45%, #8ab8e8 100%)",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        backgroundClip: "text",
-        filter: "drop-shadow(0 2px 5px rgba(0,15,50,0.9)) drop-shadow(0 0 16px rgba(100,170,255,0.35))",
-      }}>
-        {"SUPER".split("").map((c, i) => (
-          <span key={i} className="sls-char">{c}</span>
-        ))}
-      </div>
+      {/* Inline-block wrapper so absolute stars position relative to the text block */}
+      <div style={{ position: "relative", display: "inline-block", overflow: "visible" }}>
 
-      {/* LUCKY SPIN — letters follow a gentle upward arch */}
-      {(() => {
-        const chars = "LUCKY SPIN".split("");
-        const n = chars.length;         // 10
-        const center = (n - 1) / 2;    // 4.5
-        // Arch geometry: each letter sits on a circle of radius ~900px.
-        // letter pitch ≈ 33px → x = offset * 33
-        // rotation  = x / R * (180/π)  ≈ offset * 33 / 900 * 57.3  ≈ offset * 2.1°
-        // translateY = x² / (2R)       ≈ offset² * 33² / 1800       ≈ offset² * 0.61px
-        const arch = (i: number) => {
-          const offset = i - center;
-          return {
-            display: "inline-block",
-            transform: `rotate(${(offset * 2.1).toFixed(2)}deg) translateY(${(offset * offset * 0.65).toFixed(2)}px)`,
-            transformOrigin: "center bottom",
-          } as React.CSSProperties;
-        };
-        const luckyGrad: React.CSSProperties = {
-          background: "linear-gradient(180deg, #fef9c3 0%, #fde68a 18%, #fbbf24 45%, #f59e0b 75%, #d97706 100%)",
+        {/* ── Scattered sparkle stars ── */}
+        {/* Large stars flanking SUPER */}
+        <Sparkle size={28} style={{ top: -4,  left: -14 }} />
+        <Sparkle size={20} style={{ top:  2,  right: -12 }} />
+        {/* Small accent stars above SUPER */}
+        <Sparkle size={12} style={{ top:  6,  left: "22%" }} />
+        <Sparkle size={11} style={{ top:  4,  right: "20%" }} />
+        {/* Mid-height stars beside LUCKY SPIN */}
+        <Sparkle size={22} style={{ bottom: 14, left: -20 }} />
+        <Sparkle size={18} style={{ bottom: 18, right: -18 }} />
+        {/* Tiny accent between the two rows */}
+        <Sparkle size={10} style={{ top: "48%", left: "8%" }} />
+        <Sparkle size={10} style={{ top: "44%", right: "8%" }} />
+
+        {/* ── SUPER — chrome gradient ── */}
+        <div style={{
+          fontSize: "clamp(22px,3vw,36px)", fontWeight: 900,
+          fontFamily: "system-ui,sans-serif", letterSpacing: "0.26em",
+          background: "linear-gradient(180deg, #ffffff 0%, #d4eaff 45%, #8ab8e8 100%)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           backgroundClip: "text",
-        };
-        return (
-          <div style={{
-            fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
-            fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
-            textShadow: [
-              "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
-              "0 0 40px rgba(251,191,36,0.65)","0 0 80px rgba(251,191,36,0.25)",
-            ].join(","),
-            display: "flex", alignItems: "flex-end", justifyContent: "center",
-          }}>
-            <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em", marginBottom: 6 }}>✦</span>
-            {chars.map((c, i) => (
-              <span key={i} style={arch(i)}>
-                <span
-                  className="sls-lucky"
-                  style={c === " " ? { display: "inline-block", width: "0.3em" } : luckyGrad}
-                >
-                  {c === " " ? "\u00A0" : c}
+          filter: "drop-shadow(0 2px 5px rgba(0,15,50,0.9)) drop-shadow(0 0 16px rgba(100,170,255,0.35))",
+        }}>
+          {"SUPER".split("").map((c, i) => (
+            <span key={i} className="sls-char">{c}</span>
+          ))}
+        </div>
+
+        {/* ── LUCKY SPIN — arched gradient letters ── */}
+        {(() => {
+          const chars = "LUCKY SPIN".split("");
+          const n = chars.length;
+          const center = (n - 1) / 2;
+          const arch = (i: number) => {
+            const offset = i - center;
+            return {
+              display: "inline-block",
+              transform: `rotate(${(offset * 2.1).toFixed(2)}deg) translateY(${(offset * offset * 0.65).toFixed(2)}px)`,
+              transformOrigin: "center bottom",
+            } as React.CSSProperties;
+          };
+          const luckyGrad: React.CSSProperties = {
+            background: "linear-gradient(180deg, #fef9c3 0%, #fde68a 18%, #fbbf24 45%, #f59e0b 75%, #d97706 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          };
+          return (
+            <div style={{
+              fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
+              fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
+              textShadow: [
+                "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
+                "0 0 40px rgba(251,191,36,0.65)","0 0 80px rgba(251,191,36,0.25)",
+              ].join(","),
+              display: "flex", alignItems: "flex-end", justifyContent: "center",
+            }}>
+              {chars.map((c, i) => (
+                <span key={i} style={arch(i)}>
+                  <span
+                    className="sls-lucky"
+                    style={c === " " ? { display: "inline-block", width: "0.3em" } : luckyGrad}
+                  >
+                    {c === " " ? "\u00A0" : c}
+                  </span>
                 </span>
-              </span>
-            ))}
-            <span className="sls-star" style={{ color: "#fde68a", fontSize: "0.5em", marginBottom: 6 }}>✦</span>
-          </div>
-        );
-      })()}
+              ))}
+            </div>
+          );
+        })()}
+      </div>
     </div>
   );
 }
