@@ -668,7 +668,7 @@ export default function SpinPage() {
             </div>
 
             {/* ── Mobile bottom card ── */}
-            <div className="flex-shrink-0 px-3 pb-2" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="flex-shrink-0 px-3 pb-2" style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
 
               {/* Main action card */}
               <div style={{
@@ -772,7 +772,7 @@ function MobileLeaderboard({ spinCount }: { spinCount: number }) {
       backdropFilter: "blur(18px)" }}>
       <button
         className="flex items-center justify-between w-full lg:cursor-default"
-        style={{ padding: "18px 22px 14px" }}
+        style={{ padding: "16px 20px 12px" }}
         onClick={() => setOpen(o => !o)}>
         <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px",
           color: "#fbbf24", textTransform: "uppercase" }}>
@@ -782,7 +782,17 @@ function MobileLeaderboard({ spinCount }: { spinCount: number }) {
           {open ? "▲ hide" : "▼ show"}
         </span>
       </button>
-      <div className={`lg:block ${open ? "block" : "hidden"}`} style={{ padding: "0 22px 20px" }}>
+      {/* Scrollable content — max-height so it doesn't overflow the fixed viewport */}
+      <div
+        className="lg:block"
+        style={{
+          display: open ? "block" : "none",
+          overflowY: "auto",
+          maxHeight: "38vh",
+          WebkitOverflowScrolling: "touch",
+          padding: "0 20px 16px",
+        }}
+      >
         <SpinLeaderboard key={spinCount} />
       </div>
     </div>
