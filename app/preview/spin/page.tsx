@@ -616,72 +616,93 @@ export default function SpinPage() {
               <PixiWheel rotation={rotation} spinning={spinning} winnerIdx={winnerIdx} size={wheelSize} />
             </div>
 
-            {/* Bottom action pill */}
-            <div className="flex-shrink-0 px-3 pb-2">
+            {/* ── Mobile bottom card ── */}
+            <div className="flex-shrink-0 px-3 pb-3" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+              {/* Main action card */}
               <div style={{
-                background: "rgba(4,12,28,0.94)", border: "2px solid rgba(251,191,36,0.3)",
-                borderRadius: 60, backdropFilter: "blur(20px)",
-                display: "flex", alignItems: "center", gap: 8, padding: "10px 14px",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.6)",
+                background: "rgba(4,12,28,0.92)", border: "1px solid rgba(251,191,36,0.28)",
+                borderRadius: 24, backdropFilter: "blur(20px)",
+                padding: "16px 18px", boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
               }}>
-                {/* Points */}
-                <div style={{ flex: "0 0 auto", textAlign: "center", minWidth: 56 }}>
-                  <div style={{ fontSize: 20, lineHeight: 1 }}>⭐</div>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
-                    fontFamily: "system-ui,sans-serif", textShadow: "0 0 12px rgba(251,191,36,0.5)" }}>
-                    {userData.monthlyPoints.toLocaleString()}
+                {/* Top row: points left, countdown right */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  {/* Points */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 24 }}>⭐</span>
+                    <div>
+                      <div style={{ fontSize: 26, fontWeight: 900, color: "#fbbf24", lineHeight: 1,
+                        fontFamily: "system-ui,sans-serif", textShadow: "0 0 14px rgba(251,191,36,0.5)" }}>
+                        {userData.monthlyPoints.toLocaleString()}
+                      </div>
+                      <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.35)",
+                        letterSpacing: "2px", fontFamily: "system-ui,sans-serif" }}>MONTHLY PTS</div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.35)",
-                    letterSpacing: "1.5px", fontFamily: "system-ui,sans-serif" }}>PTS</div>
+
+                  {/* Divider */}
+                  <div style={{ width: 1, height: 40, background: "rgba(255,255,255,0.08)", margin: "0 4px" }} />
+
+                  {/* Countdown */}
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.35)",
+                      letterSpacing: "2px", marginBottom: 4, fontFamily: "system-ui,sans-serif" }}>
+                      📅 NEXT SPIN IN
+                    </div>
+                    {showCountdown ? (
+                      <div style={{ fontSize: 22, fontWeight: 900, color: "#fbbf24",
+                        fontFamily: "system-ui,sans-serif", letterSpacing: "0.04em", lineHeight: 1,
+                        textShadow: "0 0 12px rgba(251,191,36,0.4)" }}>
+                        {countdownDisplay}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 22, fontWeight: 900, color: "#34d399",
+                        fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
+                        READY!
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* SPIN button */}
-                <div style={{ flex: 1, textAlign: "center" }}>
-                  <button
-                    ref={btnRef}
-                    onClick={handleSpinClick}
-                    disabled={!canPress}
-                    className={spinning ? "spin-btn-spinning" : ""}
-                    style={{
-                      width: "100%", padding: "11px 8px", borderRadius: 40,
-                      fontWeight: 900, fontSize: 22, letterSpacing: "0.12em",
-                      fontFamily: "system-ui,sans-serif",
-                      cursor: canPress ? "pointer" : "not-allowed",
-                      background: canPress ? "linear-gradient(135deg,#fbbf24,#f97316)" : "rgba(255,255,255,0.07)",
-                      color: canPress ? "#0c0a00" : "rgba(255,255,255,0.25)",
-                      border: "none", opacity: !canPress && !spinning ? 0.65 : 1,
-                    }}>
-                    {spinning ? "⏳" : "SPIN"}
-                  </button>
-                  <div style={{ fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.25)",
-                    letterSpacing: "1.2px", marginTop: 4, fontFamily: "system-ui,sans-serif" }}>
-                    1 FREE SPIN EVERY 24 HRS
-                  </div>
+                {/* SPIN button — full width, prominent */}
+                <button
+                  ref={btnRef}
+                  onClick={handleSpinClick}
+                  disabled={!canPress}
+                  className={spinning ? "spin-btn-spinning" : ""}
+                  style={{
+                    width: "100%", padding: "16px 8px", borderRadius: 50,
+                    fontWeight: 900, fontSize: 28, letterSpacing: "0.14em",
+                    fontFamily: "system-ui,sans-serif",
+                    cursor: canPress ? "pointer" : "not-allowed",
+                    background: canPress ? "linear-gradient(135deg,#fbbf24,#f97316)" : "rgba(255,255,255,0.07)",
+                    color: canPress ? "#0c0a00" : "rgba(255,255,255,0.22)",
+                    border: "none", opacity: !canPress && !spinning ? 0.65 : 1,
+                    boxShadow: canPress ? "0 4px 24px rgba(251,191,36,0.4)" : "none",
+                  }}>
+                  {spinning ? "⏳ SPINNING…" : "SPIN"}
+                </button>
+                <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.22)",
+                  letterSpacing: "1.5px", marginTop: 8, textAlign: "center", fontFamily: "system-ui,sans-serif" }}>
+                  1 FREE SPIN EVERY 24 HOURS
                 </div>
 
-                {/* Countdown */}
-                <div style={{ flex: "0 0 auto", textAlign: "center", minWidth: 68 }}>
-                  <div style={{ fontSize: 20, lineHeight: 1 }}>📅</div>
-                  <div style={{ fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.35)",
-                    letterSpacing: "1.5px", fontFamily: "system-ui,sans-serif" }}>NEXT IN</div>
-                  {showCountdown ? (
-                    <div style={{ fontSize: 13, fontWeight: 900, color: "#fbbf24",
-                      fontFamily: "system-ui,sans-serif", letterSpacing: "0.04em", lineHeight: 1,
-                      textShadow: "0 0 10px rgba(251,191,36,0.4)" }}>
-                      {countdownDisplay}
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: 16, fontWeight: 900, color: "#34d399",
-                      fontFamily: "system-ui,sans-serif", lineHeight: 1 }}>
-                      READY!
-                    </div>
-                  )}
-                </div>
+                {/* Bonus / error / last result */}
+                {userData.bonusSpinAvailable && (
+                  <div style={{ marginTop: 10, textAlign: "center" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#34d399" }}>✦ Bonus spin available!</span>
+                  </div>
+                )}
+                {error && (
+                  <p style={{ fontSize: 11, color: "#f87171", background: "rgba(220,38,38,0.12)",
+                    border: "1px solid rgba(248,113,113,0.3)", borderRadius: 10,
+                    padding: "6px 12px", margin: "10px 0 0", textAlign: "center" }}>
+                    {error}
+                  </p>
+                )}
               </div>
-            </div>
 
-            {/* Leaderboard toggle strip */}
-            <div className="flex-shrink-0 px-3 pb-3">
+              {/* Leaderboard toggle strip */}
               <MobileLeaderboard spinCount={spinCount} />
             </div>
           </div>
