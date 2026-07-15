@@ -180,6 +180,17 @@ function SpinTitle() {
           50%    { box-shadow: 0 0 70px rgba(251,191,36,1  ),0 0 130px rgba(251,191,36,.4),0 4px 20px rgba(0,0,0,.4); }
         }
         .spin-btn-ready{ animation: spinBtnGlow 0.9s ease-in-out infinite; }
+        @keyframes spinBtnActive {
+          0%,100%{ box-shadow: 0 0 24px rgba(99,102,241,.7),0 4px 14px rgba(0,0,0,.5); background-position: 0% 50%; }
+          50%    { box-shadow: 0 0 50px rgba(139,92,246,.9),0 0 90px rgba(99,102,241,.35),0 4px 20px rgba(0,0,0,.5); background-position: 100% 50%; }
+        }
+        .spin-btn-spinning {
+          animation: spinBtnActive 1.1s ease-in-out infinite;
+          background: linear-gradient(135deg, #6366f1, #8b5cf6, #6366f1) !important;
+          background-size: 200% 200% !important;
+          color: #ffffff !important;
+          opacity: 1 !important;
+        }
         .sls-star{ display:inline-block; }
         .sls-char{ display:inline-block; }
         .sls-lucky{ display:inline-block; }
@@ -483,6 +494,7 @@ export default function SpinPage() {
                   ref={btnRef}
                   onClick={handleSpinClick}
                   disabled={!canPress}
+                  className={spinning ? "spin-btn-spinning" : ""}
                   style={{
                     width:         "100%",
                     padding:       "14px 8px",
@@ -500,7 +512,7 @@ export default function SpinPage() {
                     opacity:       !canPress && !spinning ? 0.6 : 1,
                   }}
                 >
-                  {spinning ? "SPINNING…" : "SPIN"}
+                  {spinning ? "⏳ SPINNING…" : "SPIN"}
                 </button>
                 <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.3)",
                   letterSpacing: "1.2px", marginTop: 6, fontFamily: "system-ui,sans-serif" }}>
