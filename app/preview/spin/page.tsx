@@ -286,16 +286,19 @@ function SpinTitle() {
               transformOrigin: "center bottom",
             } as React.CSSProperties;
           };
+          // Keep filter on OUTER div and gradient on INNER spans.
+          // Putting both on the same element breaks rendering (filter creates a
+          // compositing layer that prevents background-clip:text from working).
+          const goldGrad: React.CSSProperties = {
+            display: "inline-block",
+            background: "linear-gradient(180deg, #ffffff 0%, #ffe566 25%, #ffd700 50%, #f5a000 80%, #c97200 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          };
           return (
             <div style={{
-              fontSize: "clamp(38px,5vw,56px)", fontWeight: 900,
-              fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
-              // Gradient on the parent — same technique as SUPER, but gold
-              background: "linear-gradient(180deg, #ffffff 0%, #ffe566 28%, #ffd700 52%, #f5a000 80%, #c97200 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              // 3D depth via chained drop-shadows (each adds 2 px to the previous)
+              // drop-shadow only here — no gradient/clip on this element
               filter: [
                 "drop-shadow(2px 2px 0 #b45309)",
                 "drop-shadow(2px 2px 0 #92400e)",
@@ -303,18 +306,23 @@ function SpinTitle() {
                 "drop-shadow(0 0 28px rgba(255,215,0,0.6))",
                 "drop-shadow(0 0 56px rgba(251,191,36,0.25))",
               ].join(" "),
-              display: "flex", alignItems: "flex-end", justifyContent: "center",
             }}>
-              {chars.map((c, i) => (
-                <span key={i} style={arch(i)}>
-                  <span
-                    className="sls-lucky"
-                    style={c === " " ? { display: "inline-block", width: "0.3em" } : { display: "inline-block" }}
-                  >
-                    {c === " " ? "\u00A0" : c}
+              <div style={{
+                fontSize: "clamp(38px,5vw,56px)", fontWeight: 900,
+                fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
+                display: "flex", alignItems: "flex-end", justifyContent: "center",
+              }}>
+                {chars.map((c, i) => (
+                  <span key={i} style={arch(i)}>
+                    <span
+                      className="sls-lucky"
+                      style={c === " " ? { display: "inline-block", width: "0.3em" } : goldGrad}
+                    >
+                      {c === " " ? "\u00A0" : c}
+                    </span>
                   </span>
-                </span>
-              ))}
+                ))}
+              </div>
             </div>
           );
         })()}
