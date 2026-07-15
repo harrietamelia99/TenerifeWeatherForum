@@ -286,27 +286,30 @@ function SpinTitle() {
               transformOrigin: "center bottom",
             } as React.CSSProperties;
           };
-          const luckyGrad: React.CSSProperties = {
-            background: "linear-gradient(180deg, #fffff5 0%, #ffee00 7%, #ffd700 22%, #ffca00 62%, #f5a000 84%, #c97200 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          };
           return (
             <div style={{
-              fontSize: "clamp(38px,5vw,56px)", fontWeight: 900, color: "#fbbf24",
+              fontSize: "clamp(38px,5vw,56px)", fontWeight: 900,
               fontFamily: "system-ui,sans-serif", letterSpacing: "0.06em",
-              textShadow: [
-                "2px 2px 0 #b45309","4px 4px 0 #92400e","6px 6px 0 #78350f",
-                "0 0 40px rgba(251,191,36,0.65)","0 0 80px rgba(251,191,36,0.25)",
-              ].join(","),
+              // Gradient on the parent — same technique as SUPER, but gold
+              background: "linear-gradient(180deg, #ffffff 0%, #ffe566 28%, #ffd700 52%, #f5a000 80%, #c97200 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              // 3D depth via chained drop-shadows (each adds 2 px to the previous)
+              filter: [
+                "drop-shadow(2px 2px 0 #b45309)",
+                "drop-shadow(2px 2px 0 #92400e)",
+                "drop-shadow(2px 2px 0 #78350f)",
+                "drop-shadow(0 0 28px rgba(255,215,0,0.6))",
+                "drop-shadow(0 0 56px rgba(251,191,36,0.25))",
+              ].join(" "),
               display: "flex", alignItems: "flex-end", justifyContent: "center",
             }}>
               {chars.map((c, i) => (
                 <span key={i} style={arch(i)}>
                   <span
                     className="sls-lucky"
-                    style={c === " " ? { display: "inline-block", width: "0.3em" } : luckyGrad}
+                    style={c === " " ? { display: "inline-block", width: "0.3em" } : { display: "inline-block" }}
                   >
                     {c === " " ? "\u00A0" : c}
                   </span>
@@ -481,11 +484,11 @@ export default function SpinPage() {
       ease: "elastic.out(1.3, 0.5)",
     }, "-=0.15");
 
-    // Continuous shimmer across LUCKY SPIN (brightness works with gradient text)
+    // Subtle whole-word shimmer (gradient is on parent, so animate opacity per letter)
     gsap.to(".sls-lucky", {
-      filter: "brightness(1.55)",
-      duration: 0.26,
-      stagger: { each: 0.055, repeat: -1, yoyo: true, from: 0 },
+      opacity: 0.82,
+      duration: 0.28,
+      stagger: { each: 0.06, repeat: -1, yoyo: true, from: 0 },
       ease: "none",
       delay: 1.9,
     });
@@ -501,7 +504,7 @@ export default function SpinPage() {
       tl.kill();
       gsap.killTweensOf(".sls-lucky");
       gsap.killTweensOf(".sls-star");
-      gsap.set(".sls-lucky", { clearProps: "filter" });
+      gsap.set(".sls-lucky", { clearProps: "opacity" });
     };
   }, []);
 
