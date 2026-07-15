@@ -384,7 +384,7 @@ export default function PixiWheel({
   return (
     <div
       ref={hostRef}
-      style={{ width: size, height: size, position: "relative", flexShrink: 0, overflow: "hidden" }}
+      style={{ width: size, height: size, position: "relative", flexShrink: 0 }}
     />
   );
 }

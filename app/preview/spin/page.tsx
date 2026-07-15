@@ -457,8 +457,8 @@ export default function SpinPage() {
           </div>
         </div>
 
-        {/* Main — pinned to top so the wheel isn't squeezed by vertical centering */}
-        <main className="flex-1 flex flex-col items-center justify-start pt-4 pb-4 overflow-hidden">
+        {/* Main — pinned to top; outer container handles overflow clipping */}
+        <main className="flex-1 flex flex-col items-center justify-start pt-10 pb-4">
 
           {/* ── Desktop layout ── */}
           {/*
