@@ -60,15 +60,16 @@ export default function PixiWheel({
       const PIXI = await import("pixi.js");
       if (gone || !hostRef.current) return;
 
-      // ── App — resolution fixed at 1 (not devicePixelRatio) ───────────────
-      // Using dpr=2 quadruples the pixel count and makes filters 4× slower.
-      // CSS scaling handles sharpness; 1:1 internal keeps the GPU load low.
+      // ── App — match device pixel ratio for crisp rendering ───────────────
+      // GlowFilters are gone so dpr=2 no longer hurts performance.
+      // autoDensity=true makes PixiJS scale the canvas CSS size automatically.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const app = new (PIXI as any).Application({
         width: SIZE, height: SIZE,
         backgroundAlpha: 0,
         antialias: true,
-        resolution: 1,
-        autoDensity: false,
+        resolution: dpr,
+        autoDensity: true,
       }) as any;
 
       const canvas = app.view as HTMLCanvasElement;
