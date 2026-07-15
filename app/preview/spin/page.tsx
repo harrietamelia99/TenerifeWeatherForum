@@ -458,8 +458,8 @@ export default function SpinPage() {
           </div>
         </div>
 
-        {/* Main — takes remaining height, centres content vertically + horizontally */}
-        <main className="flex-1 flex flex-col items-center justify-center py-4 overflow-hidden">
+        {/* Main — pinned to top so the wheel isn't squeezed by vertical centering */}
+        <main className="flex-1 flex flex-col items-center justify-start pt-4 pb-4 overflow-hidden">
 
           {/* ── Desktop layout ── */}
           {/*
@@ -473,7 +473,7 @@ export default function SpinPage() {
               display: "grid",
               gridTemplateColumns: "1fr auto 1fr",
               columnGap: 40,
-              alignItems: "center",
+              alignItems: "start",
               width: "100%",
             }}>
 
@@ -589,7 +589,7 @@ export default function SpinPage() {
 
               {/* ── Centre: title directly above wheel in same column ── */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ marginBottom: 6 }}>
+                <div style={{ marginBottom: 10 }}>
                   <SpinTitle />
                 </div>
                 <PixiWheel
