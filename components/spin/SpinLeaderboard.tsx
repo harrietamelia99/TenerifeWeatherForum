@@ -84,7 +84,7 @@ export default function SpinLeaderboard() {
                     </span>
                   )}
                 </span>
-                <span className="flex-1 text-sm font-semibold truncate" style={{ color: "rgba(255,255,255,0.88)" }}>
+                <span className="flex-1 text-sm font-semibold" style={{ color: "rgba(255,255,255,0.88)" }}>
                   {entry.displayName}
                 </span>
                 <span className="text-sm font-black tabular-nums" style={{ color: "#fbbf24" }}>
@@ -106,7 +106,7 @@ export default function SpinLeaderboard() {
             {data.previousWinners.map((w) => (
               <li key={w.rank} className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.04)" }}>
                 <span className="text-base leading-none">{MEDAL[w.rank] ?? w.rank}</span>
-                <span className="flex-1 text-xs font-medium truncate" style={{ color: "rgba(255,255,255,0.6)" }}>
+                <span className="flex-1 text-xs font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>
                   {w.displayName}
                 </span>
                 <span className="text-xs font-bold tabular-nums" style={{ color: "rgba(251,191,36,0.7)" }}>
