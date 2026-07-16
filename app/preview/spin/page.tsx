@@ -157,12 +157,21 @@ function useWinSound() {
 function TropicalBackground() {
   return (
     <div className="fixed inset-0" aria-hidden="true" style={{ zIndex: 0 }}>
-      <div style={{
-        position:              "absolute", inset: 0,
-        backgroundImage:       "url(/spin-bg-cartoon.jpg)",
-        backgroundSize:        "cover",
-        backgroundPosition:    "center top",
-      }} />
+      <style>{`
+        .spin-bg {
+          position: absolute; inset: 0;
+          background-image: url(/spin-bg-cartoon-mobile.jpg);
+          background-size: cover;
+          background-position: center top;
+        }
+        @media (min-width: 768px) {
+          .spin-bg {
+            background-image: url(/spin-bg-cartoon.jpg);
+            background-position: center center;
+          }
+        }
+      `}</style>
+      <div className="spin-bg" />
       <div className="absolute inset-0" style={{ background: "rgba(0,10,28,0.45)" }} />
     </div>
   );
