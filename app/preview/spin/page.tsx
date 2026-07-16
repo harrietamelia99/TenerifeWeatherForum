@@ -172,7 +172,7 @@ function TropicalBackground() {
         }
       `}</style>
       <div className="spin-bg" />
-      <div className="absolute inset-0" style={{ background: "rgba(0,10,28,0.45)" }} />
+      <div className="absolute inset-0" style={{ background: "rgba(0,10,28,0.15)" }} />
     </div>
   );
 }
