@@ -12,7 +12,7 @@ export interface SpinSegment {
 // 12 segments in display order (index 0 = top of wheel)
 export const SPIN_SEGMENTS: SpinSegment[] = [
   { label: "Spin Again",      shortLabel: "Spin Again", points: 0,   color: "#7c3aed", textColor: "#ffffff", weight: 20,   icon: "🔄",  isSpinAgain: true },
-  { label: "Sunshine Boost",  shortLabel: "+10",        points: 10,  color: "#f59e0b", textColor: "#1a0500", weight: 15,   icon: "☀️"  },
+  { label: "Sunshine Boost",  shortLabel: "+10",        points: 10,  color: "#f59e0b", textColor: "#ffffff", weight: 15,   icon: "☀️"  },
   { label: "Sunset Chill",    shortLabel: "+15",        points: 15,  color: "#ea580c", textColor: "#ffffff", weight: 15,   icon: "🌅"  },
   { label: "Dolphin Dash",    shortLabel: "+20",        points: 20,  color: "#0891b2", textColor: "#ffffff", weight: 10,   icon: "🐬"  },
   { label: "Atlantic Bonus",  shortLabel: "+25",        points: 25,  color: "#2563eb", textColor: "#ffffff", weight: 10,   icon: "🌊"  },
