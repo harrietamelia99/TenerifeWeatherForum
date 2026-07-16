@@ -159,7 +159,7 @@ function TropicalBackground() {
     <div className="fixed inset-0" aria-hidden="true" style={{ zIndex: 0 }}>
       <div style={{
         position:              "absolute", inset: 0,
-        backgroundImage:       "url(/spin-bg.jpg)",
+        backgroundImage:       "url(/spin-bg-cartoon.jpg)",
         backgroundSize:        "cover",
         backgroundPosition:    "center top",
       }} />
