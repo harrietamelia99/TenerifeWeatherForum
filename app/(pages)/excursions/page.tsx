@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock, Users, Star } from "lucide-react";
+import ExcursionBookButton from "@/components/ui/ExcursionBookButton";
 
 export const metadata: Metadata = {
   title: "Excursions & Activities | Tenerife Weather Forum",
@@ -218,14 +219,7 @@ export default function ExcursionsPage() {
                   ))}
                 </ul>
 
-                <a
-                  href={ex.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold"
-                >
-                  Book This Activity <ArrowRight size={15} />
-                </a>
+                <ExcursionBookButton href={ex.href} title={ex.title} id={ex.id} />
                 <p className="text-xs mt-3" style={{ color: "var(--color-text-muted)", opacity: 0.7 }}>
                   Affiliate link — we may earn a small commission at no extra cost to you
                 </p>
