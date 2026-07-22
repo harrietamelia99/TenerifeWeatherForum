@@ -130,7 +130,17 @@ export default function SpinLoginPage() {
               </button>
             </form>
 
-            <p className="text-center text-sm mt-5" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p className="text-center text-sm mt-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <Link
+                href="/preview/spin/forgot-password"
+                className="hover:opacity-80"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                Forgot password?
+              </Link>
+            </p>
+
+            <p className="text-center text-sm mt-3" style={{ color: "rgba(255,255,255,0.4)" }}>
               No account?{" "}
               <Link
                 href="/preview/spin/register"
