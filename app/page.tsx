@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SubscribeForm from "@/components/ui/SubscribeForm";
+import ScrollEngagement from "@/components/ui/ScrollEngagement";
 import {
   ArrowRight,
   Calendar,
@@ -55,6 +56,7 @@ const features: { label: string; href: string; external?: boolean }[] = [
 export default function HomePage() {
   return (
     <div style={{ background: "var(--color-bg)" }}>
+      <ScrollEngagement threshold={0.5} />
 
       {/* ══════════════════════════════════════════════════════════════════
           HERO
