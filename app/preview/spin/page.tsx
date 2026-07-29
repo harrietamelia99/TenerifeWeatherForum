@@ -76,6 +76,35 @@ function useCountdown(nextSpinAt: string | null, onExpired: () => void) {
   };
 }
 
+// ─── Spin ratchet sound (Web Audio) ───────────────────────────────────────────
+function useSpinSound() {
+  const ctxRef = useRef<AudioContext | null>(null);
+  return useCallback(() => {
+    try {
+      if (!ctxRef.current) {
+        ctxRef.current = new (window.AudioContext ||
+          (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!)();
+      }
+      const ctx = ctxRef.current;
+      if (ctx.state === "suspended") ctx.resume();
+      const totalDuration = 6.2, ticks = 52;
+      for (let i = 0; i < ticks; i++) {
+        const t    = totalDuration * Math.pow(i / ticks, 2);
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = 600 - (i / ticks) * 400;
+        osc.type = "square";
+        const st = ctx.currentTime + t;
+        gain.gain.setValueAtTime(0, st);
+        gain.gain.linearRampToValueAtTime(0.10, st + 0.003);
+        gain.gain.exponentialRampToValueAtTime(0.001, st + 0.06);
+        osc.start(st); osc.stop(st + 0.08);
+      }
+    } catch { /* AudioContext unavailable */ }
+  }, []);
+}
+
 // ─── Win jingle (Howler + programmatically generated WAV) ─────────────────────
 function genWinSoundURL(): string {
   const sr    = 22050;
@@ -425,6 +454,7 @@ export default function SpinPage() {
   const { data: session, status } = useSession();
   const router    = useRouter();
   const wheelSize = useWheelSize();
+  const playRatchet = useSpinSound();
   const playWin     = useWinSound();
 
   const [userData,  setUserData]  = useState<UserData | null>(null);
@@ -530,6 +560,7 @@ export default function SpinPage() {
       const newRot = rotRef.current + delta + 6 * 360;
       rotRef.current = newRot;
       setRotation(newRot);
+      playRatchet(); // fires exactly when the wheel starts moving
 
       setTimeout(async () => {
         setWinnerIdx(idx);
@@ -550,7 +581,7 @@ export default function SpinPage() {
       setError("Something went wrong. Please try again.");
       setSpinning(false);
     }
-  }, [spinning, userData, fetchUserData, playWin]);
+  }, [spinning, userData, fetchUserData, playRatchet, playWin]);
 
   // Button click: GSAP squish animation then trigger spin
   const handleSpinClick = useCallback(() => {
