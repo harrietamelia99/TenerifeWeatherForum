@@ -456,23 +456,30 @@ export default function PixiWheel({
     }}>
       {/* PixiJS canvas host */}
       <div ref={hostRef} style={{ width: size, height: size + cssTopPad }} />
-      {/* SVG logo overlay — rendered natively by the browser, always crisp */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/logo-icon.svg"
-        alt=""
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          width: logoSize,
-          height: logoSize,
-          left: size / 2 - logoSize / 2,
-          top: cssTopPad + size / 2 - logoSize / 2,
-          pointerEvents: "none",
-          userSelect: "none",
-          borderRadius: "50%",
-        }}
-      />
+      {/* SVG logo overlay — circular clip container guarantees it stays in the hub */}
+      <div style={{
+        position: "absolute",
+        width: logoSize,
+        height: logoSize,
+        left: size / 2 - logoSize / 2,
+        top: cssTopPad + size / 2 - logoSize / 2,
+        borderRadius: "50%",
+        overflow: "hidden",
+        pointerEvents: "none",
+        userSelect: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#dff0fb",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/logo-icon.svg"
+          alt=""
+          aria-hidden="true"
+          style={{ width: "90%", height: "90%", objectFit: "contain", display: "block" }}
+        />
+      </div>
     </div>
   );
 }
