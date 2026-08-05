@@ -275,20 +275,20 @@ export default function HomePage() {
               </div>
 
               {/* Text */}
-              <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-14 py-8 sm:py-10 lg:py-12 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.15)", color: "#f7ad19", border: "1px solid rgba(251,191,36,0.3)" }}>
+              <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-14 py-8 sm:py-10 lg:py-12 flex flex-col justify-center" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.45)" }}>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.2)", color: "#ffe066", border: "1px solid rgba(251,191,36,0.4)", textShadow: "none", boxShadow: "0 1px 6px rgba(0,0,0,0.2)" }}>
                   ✨ New feature
                 </div>
-                <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
+                <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.4)" }}>
                   Spin the wheel.<br />Win real prizes.
                 </h2>
-                <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-5 max-w-md">
+                <p className="text-sm sm:text-base leading-relaxed mb-5 max-w-md" style={{ color: "rgba(255,255,255,0.92)", textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
                   Register for free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes. Newsletter subscribers get a bonus spin every day.
                 </p>
-                <ul className="flex flex-col gap-2 mb-7 text-sm text-white/70">
-                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> One free spin every 24 hours</li>
-                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Monthly leaderboard with prizes</li>
-                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Bonus spin for newsletter subscribers</li>
+                <ul className="flex flex-col gap-2 mb-7 text-sm" style={{ color: "rgba(255,255,255,0.95)", textShadow: "0 1px 5px rgba(0,0,0,0.45)" }}>
+                  <li className="flex items-center gap-2"><span style={{ color: "#ffe066", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))" }}>★</span> One free spin every 24 hours</li>
+                  <li className="flex items-center gap-2"><span style={{ color: "#ffe066", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))" }}>★</span> Monthly leaderboard with prizes</li>
+                  <li className="flex items-center gap-2"><span style={{ color: "#ffe066", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))" }}>★</span> Bonus spin for newsletter subscribers</li>
                 </ul>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
                   <Link
