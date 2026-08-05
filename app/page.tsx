@@ -246,7 +246,7 @@ export default function HomePage() {
             <div className="relative z-10 flex flex-col lg:flex-row items-center">
 
               {/* Wheel — vertically centred */}
-              <div className="flex-shrink-0 flex items-center justify-center py-8 px-6 lg:px-2 lg:pl-8 lg:py-10">
+              <div className="flex-shrink-0 flex items-center justify-center py-8 px-6 lg:px-2 lg:pl-16 lg:py-10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/spin-wheel-promo.png"
