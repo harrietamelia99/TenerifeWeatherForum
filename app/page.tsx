@@ -222,65 +222,67 @@ export default function HomePage() {
             LUCKY SPIN PROMO
         ════════════════════════════════════════════════════════════════ */}
         <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="spin-promo-heading">
-          <div
-            className="rounded-3xl overflow-hidden relative"
-            style={{
-              background: "linear-gradient(135deg, #080e2a 0%, #112060 50%, #080e2a 100%)",
-              border: "1px solid rgba(251,191,36,0.3)",
-              boxShadow: "0 8px 48px rgba(251,191,36,0.15), 0 2px 16px rgba(0,0,0,0.3)",
-              minHeight: 280,
-            }}
-          >
-            {/* Background glow blobs */}
-            <div className="absolute top-[-30%] left-[30%] w-96 h-96 rounded-full opacity-25 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(100px)" }} aria-hidden="true" />
-            <div className="absolute bottom-[-20%] left-[5%] w-64 h-64 rounded-full opacity-15 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
+          {/* Outer wrapper allows wheel to overflow upward on desktop */}
+          <div className="relative pt-0 lg:pt-10">
+            <div
+              className="rounded-3xl relative overflow-hidden"
+              style={{
+                background: "linear-gradient(120deg, #080e2a 0%, #0d1c55 55%, #080e2a 100%)",
+                border: "1px solid rgba(251,191,36,0.28)",
+                boxShadow: "0 8px 48px rgba(251,191,36,0.13), 0 2px 20px rgba(0,0,0,0.35)",
+              }}
+            >
+              {/* Warm gold glow behind wheel position */}
+              <div className="absolute top-[-10%] left-[-2%] w-80 h-80 rounded-full opacity-20 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(90px)" }} aria-hidden="true" />
+              <div className="absolute bottom-[-10%] right-[20%] w-56 h-56 rounded-full opacity-10 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
 
-            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-0">
+              <div className="relative z-10 flex flex-col lg:flex-row items-center">
 
-              {/* Wheel image */}
-              <div className="relative flex-shrink-0 flex items-end justify-center w-full lg:w-auto pt-8 pb-0 lg:pt-0 lg:pb-0"
-                style={{ width: undefined }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/spin-wheel-promo.png"
-                  alt="Lucky spin wheel"
-                  className="relative z-10 drop-shadow-2xl"
-                  style={{
-                    width: "clamp(180px, 30vw, 320px)",
-                    height: "auto",
-                    marginBottom: "-4px",
-                    filter: "drop-shadow(0 8px 32px rgba(251,191,36,0.35))",
-                  }}
-                />
-              </div>
-
-              {/* Text side */}
-              <div className="flex-1 px-8 sm:px-10 lg:px-12 py-10 sm:py-12">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.15)", color: "#f7ad19", border: "1px solid rgba(251,191,36,0.3)" }}>
-                  ✨ New feature
+                {/* Wheel — overflows the card top on desktop */}
+                <div className="relative flex-shrink-0 flex items-center justify-center lg:justify-start px-6 lg:px-0 pt-8 pb-4 lg:py-0"
+                  style={{ marginTop: 0 }}>
+                  <div className="relative lg:absolute lg:top-1/2 lg:left-0 lg:-translate-y-1/2 lg:translate-x-[-10%]"
+                    style={{ position: "relative" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/images/spin-wheel-promo.png"
+                      alt="Lucky Spin wheel showing prize segments"
+                      style={{
+                        width: "clamp(200px, 28vw, 360px)",
+                        height: "auto",
+                        filter: "drop-shadow(0 12px 40px rgba(251,191,36,0.4)) drop-shadow(0 4px 16px rgba(0,0,0,0.5))",
+                        display: "block",
+                      }}
+                    />
+                  </div>
                 </div>
-                <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
-                  Spin the wheel.<br />Win real prizes.
-                </h2>
-                <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-4 max-w-md">
-                  Register for free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes. Newsletter subscribers get a bonus spin every day.
-                </p>
-                <ul className="flex flex-col gap-2 mb-7 text-sm text-white/70">
-                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> One free spin every 24 hours</li>
-                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Monthly leaderboard with prizes</li>
-                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Bonus spin for newsletter subscribers</li>
-                </ul>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
-                  <Link
-                    href="/preview/spin"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 24px rgba(247,173,25,0.45)" }}
-                  >
-                    🎡 Play Lucky Spin <ArrowRight size={15} />
-                  </Link>
-                  <span className="text-xs text-white/40">
-                    Free to play · No purchase required
-                  </span>
+
+                {/* Text — padded to make room for wheel on desktop */}
+                <div className="flex-1 px-8 sm:px-10 lg:pl-72 xl:pl-80 lg:pr-12 py-10 sm:py-12">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.15)", color: "#f7ad19", border: "1px solid rgba(251,191,36,0.3)" }}>
+                    ✨ New feature
+                  </div>
+                  <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
+                    Spin the wheel.<br />Win real prizes.
+                  </h2>
+                  <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-5 max-w-md">
+                    Register for free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes. Newsletter subscribers get a bonus spin every day.
+                  </p>
+                  <ul className="flex flex-col gap-2 mb-7 text-sm text-white/70">
+                    <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> One free spin every 24 hours</li>
+                    <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Monthly leaderboard with prizes</li>
+                    <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Bonus spin for newsletter subscribers</li>
+                  </ul>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
+                    <Link
+                      href="/preview/spin"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
+                      style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 24px rgba(247,173,25,0.45)" }}
+                    >
+                      🎡 Play Lucky Spin <ArrowRight size={15} />
+                    </Link>
+                    <span className="text-xs text-white/40">Free to play · No purchase required</span>
+                  </div>
                 </div>
               </div>
             </div>
