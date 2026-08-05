@@ -48,6 +48,7 @@ const features: { label: string; href: string; external?: boolean }[] = [
   { label: "Airport and transport updates",                           href: "/resources" },
   { label: "Excursions and things to do",                             href: "/excursions" },
   { label: "Live webcams",                                            href: "/webcams" },
+  { label: "Lucky Spin — win prizes daily",                           href: "/preview/spin" },
   { label: "Join 37,000 community members on our socials", href: "https://www.facebook.com/groups/1826293804889186", external: true },
 ];
 
@@ -214,6 +215,71 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════════
+            LUCKY SPIN PROMO
+        ════════════════════════════════════════════════════════════════ */}
+        <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="spin-promo-heading">
+          <div
+            className="rounded-3xl overflow-hidden relative"
+            style={{
+              background: "linear-gradient(135deg, #0f2044 0%, #1a3a6e 40%, #0f2044 100%)",
+              border: "1px solid rgba(251,191,36,0.25)",
+              boxShadow: "0 8px 40px rgba(251,191,36,0.12), 0 2px 12px rgba(0,0,0,0.2)",
+            }}
+          >
+            {/* Glow blobs */}
+            <div className="absolute top-[-20%] right-[10%] w-64 h-64 rounded-full opacity-20 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(80px)" }} aria-hidden="true" />
+            <div className="absolute bottom-[-10%] left-[5%] w-48 h-48 rounded-full opacity-15 pointer-events-none" style={{ background: "#429ebd", filter: "blur(60px)" }} aria-hidden="true" />
+
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
+              {/* Text side */}
+              <div className="px-8 sm:px-12 py-10 sm:py-12">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.15)", color: "#f7ad19", border: "1px solid rgba(251,191,36,0.3)" }}>
+                  ✨ New feature
+                </div>
+                <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
+                  Spin the wheel.<br />Win real prizes.
+                </h2>
+                <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-6 max-w-md">
+                  Register for free and get one spin every day. Earn points, climb the monthly leaderboard and compete for prizes. Newsletter subscribers get a bonus spin.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
+                  <Link
+                    href="/preview/spin"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
+                    style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 20px rgba(247,173,25,0.4)" }}
+                  >
+                    🎡 Play Lucky Spin <ArrowRight size={15} />
+                  </Link>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-white/45 self-center">
+                    Free to play · No purchase required
+                  </span>
+                </div>
+              </div>
+
+              {/* Visual side */}
+              <div className="hidden lg:flex items-center justify-center px-8 py-10 gap-4">
+                {[
+                  { pts: "+250", label: "Island Jackpot", color: "#a855f7" },
+                  { pts: "+150", label: "Volcano Bonus", color: "#ef4444" },
+                  { pts: "+100", label: "Golden Teide",   color: "#f7ad19" },
+                  { pts: "+50",  label: "Stargazer",      color: "#3b82f6" },
+                  { pts: "+30",  label: "Siam Splash",    color: "#10b981" },
+                ].map((seg) => (
+                  <div
+                    key={seg.label}
+                    className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl text-center"
+                    style={{ background: `${seg.color}22`, border: `1px solid ${seg.color}44`, minWidth: 72 }}
+                  >
+                    <span className="text-lg font-extrabold" style={{ color: seg.color }}>{seg.pts}</span>
+                    <span className="text-white/60 text-xs leading-tight">{seg.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
