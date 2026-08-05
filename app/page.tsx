@@ -225,59 +225,63 @@ export default function HomePage() {
           <div
             className="rounded-3xl overflow-hidden relative"
             style={{
-              background: "linear-gradient(135deg, #0f2044 0%, #1a3a6e 40%, #0f2044 100%)",
-              border: "1px solid rgba(251,191,36,0.25)",
-              boxShadow: "0 8px 40px rgba(251,191,36,0.12), 0 2px 12px rgba(0,0,0,0.2)",
+              background: "linear-gradient(135deg, #080e2a 0%, #112060 50%, #080e2a 100%)",
+              border: "1px solid rgba(251,191,36,0.3)",
+              boxShadow: "0 8px 48px rgba(251,191,36,0.15), 0 2px 16px rgba(0,0,0,0.3)",
+              minHeight: 280,
             }}
           >
-            {/* Glow blobs */}
-            <div className="absolute top-[-20%] right-[10%] w-64 h-64 rounded-full opacity-20 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(80px)" }} aria-hidden="true" />
-            <div className="absolute bottom-[-10%] left-[5%] w-48 h-48 rounded-full opacity-15 pointer-events-none" style={{ background: "#429ebd", filter: "blur(60px)" }} aria-hidden="true" />
+            {/* Background glow blobs */}
+            <div className="absolute top-[-30%] left-[30%] w-96 h-96 rounded-full opacity-25 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(100px)" }} aria-hidden="true" />
+            <div className="absolute bottom-[-20%] left-[5%] w-64 h-64 rounded-full opacity-15 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
 
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-0">
+
+              {/* Wheel image */}
+              <div className="relative flex-shrink-0 flex items-end justify-center w-full lg:w-auto pt-8 pb-0 lg:pt-0 lg:pb-0"
+                style={{ width: undefined }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/spin-wheel-promo.png"
+                  alt="Lucky spin wheel"
+                  className="relative z-10 drop-shadow-2xl"
+                  style={{
+                    width: "clamp(180px, 30vw, 320px)",
+                    height: "auto",
+                    marginBottom: "-4px",
+                    filter: "drop-shadow(0 8px 32px rgba(251,191,36,0.35))",
+                  }}
+                />
+              </div>
+
               {/* Text side */}
-              <div className="px-8 sm:px-12 py-10 sm:py-12">
+              <div className="flex-1 px-8 sm:px-10 lg:px-12 py-10 sm:py-12">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.15)", color: "#f7ad19", border: "1px solid rgba(251,191,36,0.3)" }}>
                   ✨ New feature
                 </div>
                 <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
                   Spin the wheel.<br />Win real prizes.
                 </h2>
-                <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-6 max-w-md">
-                  Register for free and get one spin every day. Earn points, climb the monthly leaderboard and compete for prizes. Newsletter subscribers get a bonus spin.
+                <p className="text-white/65 text-sm sm:text-base leading-relaxed mb-4 max-w-md">
+                  Register for free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes. Newsletter subscribers get a bonus spin every day.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
+                <ul className="flex flex-col gap-2 mb-7 text-sm text-white/70">
+                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> One free spin every 24 hours</li>
+                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Monthly leaderboard with prizes</li>
+                  <li className="flex items-center gap-2"><span style={{ color: "#f7ad19" }}>★</span> Bonus spin for newsletter subscribers</li>
+                </ul>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
                   <Link
                     href="/preview/spin"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 20px rgba(247,173,25,0.4)" }}
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
+                    style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 24px rgba(247,173,25,0.45)" }}
                   >
                     🎡 Play Lucky Spin <ArrowRight size={15} />
                   </Link>
-                  <span className="inline-flex items-center gap-1.5 text-xs text-white/45 self-center">
+                  <span className="text-xs text-white/40">
                     Free to play · No purchase required
                   </span>
                 </div>
-              </div>
-
-              {/* Visual side */}
-              <div className="hidden lg:flex items-center justify-center px-8 py-10 gap-4">
-                {[
-                  { pts: "+250", label: "Island Jackpot", color: "#a855f7" },
-                  { pts: "+150", label: "Volcano Bonus", color: "#ef4444" },
-                  { pts: "+100", label: "Golden Teide",   color: "#f7ad19" },
-                  { pts: "+50",  label: "Stargazer",      color: "#3b82f6" },
-                  { pts: "+30",  label: "Siam Splash",    color: "#10b981" },
-                ].map((seg) => (
-                  <div
-                    key={seg.label}
-                    className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl text-center"
-                    style={{ background: `${seg.color}22`, border: `1px solid ${seg.color}44`, minWidth: 72 }}
-                  >
-                    <span className="text-lg font-extrabold" style={{ color: seg.color }}>{seg.pts}</span>
-                    <span className="text-white/60 text-xs leading-tight">{seg.label}</span>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
