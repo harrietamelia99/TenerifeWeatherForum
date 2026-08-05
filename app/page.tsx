@@ -238,23 +238,21 @@ export default function HomePage() {
               border: "1px solid rgba(159,231,245,0.3)",
             }}
           >
-            {/* Faded Tenerife photo background */}
+            {/* Tenerife photo background */}
             <div
               className="absolute inset-0"
               style={{
                 backgroundImage: "url('/images/tenerife-promo-bg.jpg')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                opacity: 0.22,
               }}
               aria-hidden="true"
             />
-            {/* Turquoise gradient overlay */}
+            {/* Turquoise overlay — light enough to let the photo show through */}
             <div
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(120deg, #053f5c 0%, #429ebd 60%, #2a8aad 100%)",
-                opacity: 0.92,
+                background: "linear-gradient(120deg, rgba(5,63,92,0.72) 0%, rgba(66,158,189,0.58) 60%, rgba(42,138,173,0.62) 100%)",
               }}
               aria-hidden="true"
             />
