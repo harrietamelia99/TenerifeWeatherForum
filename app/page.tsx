@@ -129,7 +129,7 @@ export default function HomePage() {
               key={f.label}
               style={
                 features.length % 2 !== 0 && i === features.length - 1
-                  ? { gridColumn: "1", justifySelf: "stretch" }
+                  ? { gridColumn: "1 / -1" }
                   : {}
               }
             >
