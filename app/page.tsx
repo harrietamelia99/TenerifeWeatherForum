@@ -124,8 +124,15 @@ export default function HomePage() {
 
         {/* Feature list — styled as clickable pill buttons */}
         <ul className="relative z-10 grid grid-cols-2 gap-2 sm:gap-2.5 mb-10 w-full max-w-xl">
-          {features.map((f) => (
-            <li key={f.label}>
+          {features.map((f, i) => (
+            <li
+              key={f.label}
+              style={
+                features.length % 2 !== 0 && i === features.length - 1
+                  ? { gridColumn: "1", justifySelf: "stretch" }
+                  : {}
+              }
+            >
               <a
                 href={f.href}
                 {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
