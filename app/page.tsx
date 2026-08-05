@@ -248,11 +248,11 @@ export default function HomePage() {
               }}
               aria-hidden="true"
             />
-            {/* Turquoise overlay — light enough to let the photo show through */}
+            {/* Turquoise overlay — lighter on left (wheel side), darker on right (text side) */}
             <div
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(120deg, rgba(5,63,92,0.72) 0%, rgba(66,158,189,0.58) 60%, rgba(42,138,173,0.62) 100%)",
+                background: "linear-gradient(105deg, rgba(5,63,92,0.55) 0%, rgba(5,63,92,0.72) 40%, rgba(5,40,75,0.88) 70%, rgba(5,40,75,0.93) 100%)",
               }}
               aria-hidden="true"
             />
