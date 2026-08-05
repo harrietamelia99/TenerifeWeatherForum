@@ -233,15 +233,31 @@ export default function HomePage() {
           <div
             className="rounded-3xl relative"
             style={{
-              background: "linear-gradient(120deg, #080e2a 0%, #0d1c55 55%, #080e2a 100%)",
-              border: "1px solid rgba(251,191,36,0.28)",
-              boxShadow: "0 8px 48px rgba(251,191,36,0.13), 0 2px 20px rgba(0,0,0,0.35)",
               overflow: "hidden",
+              boxShadow: "0 8px 32px rgba(5,63,92,0.25), 0 2px 12px rgba(0,0,0,0.15)",
+              border: "1px solid rgba(159,231,245,0.3)",
             }}
           >
-            {/* Glow blobs */}
-            <div className="absolute top-[-10%] left-[5%] w-72 h-72 rounded-full opacity-25 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(80px)" }} aria-hidden="true" />
-            <div className="absolute top-[-10%] right-[20%] w-56 h-56 rounded-full opacity-10 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
+            {/* Faded Tenerife photo background */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: "url('/images/tenerife-promo-bg.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                opacity: 0.22,
+              }}
+              aria-hidden="true"
+            />
+            {/* Turquoise gradient overlay */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(120deg, #053f5c 0%, #429ebd 60%, #2a8aad 100%)",
+                opacity: 0.92,
+              }}
+              aria-hidden="true"
+            />
 
             <div className="relative z-10 flex flex-col lg:flex-row items-center">
 
