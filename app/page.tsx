@@ -222,37 +222,40 @@ export default function HomePage() {
             LUCKY SPIN PROMO
         ════════════════════════════════════════════════════════════════ */}
         <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="spin-promo-heading">
+          {/* pb-0 so the wheel can bleed to the bottom edge */}
           <div
-            className="rounded-3xl relative overflow-hidden"
+            className="rounded-3xl relative"
             style={{
               background: "linear-gradient(120deg, #080e2a 0%, #0d1c55 55%, #080e2a 100%)",
               border: "1px solid rgba(251,191,36,0.28)",
               boxShadow: "0 8px 48px rgba(251,191,36,0.13), 0 2px 20px rgba(0,0,0,0.35)",
+              overflow: "hidden",
             }}
           >
             {/* Glow blobs */}
-            <div className="absolute top-[-20%] left-[-5%] w-80 h-80 rounded-full opacity-20 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(90px)" }} aria-hidden="true" />
-            <div className="absolute bottom-[-20%] right-[15%] w-64 h-64 rounded-full opacity-10 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
+            <div className="absolute top-[-10%] left-[5%] w-72 h-72 rounded-full opacity-25 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(80px)" }} aria-hidden="true" />
+            <div className="absolute top-[-10%] right-[20%] w-56 h-56 rounded-full opacity-10 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
 
-            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6 lg:gap-0 p-8 sm:p-10 lg:p-0">
+            <div className="relative z-10 flex flex-col lg:flex-row items-end lg:items-stretch">
 
-              {/* Wheel image — flush left on desktop, centred on mobile */}
-              <div className="flex-shrink-0 flex items-center justify-center lg:self-stretch lg:pl-8 lg:py-6">
+              {/* Wheel — bleeds off the bottom on desktop for depth */}
+              <div className="flex-shrink-0 flex items-end justify-center pt-6 px-6 lg:px-0 lg:pt-0 lg:pl-6 lg:self-end">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/spin-wheel-promo.png"
-                  alt="Lucky Spin wheel showing prize segments"
+                  alt="Lucky Spin wheel"
                   style={{
-                    width: "clamp(180px, 22vw, 300px)",
+                    width: "clamp(220px, 26vw, 380px)",
                     height: "auto",
-                    filter: "drop-shadow(0 8px 32px rgba(251,191,36,0.45)) drop-shadow(0 4px 12px rgba(0,0,0,0.5))",
                     display: "block",
+                    marginBottom: "-2px",
+                    filter: "drop-shadow(0 -4px 24px rgba(251,191,36,0.3)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))",
                   }}
                 />
               </div>
 
               {/* Text */}
-              <div className="flex-1 lg:px-10 xl:px-14 lg:py-10">
+              <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-14 py-8 sm:py-10 lg:py-12 flex flex-col justify-center">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.15)", color: "#f7ad19", border: "1px solid rgba(251,191,36,0.3)" }}>
                   ✨ New feature
                 </div>
