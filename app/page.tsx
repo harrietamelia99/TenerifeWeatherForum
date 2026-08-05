@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SubscribeForm from "@/components/ui/SubscribeForm";
 import ScrollEngagement from "@/components/ui/ScrollEngagement";
+import SpinPromoWheel from "@/components/ui/SpinPromoWheel";
 import {
   ArrowRight,
   Calendar,
@@ -261,17 +262,7 @@ export default function HomePage() {
 
               {/* Wheel — vertically centred */}
               <div className="flex-shrink-0 flex items-center justify-center py-8 px-6 lg:px-2 lg:pl-16 lg:py-10">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/spin-wheel-promo.png"
-                  alt="Lucky Spin wheel"
-                  style={{
-                    width: "clamp(220px, 26vw, 360px)",
-                    height: "auto",
-                    display: "block",
-                    filter: "drop-shadow(0 4px 24px rgba(251,191,36,0.35)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))",
-                  }}
-                />
+                <SpinPromoWheel />
               </div>
 
               {/* Text */}
