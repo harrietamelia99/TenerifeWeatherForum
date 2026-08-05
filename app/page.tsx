@@ -236,20 +236,19 @@ export default function HomePage() {
             <div className="absolute top-[-10%] left-[5%] w-72 h-72 rounded-full opacity-25 pointer-events-none" style={{ background: "#f7ad19", filter: "blur(80px)" }} aria-hidden="true" />
             <div className="absolute top-[-10%] right-[20%] w-56 h-56 rounded-full opacity-10 pointer-events-none" style={{ background: "#429ebd", filter: "blur(70px)" }} aria-hidden="true" />
 
-            <div className="relative z-10 flex flex-col lg:flex-row items-end lg:items-stretch">
+            <div className="relative z-10 flex flex-col lg:flex-row items-center">
 
-              {/* Wheel — bleeds off the bottom on desktop for depth */}
-              <div className="flex-shrink-0 flex items-end justify-center pt-6 px-6 lg:px-0 lg:pt-0 lg:pl-6 lg:self-end">
+              {/* Wheel — vertically centred */}
+              <div className="flex-shrink-0 flex items-center justify-center py-8 px-6 lg:px-2 lg:pl-8 lg:py-10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/spin-wheel-promo.png"
                   alt="Lucky Spin wheel"
                   style={{
-                    width: "clamp(220px, 26vw, 380px)",
+                    width: "clamp(220px, 26vw, 360px)",
                     height: "auto",
                     display: "block",
-                    marginBottom: "-2px",
-                    filter: "drop-shadow(0 -4px 24px rgba(251,191,36,0.3)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))",
+                    filter: "drop-shadow(0 4px 24px rgba(251,191,36,0.35)) drop-shadow(0 8px 20px rgba(0,0,0,0.4))",
                   }}
                 />
               </div>
