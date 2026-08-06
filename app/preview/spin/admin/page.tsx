@@ -139,6 +139,19 @@ export default function SpinAdminPage() {
     if (res.ok) { loadData("users"); }
   }
 
+  async function handleDeleteUser(user: SpinUser) {
+    if (!confirm(`Delete "${user.display_name ?? user.email}"?\n\nThis removes the account and all their spin history permanently.`)) return;
+    const res = await fetch("/api/spin/admin", {
+      method: "POST",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete_user", userId: user.id }),
+    });
+    if (res.ok) {
+      setAdjustMsg(`Deleted ${user.email}.`);
+      loadData("users");
+    }
+  }
+
   // ─── Auth wall ───────────────────────────────────────────────────────────────
   if (!authed) {
     return (
@@ -323,6 +336,13 @@ export default function SpinAdminPage() {
                               Grant bonus
                             </button>
                           )}
+                          <button
+                            onClick={() => handleDeleteUser(u)}
+                            className="px-3 py-1 rounded-lg text-xs font-semibold"
+                            style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.25)" }}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </td>
                     </tr>

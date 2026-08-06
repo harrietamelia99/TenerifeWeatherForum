@@ -336,6 +336,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   }
 
+  // ── Delete user ───────────────────────────────────────────────────────────
+  if (body.action === "delete_user") {
+    const { userId } = body;
+    if (!userId) return NextResponse.json({ error: "userId required." }, { status: 400 });
+    // Delete spin history first, then the user
+    await supabase.from("spin_history").delete().eq("user_id", userId);
+    const { error } = await supabase.from("spin_users").delete().eq("id", userId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
   // ── Grant bonus spin ──────────────────────────────────────────────────────
   if (body.action === "grant_bonus") {
     const { userId } = body;
