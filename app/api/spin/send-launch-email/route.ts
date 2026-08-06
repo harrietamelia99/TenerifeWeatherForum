@@ -15,14 +15,6 @@ function spinLaunchEmailHtml(): string {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Introducing Lucky Spin 🎰</title>
-  <style>
-    @media only screen and (max-width: 600px) {
-      .hero-text { display: block !important; width: 100% !important; padding: 32px 24px 16px 24px !important; }
-      .hero-wheel { display: block !important; width: 100% !important; padding: 8px 24px 32px 24px !important; text-align: center !important; }
-      .hero-wheel img { margin: 0 auto !important; }
-      .step-col { display: block !important; width: 100% !important; padding: 0 24px 20px !important; }
-    }
-  </style>
 </head>
 <body style="margin:0;padding:0;background:#f0f7ff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
 
@@ -32,60 +24,67 @@ function spinLaunchEmailHtml(): string {
 
         <!-- ── Header ─────────────────────────────────────── -->
         <tr>
-          <td style="background:linear-gradient(135deg,#053f5c 0%,#0c6891 50%,#1a8fb5 100%);padding:28px 40px 24px;text-align:center">
-            <p style="margin:0 0 6px;color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:600">Tenerife Weather Forum</p>
+          <td style="background:linear-gradient(135deg,#053f5c 0%,#0c6891 50%,#1a8fb5 100%);padding:24px 40px 20px;text-align:center">
+            <p style="margin:0 0 4px;color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:600">Tenerife Weather Forum</p>
             <p style="margin:0;color:rgba(255,255,255,0.4);font-size:11px">tenerifeweatherforum.com</p>
           </td>
         </tr>
 
-        <!-- ── Hero banner ────────────────────────────────── -->
+        <!-- ── Hero banner — single column, works on all clients ── -->
         <tr>
-          <td style="background:linear-gradient(160deg,#053f5c 0%,#0a5c80 40%,#1a8fb5 100%);padding:0">
-            <table width="100%" cellpadding="0" cellspacing="0">
-              <tr>
-                <!-- Headline — first in HTML so it appears on top on mobile -->
-                <td class="hero-text" width="52%" style="padding:36px 16px 36px 32px;vertical-align:middle">
-                  <p style="margin:0 0 10px;display:inline-block;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75)">✦ New Feature</p>
-                  <h1 style="margin:0 0 12px;color:#ffffff;font-size:28px;font-weight:900;line-height:1.15">Spin the wheel.<br>Win real prizes.</h1>
-                  <p style="margin:0;color:rgba(255,255,255,0.75);font-size:14px;line-height:1.6">Register free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes.</p>
-                </td>
-                <!-- Wheel image — second in HTML so it appears below on mobile -->
-                <td class="hero-wheel" width="48%" style="padding:36px 32px 36px 0;vertical-align:middle;text-align:center">
-                  <img
-                    src="${SITE_URL}/images/spin-wheel-promo.png"
-                    alt="Lucky Spin wheel"
-                    width="200"
-                    style="display:block;width:200px;max-width:100%;height:auto;margin:0 auto;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.5))"
-                  />
-                </td>
-              </tr>
-            </table>
+          <td style="background:linear-gradient(160deg,#053f5c 0%,#0a5c80 50%,#1a8fb5 100%);padding:40px 32px 36px;text-align:center">
+            <p style="margin:0 0 16px;display:inline-block;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.8)">✦ New Feature</p>
+            <h1 style="margin:0 0 12px;color:#ffffff;font-size:32px;font-weight:900;line-height:1.15">Spin the wheel.<br>Win real prizes.</h1>
+            <p style="margin:0 0 28px;color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;max-width:400px;margin-left:auto;margin-right:auto">Register for free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes.</p>
+            <img
+              src="${SITE_URL}/images/spin-wheel-promo.png"
+              alt="Lucky Spin wheel"
+              width="240"
+              style="display:block;width:240px;max-width:80%;height:auto;margin:0 auto;filter:drop-shadow(0 12px 32px rgba(0,0,0,0.55))"
+            />
           </td>
         </tr>
 
-        <!-- ── How it works ────────────────────────────────── -->
+        <!-- ── How it works — stacked rows, reliable everywhere ── -->
         <tr>
-          <td style="padding:40px 40px 16px">
-            <h2 style="margin:0 0 20px;color:#053f5c;font-size:18px;font-weight:800;text-align:center">How it works</h2>
+          <td style="padding:40px 32px 8px">
+            <h2 style="margin:0 0 24px;color:#053f5c;font-size:18px;font-weight:800;text-align:center">How it works</h2>
+
+            <!-- Step 1 -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px">
+              <tr>
+                <td width="56" style="vertical-align:middle;padding-right:16px">
+                  <div style="width:52px;height:52px;background:linear-gradient(135deg,#f59e0b,#ea580c);border-radius:50%;text-align:center;font-size:24px;line-height:52px">🎰</div>
+                </td>
+                <td style="vertical-align:middle">
+                  <p style="margin:0 0 3px;color:#053f5c;font-size:14px;font-weight:700">Spin daily</p>
+                  <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5">One free spin every 24 hours — no purchase needed</p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Step 2 -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px">
+              <tr>
+                <td width="56" style="vertical-align:middle;padding-right:16px">
+                  <div style="width:52px;height:52px;background:linear-gradient(135deg,#0c6891,#053f5c);border-radius:50%;text-align:center;font-size:24px;line-height:52px">⭐</div>
+                </td>
+                <td style="vertical-align:middle">
+                  <p style="margin:0 0 3px;color:#053f5c;font-size:14px;font-weight:700">Earn points</p>
+                  <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5">Each segment awards points — bigger rewards for lucky spins</p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Step 3 -->
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <!-- Step 1 -->
-                <td width="33%" style="padding:0 8px;vertical-align:top;text-align:center">
-                  <div style="width:48px;height:48px;background:linear-gradient(135deg,#f59e0b,#ea580c);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:48px">🎰</div>
-                  <p style="margin:0 0 6px;color:#053f5c;font-size:13px;font-weight:700">Spin daily</p>
-                  <p style="margin:0;color:#64748b;font-size:12px;line-height:1.5">One free spin every 24 hours — no purchase needed</p>
+                <td width="56" style="vertical-align:middle;padding-right:16px">
+                  <div style="width:52px;height:52px;background:linear-gradient(135deg,#16a34a,#065f46);border-radius:50%;text-align:center;font-size:24px;line-height:52px">🏆</div>
                 </td>
-                <!-- Step 2 -->
-                <td width="33%" style="padding:0 8px;vertical-align:top;text-align:center">
-                  <div style="width:48px;height:48px;background:linear-gradient(135deg,#0c6891,#053f5c);border-radius:50%;margin:0 auto 12px;font-size:22px;line-height:48px;text-align:center">⭐</div>
-                  <p style="margin:0 0 6px;color:#053f5c;font-size:13px;font-weight:700">Earn points</p>
-                  <p style="margin:0;color:#64748b;font-size:12px;line-height:1.5">Each segment awards points — bigger rewards for lucky spins</p>
-                </td>
-                <!-- Step 3 -->
-                <td width="33%" style="padding:0 8px;vertical-align:top;text-align:center">
-                  <div style="width:48px;height:48px;background:linear-gradient(135deg,#16a34a,#065f46);border-radius:50%;margin:0 auto 12px;font-size:22px;line-height:48px;text-align:center">🏆</div>
-                  <p style="margin:0 0 6px;color:#053f5c;font-size:13px;font-weight:700">Win prizes</p>
-                  <p style="margin:0;color:#64748b;font-size:12px;line-height:1.5">Monthly leaderboard — top 3 players win real prizes</p>
+                <td style="vertical-align:middle">
+                  <p style="margin:0 0 3px;color:#053f5c;font-size:14px;font-weight:700">Win prizes</p>
+                  <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5">Monthly leaderboard — top 3 players win real prizes</p>
                 </td>
               </tr>
             </table>
