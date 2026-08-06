@@ -15,6 +15,14 @@ function spinLaunchEmailHtml(): string {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Introducing Lucky Spin 🎰</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .hero-text { display: block !important; width: 100% !important; padding: 32px 24px 16px 24px !important; }
+      .hero-wheel { display: block !important; width: 100% !important; padding: 8px 24px 32px 24px !important; text-align: center !important; }
+      .hero-wheel img { margin: 0 auto !important; }
+      .step-col { display: block !important; width: 100% !important; padding: 0 24px 20px !important; }
+    }
+  </style>
 </head>
 <body style="margin:0;padding:0;background:#f0f7ff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
 
@@ -35,20 +43,20 @@ function spinLaunchEmailHtml(): string {
           <td style="background:linear-gradient(160deg,#053f5c 0%,#0a5c80 40%,#1a8fb5 100%);padding:0">
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <!-- Wheel image -->
-                <td width="48%" style="padding:36px 0 36px 32px;vertical-align:middle">
+                <!-- Headline — first in HTML so it appears on top on mobile -->
+                <td class="hero-text" width="52%" style="padding:36px 16px 36px 32px;vertical-align:middle">
+                  <p style="margin:0 0 10px;display:inline-block;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75)">✦ New Feature</p>
+                  <h1 style="margin:0 0 12px;color:#ffffff;font-size:28px;font-weight:900;line-height:1.15">Spin the wheel.<br>Win real prizes.</h1>
+                  <p style="margin:0;color:rgba(255,255,255,0.75);font-size:14px;line-height:1.6">Register free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes.</p>
+                </td>
+                <!-- Wheel image — second in HTML so it appears below on mobile -->
+                <td class="hero-wheel" width="48%" style="padding:36px 32px 36px 0;vertical-align:middle;text-align:center">
                   <img
                     src="${SITE_URL}/images/spin-wheel-promo.png"
                     alt="Lucky Spin wheel"
                     width="200"
-                    style="display:block;width:200px;max-width:100%;height:auto;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.5))"
+                    style="display:block;width:200px;max-width:100%;height:auto;margin:0 auto;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.5))"
                   />
-                </td>
-                <!-- Headline -->
-                <td width="52%" style="padding:36px 28px 36px 16px;vertical-align:middle">
-                  <p style="margin:0 0 10px;display:inline-block;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75)">✦ New Feature</p>
-                  <h1 style="margin:0 0 12px;color:#ffffff;font-size:28px;font-weight:900;line-height:1.15">Spin the wheel.<br>Win real prizes.</h1>
-                  <p style="margin:0;color:rgba(255,255,255,0.75);font-size:14px;line-height:1.6">Register free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes.</p>
                 </td>
               </tr>
             </table>
