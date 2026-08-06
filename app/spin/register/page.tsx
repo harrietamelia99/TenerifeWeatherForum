@@ -209,6 +209,18 @@ export default function SpinRegisterPage() {
               >
                 {loading ? "Creating account…" : "Create Account & Play"}
               </button>
+
+              <p className="text-center text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+                By creating an account you agree to our{" "}
+                <a href="/terms#lucky-spin" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  Terms &amp; Conditions
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  Privacy Policy
+                </a>.
+                You must be 18 or over to enter prize promotions.
+              </p>
             </form>
 
             <p className="text-center text-sm mt-4" style={{ color: "rgba(255,255,255,0.4)" }}>

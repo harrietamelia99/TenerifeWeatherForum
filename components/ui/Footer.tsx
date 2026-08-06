@@ -114,12 +114,18 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <p className="text-white/40 text-xs">
               © {new Date().getFullYear()} Tenerife Weather Forum. All rights reserved.
             </p>
             <Link href="/privacy" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
               Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
+              Terms &amp; Conditions
+            </Link>
+            <Link href="/terms#lucky-spin" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
+              Lucky Spin T&amp;Cs
             </Link>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">

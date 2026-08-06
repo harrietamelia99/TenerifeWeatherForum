@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       >
         <p className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-3">Legal</p>
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">Privacy Policy</h1>
-        <p className="text-white/70 text-sm">Last updated: June 2026</p>
+        <p className="text-white/70 text-sm">Last updated: August 2026</p>
       </div>
 
       {/* Content */}
@@ -48,7 +48,8 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="What data we collect and why">
-          <p><strong style={{ color: "var(--color-deep)" }}>Email address</strong> — if you subscribe to our newsletter, we store your email address and your subscription preferences (daily digest and/or monthly newsletter). This is used solely to send you the emails you signed up for. You can unsubscribe at any time via the link in any email.</p>
+          <p><strong style={{ color: "var(--color-deep)" }}>Email address (newsletter)</strong> — if you subscribe to our newsletter, we store your email address and your subscription preferences (daily digest and/or monthly newsletter). This is used solely to send you the emails you signed up for. You can unsubscribe at any time via the link in any email.</p>
+          <p><strong style={{ color: "var(--color-deep)" }}>Lucky Spin accounts</strong> — if you register for a Lucky Spin account, we store your email address, a chosen display name (optional), a securely hashed version of your password, your spin history, and your points total. Your display name (or email address if no display name is set) is displayed publicly on the monthly leaderboard. We do not store your password in plain text. You may request deletion of your account at any time by emailing <a href="mailto:hello@tenerifeweatherforum.com" className="underline hover:opacity-80" style={{ color: "var(--color-mid)" }}>hello@tenerifeweatherforum.com</a>.</p>
           <p><strong style={{ color: "var(--color-deep)" }}>Analytics data</strong> — we use Google Analytics to understand how visitors use the site (pages visited, time on site, device type, approximate location). This data is anonymised and aggregated. No personally identifiable information is shared with Google.</p>
           <p><strong style={{ color: "var(--color-deep)" }}>Cookies</strong> — we use cookies to remember your cookie consent preference (stored locally in your browser) and to support Google Analytics. We do not use advertising or tracking cookies beyond these.</p>
         </Section>
