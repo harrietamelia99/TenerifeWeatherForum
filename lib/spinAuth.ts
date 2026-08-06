@@ -38,8 +38,8 @@ export const spinAuthOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
 
   pages: {
-    signIn: "/preview/spin/login",
-    error:  "/preview/spin/login",
+    signIn: "/spin/login",
+    error:  "/spin/login",
   },
 
   callbacks: {

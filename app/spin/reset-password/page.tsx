@@ -22,7 +22,7 @@ function ResetPasswordForm() {
         <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.5)" }}>
           This link is missing a reset token.
         </p>
-        <Link href="/preview/spin/forgot-password" className="text-sm font-semibold" style={{ color: "#fbbf24" }}>
+        <Link href="/spin/forgot-password" className="text-sm font-semibold" style={{ color: "#fbbf24" }}>
           Request a new link →
         </Link>
       </div>
@@ -47,7 +47,7 @@ function ResetPasswordForm() {
     const data = await res.json();
     if (res.ok) {
       setStatus("done");
-      setTimeout(() => router.push("/preview/spin/login"), 2500);
+      setTimeout(() => router.push("/spin/login"), 2500);
     } else {
       setMessage(data.error ?? "Something went wrong. Please try again.");
       setStatus("error");
@@ -142,7 +142,7 @@ export default function ResetPasswordPage() {
     >
       {/* Top bar */}
       <div className="flex items-center px-4 py-3 flex-shrink-0">
-        <Link href="/preview/spin/login" className="btn-ghost text-sm py-1.5 px-4">
+        <Link href="/spin/login" className="btn-ghost text-sm py-1.5 px-4">
           ← Back to sign in
         </Link>
       </div>

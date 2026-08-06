@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
     >
       {/* Top bar */}
       <div className="flex items-center px-4 py-3 flex-shrink-0">
-        <Link href="/preview/spin/login" className="btn-ghost text-sm py-1.5 px-4">
+        <Link href="/spin/login" className="btn-ghost text-sm py-1.5 px-4">
           ← Back to sign in
         </Link>
       </div>
@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
                   you&apos;ll receive a reset link shortly. It expires in 1 hour.
                 </p>
                 <Link
-                  href="/preview/spin/login"
+                  href="/spin/login"
                   className="inline-block mt-6 text-sm font-semibold hover:opacity-80"
                   style={{ color: "#fbbf24" }}
                 >

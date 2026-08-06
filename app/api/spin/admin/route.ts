@@ -64,7 +64,7 @@ function winnerEmailHtml(opts: {
 
         <!-- CTA -->
         <tr><td style="padding:0 40px 40px;text-align:center">
-          <a href="https://www.tenerifeweatherforum.com/preview/spin"
+          <a href="https://www.tenerifeweatherforum.com/spin"
             style="display:inline-block;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#0c0a08;font-weight:900;font-size:15px;text-decoration:none;padding:14px 32px;border-radius:12px;letter-spacing:0.5px">
             Spin Again Next Month →
           </a>
@@ -142,7 +142,7 @@ function kevinEmailHtml(opts: {
 
         <!-- Admin link -->
         <tr><td style="padding:0 40px 40px;text-align:center">
-          <a href="https://www.tenerifeweatherforum.com/preview/spin/admin"
+          <a href="https://www.tenerifeweatherforum.com/spin/admin"
             style="display:inline-block;background:#0c2340;color:#fbbf24;font-weight:700;font-size:14px;text-decoration:none;padding:12px 28px;border-radius:10px">
             Open Admin Panel →
           </a>

@@ -170,7 +170,7 @@ export default function SpinDemoPage() {
           </p>
           <h1 className="text-base sm:text-lg font-black" style={{ color:"#fbbf24" }}>Lucky Spin ✦</h1>
         </div>
-        <a href="/preview/spin"
+        <a href="/spin"
           className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold"
           style={{ background:"rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.6)", border:"1px solid rgba(255,255,255,0.12)" }}>
           ← Live version

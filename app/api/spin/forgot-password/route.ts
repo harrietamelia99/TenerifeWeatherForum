@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         .update({ reset_token: token, reset_token_expires_at: expiresAt })
         .eq("id", user.id);
 
-      const resetUrl = `${SITE_URL}/preview/spin/reset-password?token=${token}`;
+      const resetUrl = `${SITE_URL}/spin/reset-password?token=${token}`;
       const name     = user.display_name ?? "there";
 
       await resend.emails.send({

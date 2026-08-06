@@ -390,7 +390,7 @@ function TopBar({ displayName }: { displayName: string }) {
         <div className="hidden sm:flex items-center gap-3">
           <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{displayName}</span>
           <button
-            onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
+            onClick={() => signOut({ callbackUrl: "/spin/login" })}
             style={{ ...pillBase, background: "rgba(255,255,255,0.07)" }}>
             Sign out
           </button>
@@ -439,7 +439,7 @@ function TopBar({ displayName }: { displayName: string }) {
             Signed in as <strong style={{ color: "#fbbf24" }}>{displayName}</strong>
           </span>
           <button
-            onClick={() => signOut({ callbackUrl: "/preview/spin/login" })}
+            onClick={() => signOut({ callbackUrl: "/spin/login" })}
             style={{ ...pillBase, background: "rgba(239,68,68,0.12)", borderColor: "rgba(239,68,68,0.3)", color: "#fca5a5" }}>
             Sign out
           </button>
@@ -486,7 +486,7 @@ export default function SpinPage() {
   }, []);
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/preview/spin/login");
+    if (status === "unauthenticated") router.push("/spin/login");
     else if (status === "authenticated") fetchUserData();
   }, [status, router, fetchUserData]);
 

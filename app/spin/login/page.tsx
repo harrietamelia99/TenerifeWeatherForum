@@ -27,7 +27,7 @@ export default function SpinLoginPage() {
       setError("Invalid email or password. Please try again.");
       setLoading(false);
     } else {
-      router.push("/preview/spin");
+      router.push("/spin");
     }
   }
 
@@ -132,7 +132,7 @@ export default function SpinLoginPage() {
 
             <p className="text-center text-sm mt-4" style={{ color: "rgba(255,255,255,0.4)" }}>
               <Link
-                href="/preview/spin/forgot-password"
+                href="/spin/forgot-password"
                 className="hover:opacity-80"
                 style={{ color: "rgba(255,255,255,0.5)" }}
               >
@@ -143,7 +143,7 @@ export default function SpinLoginPage() {
             <p className="text-center text-sm mt-3" style={{ color: "rgba(255,255,255,0.4)" }}>
               No account?{" "}
               <Link
-                href="/preview/spin/register"
+                href="/spin/register"
                 className="font-semibold hover:opacity-80"
                 style={{ color: "#fbbf24" }}
               >

@@ -279,7 +279,7 @@ add_body(
 p_link = doc.add_paragraph()
 p_link.paragraph_format.space_before = Pt(2)
 p_link.paragraph_format.space_after  = Pt(8)
-r_link = p_link.add_run("https://www.tenerifeweatherforum.com/preview/spin/admin")
+r_link = p_link.add_run("https://www.tenerifeweatherforum.com/spin/admin")
 r_link.font.bold  = True
 r_link.font.size  = Pt(10.5)
 r_link.font.color.rgb = NAVY
@@ -319,7 +319,7 @@ add_body("You can view and test the full game here:")
 p_spin = doc.add_paragraph()
 p_spin.paragraph_format.space_before = Pt(2)
 p_spin.paragraph_format.space_after  = Pt(8)
-r_spin = p_spin.add_run("https://www.tenerifeweatherforum.com/preview/spin")
+r_spin = p_spin.add_run("https://www.tenerifeweatherforum.com/spin")
 r_spin.font.bold  = True
 r_spin.font.size  = Pt(10.5)
 r_spin.font.color.rgb = NAVY

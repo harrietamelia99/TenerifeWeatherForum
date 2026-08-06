@@ -49,7 +49,7 @@ const features: { label: string; href: string; external?: boolean }[] = [
   { label: "Airport and transport updates",                           href: "/resources" },
   { label: "Excursions and things to do",                             href: "/excursions" },
   { label: "Live webcams",                                            href: "/webcams" },
-  { label: "Lucky Spin — win prizes daily",                           href: "/preview/spin" },
+  { label: "Lucky Spin — win prizes daily",                           href: "/spin" },
   { label: "Join 37,000 community members on our socials", href: "https://www.facebook.com/groups/1826293804889186", external: true },
 ];
 
@@ -283,7 +283,7 @@ export default function HomePage() {
                 </ul>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
                   <Link
-                    href="/preview/spin"
+                    href="/spin"
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
                     style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 24px rgba(247,173,25,0.45)" }}
                   >

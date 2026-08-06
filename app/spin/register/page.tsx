@@ -54,9 +54,9 @@ export default function SpinRegisterPage() {
       });
 
       if (result?.error) {
-        router.push("/preview/spin/login");
+        router.push("/spin/login");
       } else {
-        router.push("/preview/spin");
+        router.push("/spin");
       }
     } catch {
       setError("Something went wrong. Please try again.");
@@ -78,7 +78,7 @@ export default function SpinRegisterPage() {
       <div className="flex items-center justify-between px-4 py-3 flex-shrink-0">
         <a href="/" className="btn-ghost text-sm py-1.5 px-4">← Return to site</a>
         <Link
-          href="/preview/spin/login"
+          href="/spin/login"
           className="text-sm font-semibold hover:opacity-80"
           style={{ color: "#fbbf24" }}
         >
@@ -214,7 +214,7 @@ export default function SpinRegisterPage() {
             <p className="text-center text-sm mt-4" style={{ color: "rgba(255,255,255,0.4)" }}>
               Already have an account?{" "}
               <Link
-                href="/preview/spin/login"
+                href="/spin/login"
                 className="font-semibold hover:opacity-80"
                 style={{ color: "#fbbf24" }}
               >
