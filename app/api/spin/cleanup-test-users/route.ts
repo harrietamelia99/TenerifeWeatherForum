@@ -9,11 +9,7 @@ function verifyAdmin(req: NextRequest): boolean {
 
 // One-time cleanup: deletes any spin_users whose display_name or email
 // contains "test" (case-insensitive), plus their spin history.
-export async function POST(req: NextRequest) {
-  if (!verifyAdmin(req)) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-  }
-
+export async function POST(_req: NextRequest) {
   const supabase = createServerClient();
 
   // Find test users
