@@ -202,7 +202,7 @@ export async function GET(req: NextRequest) {
   const { data: subscribers, error } = await supabase
     .from("subscribers")
     .select("email")
-    .eq("active", true);
+    .eq("daily_digest", true);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!subscribers?.length) return NextResponse.json({ ok: true, sent: 0, message: "No active subscribers." });
