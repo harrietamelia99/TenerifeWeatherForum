@@ -189,9 +189,12 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET — send to ALL subscribers (requires admin password)
+// GET — send to ALL subscribers (requires admin password or one-time launch token)
 export async function GET(req: NextRequest) {
-  if (!verifyAdmin(req)) {
+  const launchToken = req.nextUrl.searchParams.get("token");
+  const validToken  = process.env.LAUNCH_EMAIL_TOKEN;
+  const tokenOk     = validToken && launchToken === validToken;
+  if (!verifyAdmin(req) && !tokenOk) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
