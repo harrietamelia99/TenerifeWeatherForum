@@ -480,8 +480,13 @@ export default function SpinPage() {
 
   const fetchUserData = useCallback(async () => {
     try {
-      const res = await fetch("/api/spin/me");
-      if (res.ok) setUserData(await res.json());
+      const res = await fetch("/api/spin/me", { cache: "no-store" });
+      if (res.ok) {
+        setUserData(await res.json());
+      } else {
+        // Account no longer exists — sign out and redirect to login
+        await signOut({ callbackUrl: "/spin/login" });
+      }
     } finally { setLoading(false); }
   }, []);
 
