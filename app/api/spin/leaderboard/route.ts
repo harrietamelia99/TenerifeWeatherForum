@@ -38,16 +38,25 @@ export async function GET() {
 
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-    return NextResponse.json({
-      currentMonth,
-      leaderboard,
-      previousWinners: (prevWinners ?? []).map((w) => ({
-        rank:        w.rank,
-        displayName: w.display_name ?? w.email?.split("@")[0] ?? "Anonymous",
-        points:      w.points,
-        month:       w.month,
-      })),
-    });
+    return NextResponse.json(
+      {
+        currentMonth,
+        leaderboard,
+        previousWinners: (prevWinners ?? []).map((w) => ({
+          rank:        w.rank,
+          displayName: w.display_name ?? w.email?.split("@")[0] ?? "Anonymous",
+          points:      w.points,
+          month:       w.month,
+        })),
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "CDN-Cache-Control": "no-store",
+          "Vercel-CDN-Cache-Control": "no-store",
+        },
+      }
+    );
   } catch (err) {
     console.error("[api/spin/leaderboard]", err);
     return NextResponse.json({ error: "Failed to load leaderboard." }, { status: 500 });
