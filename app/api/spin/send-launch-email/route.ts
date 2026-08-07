@@ -189,8 +189,11 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET — send to ALL subscribers
-export async function GET(_req: NextRequest) {
+// GET — send to ALL subscribers (requires admin password)
+export async function GET(req: NextRequest) {
+  if (!verifyAdmin(req)) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
 
   const supabase = createServerClient();
   const { data: subscribers, error } = await supabase
