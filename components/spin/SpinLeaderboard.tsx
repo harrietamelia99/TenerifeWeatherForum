@@ -32,7 +32,7 @@ export default function SpinLeaderboard() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/spin/leaderboard");
+      const res = await fetch("/api/spin/leaderboard", { cache: "no-store" });
       if (res.ok) setData(await res.json());
     } finally {
       setLoading(false);
