@@ -139,7 +139,12 @@ export function dailyDigestHtml(data: DigestData): string {
     ${warningsBlock}
     ${forecastBlock}
 
-    <a href="${SITE_URL}/weather" style="display:block;text-align:center;padding:14px 24px;background:#053f5c;color:#ffffff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;margin-bottom:8px;">View Full Forecast →</a>
+    <div style="margin-top:24px;background:linear-gradient(135deg,#1a3a5c,#053f5c);border-radius:12px;padding:20px 24px;text-align:center;">
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.55);">Lucky Spin</p>
+      <p style="margin:0 0 14px;font-size:16px;font-weight:800;color:#ffffff;">🎰 Claim your free daily spin</p>
+      <a href="${SITE_URL}/spin" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#0c0a08;text-decoration:none;border-radius:50px;font-size:14px;font-weight:900;letter-spacing:0.5px;">Spin Now →</a>
+      <p style="margin:10px 0 0;font-size:11px;color:rgba(255,255,255,0.4);">Free to play · One spin every 24 hours · Win real prizes</p>
+    </div>
   `;
 
   const html = emailWrapper(
