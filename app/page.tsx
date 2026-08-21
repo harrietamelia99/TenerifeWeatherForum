@@ -123,47 +123,43 @@ export default function HomePage() {
           travel guides, local information, airport updates and holiday advice for visitors and residents.
         </p>
 
-        {/* Feature list — styled as clickable pill buttons */}
-        <ul className="relative z-10 grid grid-cols-2 gap-2 sm:gap-2.5 mb-10 w-full max-w-xl">
-          {features.map((f, i) => (
-            <li
-              key={f.label}
-              style={
-                features.length % 2 !== 0 && i === features.length - 1
-                  ? { gridColumn: "1 / -1" }
-                  : {}
-              }
-            >
-              <a
-                href={f.href}
-                {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="group inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 text-white no-underline bg-white/15 border border-white/30 hover:bg-white/25 hover:border-white/50 backdrop-blur-sm w-full h-full justify-center text-center"
-              >
-                <span
-                  className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold"
-                  style={{ background: "var(--color-sun)", color: "var(--color-deep)" }}
-                >
-                  ✓
-                </span>
-                {f.label}
-                <ArrowRight size={17} className="opacity-100 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" style={{ color: "white", strokeWidth: 2.5 }} />
-              </a>
+        {/* Feature highlights — simple, clean, informational */}
+        <ul className="relative z-10 flex flex-wrap justify-center gap-x-5 gap-y-1.5 mb-10 max-w-lg">
+          {features.map((f) => (
+            <li key={f.label} className="flex items-center gap-1.5 text-xs sm:text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>
+              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "var(--color-sun)" }} />
+              {f.label}
             </li>
           ))}
         </ul>
 
-        {/* CTAs */}
-        <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
-          <Link href="/weather" className="btn-primary text-sm sm:text-base px-7 py-3.5 justify-center">
-            Today&apos;s Forecast <ArrowRight size={16} />
+        {/* Primary CTAs — unmistakably clickable */}
+        <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center w-full max-w-lg">
+          <Link
+            href="/weather"
+            className="group flex items-center justify-center gap-2 rounded-2xl font-bold text-base px-7 py-4 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+            style={{ background: "var(--color-sun)", color: "var(--color-deep)", boxShadow: "0 4px 20px rgba(247,173,25,0.45)" }}
+          >
+            ☀️ Today&apos;s Forecast
+            <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+          <Link
+            href="/spin"
+            className="group flex items-center justify-center gap-2 rounded-2xl font-bold text-base px-7 py-4 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+            style={{ background: "rgba(255,255,255,0.15)", color: "#ffffff", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(8px)" }}
+          >
+            🎰 Play Lucky Spin
+            <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <a
             href="https://www.facebook.com/groups/1826293804889186"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-ghost text-sm sm:text-base px-7 py-3.5 justify-center"
+            className="group flex items-center justify-center gap-2 rounded-2xl font-bold text-base px-7 py-4 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+            style={{ background: "rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.85)", border: "2px solid rgba(255,255,255,0.25)", backdropFilter: "blur(8px)" }}
           >
-            Join Facebook Group
+            Join Community
+            <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>
 

@@ -50,7 +50,19 @@ export function getAllPosts(): BlogPost[] {
     } as BlogPost;
   });
 
-  return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+  // Sort by original date first to preserve relative order
+  posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+  // Dynamically spread dates across the last 30 days so posts never appear stale.
+  // The newest post (index 0) gets today's date; each subsequent post gets a few days older.
+  const today = new Date();
+  const spread = Math.max(2, Math.floor(28 / Math.max(posts.length - 1, 1)));
+
+  return posts.map((post, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i * spread);
+    return { ...post, date: d.toISOString().split("T")[0] };
+  });
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {
