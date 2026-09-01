@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/subscriber-summary",
       "schedule": "0 9 1 * *"
+    },
+    {
+      "path": "/api/cron/spin-monthly-reset",
+      "schedule": "0 0 1 * *"
     }
   ]
 }
