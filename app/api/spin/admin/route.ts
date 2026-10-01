@@ -1,10 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { resend, FROM_EMAIL } from "@/lib/resend";
+import bcrypt from "bcryptjs";
 
-function verifyAdmin(req: NextRequest): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD_WHEEL;
+async function verifyAdmin(req: NextRequest): Promise<boolean> {
   const provided = req.headers.get("x-admin-password");
+  if (!provided) return false;
+
+  try {
+    // Check Supabase for a stored password hash first (set via the reset flow)
+    const supabase = createServerClient();
+    const { data } = await supabase
+      .from("spin_admin")
+      .select("password_hash")
+      .eq("id", 1)
+      .single();
+
+    if (data?.password_hash) {
+      return bcrypt.compare(provided, data.password_hash);
+    }
+  } catch {
+    // If Supabase check fails, fall through to env var
+  }
+
+  // Fall back to env var (original behaviour)
+  const adminPassword = process.env.ADMIN_PASSWORD_WHEEL;
   return !!adminPassword && provided === adminPassword;
 }
 
@@ -162,7 +182,7 @@ function kevinEmailHtml(opts: {
 
 // ─── GET /api/spin/admin?action=users|leaderboard|winners ─────────────────────
 export async function GET(req: NextRequest) {
-  if (!verifyAdmin(req)) {
+  if (!await verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
@@ -207,7 +227,7 @@ export async function GET(req: NextRequest) {
 
 // ─── POST /api/spin/admin ─────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  if (!verifyAdmin(req)) {
+  if (!await verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
