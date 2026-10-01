@@ -43,6 +43,7 @@ export default function SpinAdminPage() {
   const [adjustUser, setAdjustUser]   = useState<SpinUser | null>(null);
   const [adjustDelta, setAdjustDelta] = useState("");
   const [adjustMsg, setAdjustMsg]     = useState<string | null>(null);
+  const [showResetHelp, setShowResetHelp] = useState(false);
 
   const headers = { "x-admin-password": password };
 
@@ -177,6 +178,28 @@ export default function SpinAdminPage() {
               Enter
             </button>
           </form>
+          <div className="mt-5 text-center">
+            <button
+              type="button"
+              onClick={() => setShowResetHelp(!showResetHelp)}
+              className="text-xs underline transition-opacity hover:opacity-80"
+              style={{ color: "rgba(255,255,255,0.35)" }}
+            >
+              Forgotten the password?
+            </button>
+            {showResetHelp && (
+              <div className="mt-3 rounded-xl px-4 py-3 text-left text-xs leading-relaxed" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <p className="font-semibold mb-1.5" style={{ color: "rgba(255,255,255,0.75)" }}>How to reset the admin password:</p>
+                <ol className="list-decimal list-inside space-y-1">
+                  <li>Go to your <strong style={{ color: "rgba(255,255,255,0.7)" }}>Vercel</strong> project dashboard</li>
+                  <li>Click <strong style={{ color: "rgba(255,255,255,0.7)" }}>Settings → Environment Variables</strong></li>
+                  <li>Find <code style={{ background: "rgba(255,255,255,0.1)", padding: "1px 4px", borderRadius: "3px" }}>ADMIN_PASSWORD_WHEEL</code></li>
+                  <li>Click the three dots → <strong style={{ color: "rgba(255,255,255,0.7)" }}>Edit</strong> → set a new password</li>
+                  <li>Go to <strong style={{ color: "rgba(255,255,255,0.7)" }}>Deployments</strong> → <strong style={{ color: "rgba(255,255,255,0.7)" }}>Redeploy</strong></li>
+                </ol>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
