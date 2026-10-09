@@ -66,6 +66,7 @@ export default function SpinRegisterPage() {
 
   return (
     <div
+      className="pb-[calc(64px_+_env(safe-area-inset-bottom))] lg:pb-0"
       style={{
         minHeight: "100dvh",
         display: "flex",
@@ -235,9 +236,6 @@ export default function SpinRegisterPage() {
             </p>
           </div>
 
-          <p className="text-center text-xs mt-4 pb-4" style={{ color: "rgba(255,255,255,0.2)" }}>
-            Preview build · not publicly linked
-          </p>
         </div>
       </div>
     </div>

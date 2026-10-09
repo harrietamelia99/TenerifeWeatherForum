@@ -65,10 +65,9 @@ export default function HomePage() {
           HERO
       ══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative flex flex-col items-center justify-center text-center text-white overflow-hidden px-6"
+        className="relative flex flex-col items-center justify-center text-center text-white overflow-hidden px-6 min-h-[72vh] md:min-h-[92vh]"
         style={{
-          minHeight: "92vh",
-          paddingTop: "clamp(140px, 18vw, 200px)",
+          paddingTop: "clamp(100px, 18vw, 200px)",
           paddingBottom: "80px",
         }}
         aria-labelledby="hero-heading"
@@ -156,7 +155,7 @@ export default function HomePage() {
               <a
                 href={f.href}
                 {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="group inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 text-white no-underline bg-white/15 border border-white/30 hover:bg-white/25 hover:border-white/50 backdrop-blur-sm w-full h-full justify-center text-center"
+                className="group inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold motion-safe:transition-all motion-safe:duration-200 active:scale-95 text-white no-underline bg-white/20 border border-white/35 hover:bg-white/30 hover:border-white/55 w-full h-full justify-center text-center"
               >
                 <span
                   className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold"

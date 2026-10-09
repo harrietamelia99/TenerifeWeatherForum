@@ -27,8 +27,9 @@ function useWheelSize() {
       } else {
         // Mobile stacked layout (no main pt-10/pb-4):
         //   topBar(48) + title(60) + bottomCard(~200) + leaderboardHeader(55) + gaps(25) ≈ 388
-        // Add ~32px for PixiJS cssTopPad overhead → budget 360 total chrome.
-        const byHeight = Math.max(180, vh - 380);
+        // Add ~32px for PixiJS cssTopPad overhead → 380 chrome total.
+        // Add 64px for the fixed BottomNav bar (container height is vh - 64).
+        const byHeight = Math.max(180, vh - 380 - 64);
         const byWidth  = Math.min(vw - 32, 460); // 16px side padding, cap for tablets
         setSize(Math.min(byWidth, byHeight));
       }
@@ -626,8 +627,13 @@ export default function SpinPage() {
     <>
       <TropicalBackground />
 
-      {/* Full-screen flex column */}
-      <div className="relative flex flex-col" style={{ zIndex: 1, height: "100dvh", overflow: "hidden" }}>
+      {/* Full-screen flex column
+          Mobile: shrink by BottomNav height so it doesn't overlap the bar.
+          Desktop (lg+): full 100dvh — BottomNav is hidden at lg. */}
+      <div
+        className="relative flex flex-col h-[calc(100dvh_-_64px_-_env(safe-area-inset-bottom))] lg:h-dvh"
+        style={{ zIndex: 1, overflow: "hidden" }}
+      >
         {modal && <WinModal result={modal} onDismiss={() => setModal(null)} />}
 
         {/* Top bar */}

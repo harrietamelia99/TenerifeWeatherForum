@@ -132,6 +132,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <div
+      className="pb-[calc(64px_+_env(safe-area-inset-bottom))] lg:pb-0"
       style={{
         minHeight: "100dvh",
         display: "flex",

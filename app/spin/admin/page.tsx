@@ -242,7 +242,7 @@ export default function SpinAdminPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <h1 className="text-xl font-black" style={{ color: "#fbbf24" }}>Lucky Spin Admin</h1>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>Tenerife Weather Forum · Preview</p>
+            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>Tenerife Weather Forum</p>
           </div>
           <div className="sm:text-right">
             <button

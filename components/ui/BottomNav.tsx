@@ -4,8 +4,9 @@
  * BottomNav — mobile / tablet sticky bottom navigation (< 1024px only).
  *
  * 4 items from the config array below (label, href, icon).
- * Hidden on /spin/* and /admin/* routes — spin is a full-screen game
- * with its own chrome, admin is internal tooling.
+ * Hidden only on /spin/admin and /admin routes.
+ * All other /spin/* pages (game, login, register, forgot-password, reset-password)
+ * show the bar, with Lucky Spin marked as the active item.
  * Uses aria-current="page" and visible focus styles for accessibility.
  */
 
@@ -22,33 +23,33 @@ const NAV_ITEMS: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Webcam",      href: "/webcams",     icon: Camera    },
 ];
 
-const HIDDEN_PREFIXES = ["/spin/", "/spin/admin", "/admin"];
+// Only hide on internal admin routes — all public spin pages get the bar
+const HIDDEN_PREFIXES = ["/spin/admin", "/admin"];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Hide on spin sub-routes (game, login, register, admin) and admin routes
-  const hidden = HIDDEN_PREFIXES.some((p) => pathname.startsWith(p));
+  const hidden = HIDDEN_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
   if (hidden) return null;
 
   return (
     <nav
       aria-label="Main"
-      // lg:hidden — desktop keeps its header nav unchanged
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex"
       style={{
-        background: "linear-gradient(135deg, #429ebd 0%, #053f5c 100%)",
-        boxShadow: "0 -1px 0 rgba(255,255,255,0.12), 0 -8px 32px rgba(0,0,0,0.18)",
-        // Clear the iPhone home indicator
+        // Vibrant royal blue — WCAG AA contrast ≥ 4.5:1 with white text
+        background: "#1565c0",
+        borderTop: "1px solid rgba(255,255,255,0.15)",
+        boxShadow: "0 -4px 20px rgba(0,0,0,0.25)",
         paddingBottom: "env(safe-area-inset-bottom)",
         height: "calc(64px + env(safe-area-inset-bottom))",
       }}
     >
       {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
-        // /spin exact match is active only on /spin itself
+        // Lucky Spin is active on /spin and ALL /spin/* sub-routes
         const isActive =
           href === "/spin"
-            ? pathname === "/spin"
+            ? pathname === "/spin" || pathname.startsWith("/spin/")
             : pathname === href || pathname.startsWith(href + "/");
 
         return (
@@ -57,19 +58,33 @@ export default function BottomNav() {
             href={href}
             aria-current={isActive ? "page" : undefined}
             className={[
-              // Tap target ≥ 44px
-              "flex-1 flex flex-col items-center justify-center gap-0.5",
+              "relative flex-1 flex flex-col items-center justify-center gap-0.5",
               "transition-colors duration-150",
-              // Visible keyboard focus
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white",
-              "rounded-none", // let focus ring flush with bar
+              "rounded-none",
             ].join(" ")}
             style={{
               color: "#ffffff",
-              opacity: isActive ? 1 : 0.72,
+              opacity: isActive ? 1 : 0.65,
               minHeight: "44px",
             }}
           >
+            {/* Active indicator — thin white bar at top of item */}
+            {isActive && (
+              <span
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: "20%",
+                  right: "20%",
+                  height: "3px",
+                  borderRadius: "0 0 4px 4px",
+                  background: "#ffffff",
+                }}
+              />
+            )}
+
             <Icon
               size={22}
               strokeWidth={isActive ? 2.5 : 1.75}
