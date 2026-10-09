@@ -251,7 +251,7 @@ export default function HomePage() {
           <div
             className="relative rounded-3xl overflow-hidden flex flex-col lg:flex-row items-center"
             style={{
-              background: "linear-gradient(135deg, #f8feff 0%, #edf8ff 50%, #f0f9ff 100%)",
+              background: "#ffffff",
               border: "1px solid var(--color-border)",
               boxShadow: "0 4px 32px rgba(5,63,92,0.08), 0 1px 4px rgba(5,63,92,0.05)",
             }}
