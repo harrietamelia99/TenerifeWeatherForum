@@ -37,10 +37,8 @@ export default function BottomNav() {
       aria-label="Main"
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex"
       style={{
-        // Vibrant royal blue — WCAG AA contrast ≥ 4.5:1 with white text
-        background: "#1565c0",
-        borderTop: "1px solid rgba(255,255,255,0.15)",
-        boxShadow: "0 -4px 20px rgba(0,0,0,0.25)",
+        background: "linear-gradient(135deg, #429ebd 0%, #053f5c 100%)",
+        boxShadow: "0 -1px 0 rgba(255,255,255,0.12), 0 -8px 32px rgba(0,0,0,0.18)",
         paddingBottom: "env(safe-area-inset-bottom)",
         height: "calc(64px + env(safe-area-inset-bottom))",
       }}
