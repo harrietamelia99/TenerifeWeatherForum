@@ -7,6 +7,7 @@ import Footer from "@/components/ui/Footer";
 import WeatherTicker from "@/components/ui/WeatherTicker";
 import ForecastModal from "@/components/ui/ForecastModal";
 import CookieBanner from "@/components/ui/CookieBanner";
+import BottomNav from "@/components/ui/BottomNav";
 
 const GA_ID = "G-4BK6V9K96C";
 
@@ -70,10 +71,19 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <WeatherTicker />
         <Navbar />
-        <main>{children}</main>
+        {/*
+          pb-[calc(64px+env(safe-area-inset-bottom))] gives the bottom nav
+          clearance on mobile/tablet. lg:pb-0 removes it on desktop where the
+          bottom nav is hidden. The spin page sets overflow:hidden on the body
+          itself so the extra padding is never visible there.
+        */}
+        <main className="lg:pb-0 pb-[calc(64px+env(safe-area-inset-bottom))]">
+          {children}
+        </main>
         <Footer />
         <ForecastModal />
         <CookieBanner />
+        <BottomNav />
       </body>
     </html>
   );

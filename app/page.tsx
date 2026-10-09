@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SubscribeForm from "@/components/ui/SubscribeForm";
 import ScrollEngagement from "@/components/ui/ScrollEngagement";
 import SpinPromoWheel from "@/components/ui/SpinPromoWheel";
@@ -69,25 +70,43 @@ export default function HomePage() {
           minHeight: "92vh",
           paddingTop: "clamp(140px, 18vw, 200px)",
           paddingBottom: "80px",
-          background: "linear-gradient(160deg, #9fe7f5 0%, #429ebd 45%, #053f5c 100%)",
         }}
         aria-labelledby="hero-heading"
       >
-        {/* Floating blobs */}
+        {/* ── Background photo — desktop ── */}
+        <div className="absolute inset-0 hidden md:block" aria-hidden="true">
+          <Image
+            src="/images/hero-coastline.jpg"
+            alt=""
+            fill
+            priority
+            quality={85}
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: "center 40%" }}
+          />
+        </div>
+
+        {/* ── Background photo — mobile ── */}
+        <div className="absolute inset-0 block md:hidden" aria-hidden="true">
+          <Image
+            src="/images/hero-coastline-mobile.jpg"
+            alt=""
+            fill
+            priority
+            quality={85}
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: "center 50%" }}
+          />
+        </div>
+
+        {/* Gradient overlay — keeps text readable over the photo */}
         <div
-          className="absolute top-[-10%] left-[-5%] w-[50vw] h-[50vw] max-w-2xl rounded-full opacity-25 animate-float"
-          style={{ background: "var(--color-sky)", filter: "blur(80px)" }}
+          className="absolute inset-0"
           aria-hidden="true"
-        />
-        <div
-          className="absolute bottom-[5%] right-[-8%] w-[45vw] h-[45vw] max-w-xl rounded-full opacity-20"
-          style={{ background: "#053f5c", filter: "blur(80px)", animation: "float 12s ease-in-out 3s infinite" }}
-          aria-hidden="true"
-        />
-        <div
-          className="absolute top-[40%] right-[15%] w-[30vw] h-[30vw] max-w-lg rounded-full opacity-15"
-          style={{ background: "var(--color-sun)", filter: "blur(70px)", animation: "float 14s ease-in-out 6s infinite" }}
-          aria-hidden="true"
+          style={{
+            background:
+              "linear-gradient(160deg, rgba(2,40,70,0.72) 0%, rgba(5,63,92,0.55) 45%, rgba(2,25,55,0.75) 100%)",
+          }}
         />
 
         {/* Live indicator */}
@@ -106,7 +125,7 @@ export default function HomePage() {
           style={{
             fontSize: "clamp(3rem, 8vw, 6rem)",
             maxWidth: "820px",
-            textShadow: "0 2px 16px rgba(5,63,92,0.3)",
+            textShadow: "0 2px 20px rgba(0,0,0,0.4)",
           }}
         >
           Tenerife{" "}
@@ -117,14 +136,14 @@ export default function HomePage() {
         {/* Description */}
         <p
           className="relative z-10 text-base sm:text-lg leading-relaxed mb-8 max-w-2xl"
-          style={{ color: "rgba(255,255,255,0.8)" }}
+          style={{ color: "rgba(255,255,255,0.85)", textShadow: "0 1px 8px rgba(0,0,0,0.3)" }}
         >
           An independent Tenerife weather and travel community providing daily forecasts,
           travel guides, local information, airport updates and holiday advice for visitors and residents.
         </p>
 
-        {/* Feature list — styled as clickable pill buttons */}
-        <ul className="relative z-10 grid grid-cols-2 gap-2 sm:gap-2.5 mb-10 w-full max-w-xl">
+        {/* Feature list — hidden on mobile/tablet (bottom nav + menu replace these) */}
+        <ul className="hidden lg:grid relative z-10 grid-cols-2 gap-2 sm:gap-2.5 mb-10 w-full max-w-xl">
           {features.map((f, i) => (
             <li
               key={f.label}
@@ -152,8 +171,8 @@ export default function HomePage() {
           ))}
         </ul>
 
-        {/* CTAs */}
-        <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
+        {/* CTAs — hidden on mobile/tablet (bottom nav replaces these) */}
+        <div className="hidden lg:flex relative z-10 flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
           <Link href="/weather" className="btn-primary text-sm sm:text-base px-7 py-3.5 justify-center">
             Today&apos;s Forecast <ArrowRight size={16} />
           </Link>
@@ -227,71 +246,71 @@ export default function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════
-            LUCKY SPIN PROMO
+            LUCKY SPIN PROMO — premium clean card
         ════════════════════════════════════════════════════════════════ */}
         <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="spin-promo-heading">
-          {/* pb-0 so the wheel can bleed to the bottom edge */}
           <div
-            className="rounded-3xl relative"
+            className="relative rounded-3xl overflow-hidden flex flex-col lg:flex-row items-center"
             style={{
-              overflow: "hidden",
-              boxShadow: "0 8px 32px rgba(5,63,92,0.25), 0 2px 12px rgba(0,0,0,0.15)",
-              border: "1px solid rgba(159,231,245,0.3)",
+              background: "linear-gradient(135deg, #f8feff 0%, #edf8ff 50%, #f0f9ff 100%)",
+              border: "1px solid var(--color-border)",
+              boxShadow: "0 4px 32px rgba(5,63,92,0.08), 0 1px 4px rgba(5,63,92,0.05)",
             }}
           >
-            {/* Tenerife photo background */}
+            {/* Gold accent top border */}
             <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: "url('/images/tenerife-promo-bg.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-              aria-hidden="true"
-            />
-            {/* Turquoise overlay — lighter on left (wheel side), darker on right (text side) */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: "linear-gradient(105deg, rgba(5,63,92,0.55) 0%, rgba(5,63,92,0.72) 40%, rgba(5,40,75,0.88) 70%, rgba(5,40,75,0.93) 100%)",
-              }}
+              className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+              style={{ background: "linear-gradient(90deg, #f7ad19, #fbbf24, #f7ad19)" }}
               aria-hidden="true"
             />
 
-            <div className="relative z-10 flex flex-col lg:flex-row items-center">
+            {/* Wheel */}
+            <div className="flex-shrink-0 flex items-center justify-center pt-10 pb-2 lg:py-10 lg:pl-10 lg:pr-4">
+              <SpinPromoWheel />
+            </div>
 
-              {/* Wheel — vertically centred */}
-              <div className="flex-shrink-0 flex items-center justify-center py-8 px-6 lg:px-2 lg:pl-16 lg:py-10">
-                <SpinPromoWheel />
-              </div>
+            {/* Text */}
+            <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-12 pb-10 pt-4 lg:py-12 flex flex-col justify-center">
+              {/* Eyebrow */}
+              <p
+                className="text-xs font-bold uppercase tracking-widest mb-3"
+                style={{ color: "var(--color-sun)", letterSpacing: "0.12em" }}
+              >
+                ✦ Lucky Spin
+              </p>
 
-              {/* Text */}
-              <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-14 py-8 sm:py-10 lg:py-12 flex flex-col justify-center" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.45)" }}>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "rgba(251,191,36,0.2)", color: "#ffe066", border: "1px solid rgba(251,191,36,0.4)", textShadow: "none", boxShadow: "0 1px 6px rgba(0,0,0,0.2)" }}>
-                  ✨ New feature
-                </div>
-                <h2 id="spin-promo-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.4)" }}>
-                  Spin the wheel.<br />Win real prizes.
-                </h2>
-                <p className="text-sm sm:text-base leading-relaxed mb-5 max-w-md" style={{ color: "rgba(255,255,255,0.92)", textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
-                  Register for free and get one spin every day. Earn points, climb the monthly leaderboard and win prizes. Newsletter subscribers get a bonus spin every day.
-                </p>
-                <ul className="flex flex-col gap-2 mb-7 text-sm" style={{ color: "rgba(255,255,255,0.95)", textShadow: "0 1px 5px rgba(0,0,0,0.45)" }}>
-                  <li className="flex items-center gap-2"><span style={{ color: "#ffe066", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))" }}>★</span> One free spin every 24 hours</li>
-                  <li className="flex items-center gap-2"><span style={{ color: "#ffe066", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))" }}>★</span> Monthly leaderboard with prizes</li>
-                  <li className="flex items-center gap-2"><span style={{ color: "#ffe066", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.4))" }}>★</span> Bonus spin for newsletter subscribers</li>
-                </ul>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
-                  <Link
-                    href="/spin"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #f7ad19, #e06c00)", color: "#1a0500", boxShadow: "0 4px 24px rgba(247,173,25,0.45)" }}
-                  >
-                    🎡 Play Lucky Spin <ArrowRight size={15} />
-                  </Link>
-                  <span className="text-xs text-white/40">Free to play · No purchase required</span>
-                </div>
-              </div>
+              <h2
+                id="spin-promo-heading"
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight"
+                style={{ color: "var(--color-deep)" }}
+              >
+                Spin daily.<br />Win real prizes.
+              </h2>
+
+              <p
+                className="text-sm sm:text-base leading-relaxed mb-7 max-w-sm"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                One free spin every day. Earn points, climb the monthly leaderboard,
+                and win prizes. Newsletter subscribers get a bonus spin.
+              </p>
+
+              {/* Single strong CTA */}
+              <Link
+                href="/spin"
+                className="inline-flex items-center gap-2 self-start px-7 py-3.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{
+                  background: "linear-gradient(135deg, #f7ad19, #e06c00)",
+                  color: "#1a0500",
+                  boxShadow: "0 4px 20px rgba(247,173,25,0.35)",
+                }}
+              >
+                Play Lucky Spin <ArrowRight size={15} />
+              </Link>
+
+              <p className="mt-4 text-xs" style={{ color: "rgba(5,63,92,0.35)" }}>
+                Free to play · No purchase required
+              </p>
             </div>
           </div>
         </section>
