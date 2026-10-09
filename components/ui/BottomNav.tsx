@@ -37,7 +37,7 @@ export default function BottomNav() {
       // lg:hidden — desktop keeps its header nav unchanged
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex"
       style={{
-        background: "linear-gradient(180deg, #1a56db 0%, #1648c2 100%)",
+        background: "linear-gradient(135deg, #429ebd 0%, #053f5c 100%)",
         boxShadow: "0 -1px 0 rgba(255,255,255,0.12), 0 -8px 32px rgba(0,0,0,0.18)",
         // Clear the iPhone home indicator
         paddingBottom: "env(safe-area-inset-bottom)",
