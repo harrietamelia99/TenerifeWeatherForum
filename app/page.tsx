@@ -249,27 +249,22 @@ export default function HomePage() {
         ════════════════════════════════════════════════════════════════ */}
         <section className="pb-10 sm:pb-14 lg:pb-16" aria-labelledby="spin-promo-heading">
           <div
-            className="relative rounded-3xl overflow-hidden flex flex-col lg:flex-row items-center"
-            style={{
-              background: "#ffffff",
-              border: "1px solid var(--color-border)",
-              boxShadow: "0 4px 32px rgba(5,63,92,0.08), 0 1px 4px rgba(5,63,92,0.05)",
-            }}
+            className="relative rounded-3xl overflow-hidden flex flex-col lg:flex-row items-center lg:bg-white lg:[border:1px_solid_var(--color-border)] lg:[box-shadow:0_4px_32px_rgba(5,63,92,0.08),0_1px_4px_rgba(5,63,92,0.05)]"
           >
-            {/* Gold accent top border */}
+            {/* Gold accent top border — desktop card only */}
             <div
-              className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+              className="hidden lg:block absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
               style={{ background: "linear-gradient(90deg, #f7ad19, #fbbf24, #f7ad19)" }}
               aria-hidden="true"
             />
 
-            {/* Wheel */}
-            <div className="flex-shrink-0 flex items-center justify-center pt-10 pb-2 lg:py-10 lg:pl-10 lg:pr-4">
+            {/* Wheel — no box on mobile, just the image floating on the page */}
+            <div className="flex-shrink-0 flex items-center justify-center pb-2 lg:py-10 lg:pl-10 lg:pr-4">
               <SpinPromoWheel />
             </div>
 
             {/* Text */}
-            <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-12 pb-10 pt-4 lg:py-12 flex flex-col justify-center">
+            <div className="flex-1 px-8 sm:px-10 lg:px-10 xl:px-12 pb-10 pt-2 lg:py-12 flex flex-col justify-center">
               {/* Eyebrow */}
               <p
                 className="text-xs font-bold uppercase tracking-widest mb-3"
