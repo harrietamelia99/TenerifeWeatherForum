@@ -20,6 +20,10 @@ import BlogFilterClient from "./BlogFilterClient";
 import { getAllPosts } from "@/lib/getPosts";
 import type { Metadata } from "next";
 
+// Re-render once per day so getAllPosts() recalculates spread dates from
+// today — post dates stay current without any code or content changes.
+export const revalidate = 86400; // seconds (24 h)
+
 export const metadata: Metadata = {
   title: "News & Travel Tips",
   description: "Weather updates, travel tips, packing guides and local information for Tenerife. Updated regularly by the Tenerife Weather Forum team.",

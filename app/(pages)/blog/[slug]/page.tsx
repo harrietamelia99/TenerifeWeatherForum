@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import ShareButtons from "./ShareButtons";
 
+// Re-render once per day so dates recalculate from today (matching blog list).
+export const revalidate = 86400; // seconds (24 h)
+
 interface PageProps {
   params: { slug: string };
 }

@@ -66,25 +66,10 @@ export function getAllPosts(): BlogPost[] {
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {
-  const filePath = path.join(BLOG_DIR, `${slug}.md`);
-  if (!fs.existsSync(filePath)) return null;
-
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
-  const wordCount = content.split(/\s+/).length;
-  const readTime = Math.max(1, Math.ceil(wordCount / 200));
-
-  return {
-    slug,
-    title: data.title || "Untitled",
-    date: data.date || "",
-    category: data.category || "Weather",
-    excerpt: data.excerpt || "",
-    content,
-    author: data.author || "Tenerife Weather Team",
-    readTime,
-    featured: data.featured || false,
-  } as BlogPost;
+  // Re-use getAllPosts() so the returned post has the same dynamically-spread
+  // date as the blog list page (dates recalculate on every ISR re-render).
+  const posts = getAllPosts();
+  return posts.find((p) => p.slug === slug) ?? null;
 }
 
 export function getPostsByCategory(category: string): BlogPost[] {
