@@ -65,7 +65,8 @@ export default function BottomNav() {
               "rounded-none", // let focus ring flush with bar
             ].join(" ")}
             style={{
-              color: isActive ? "#ffffff" : "rgba(255,255,255,0.52)",
+              color: "#ffffff",
+              opacity: isActive ? 1 : 0.72,
               minHeight: "44px",
             }}
           >
