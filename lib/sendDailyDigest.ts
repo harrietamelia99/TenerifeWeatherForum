@@ -4,7 +4,9 @@ import { resend, FROM_EMAIL } from "@/lib/resend";
 import { getForecast } from "@/lib/getForecast";
 import { dailyDigestHtml, dailyDigestSubject } from "@/lib/emailTemplates";
 
-const SENT_KEY_PREFIX = "digest-sent-";
+// v2: the 29 Oct 2026 send failed but still wrote digest-sent-2026-10-29,
+// which blocked every retry. A new prefix ignores that stale flag.
+const SENT_KEY_PREFIX = "digest-sent-v2-";
 
 // Resend rejects the entire batch if it contains more than 100 emails,
 // or if any single address fails validation. Either way nobody is sent
