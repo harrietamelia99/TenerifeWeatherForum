@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/resend";
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
+import { escapeHtml, forecastToParagraphsHtml } from "@/lib/forecastText";
 
 // ─── Shared layout wrappers ───────────────────────────────────────────────────
 
@@ -113,17 +114,17 @@ export function dailyDigestHtml(data: DigestData): string {
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;overflow:hidden;">
         <tr><td style="padding:16px 20px;">
           <p style="margin:0;font-size:14px;font-weight:700;color:#b91c1c;">⚠️ Weather Warning</p>
-          <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#7f1d1d;">${f.warnings}</p>
+          <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#7f1d1d;">${escapeHtml(f.warnings)}</p>
         </td></tr>
       </table>`
     : "";
 
-  // Convert Kevin's forecast paragraphs to HTML
-  const forecastHtml = f.forecast
-    .split("\n\n")
-    .filter(Boolean)
-    .map((p) => `<p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#0c4a6e;">${p}</p>`)
-    .join("");
+  // Kevin pastes plain text, including raw https:// links. Turn those into anchors.
+  const forecastHtml = forecastToParagraphsHtml(
+    f.forecast,
+    "margin:0 0 10px;font-size:14px;line-height:1.7;color:#0c4a6e;",
+    "color:#0369a1;text-decoration:underline;word-break:break-all;"
+  );
 
   const forecastBlock = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;border-radius:12px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;overflow:hidden;">

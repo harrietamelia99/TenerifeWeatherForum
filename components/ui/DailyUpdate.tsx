@@ -1,5 +1,6 @@
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
 import { AlertTriangle, Facebook } from "lucide-react";
+import ForecastBody from "@/components/ui/ForecastBody";
 
 interface Props {
   update: DailyUpdate;
@@ -102,15 +103,13 @@ export default function DailyUpdate({ update }: Props) {
               Forecast
             </h3>
           )}
-          {(update.forecast ?? "").split("\n\n").map((para, i) => (
-            <p
-              key={i}
-              className="text-sm leading-relaxed mb-3 last:mb-0"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              {para}
-            </p>
-          ))}
+          <ForecastBody
+            text={update.forecast ?? ""}
+            paragraphClassName="text-sm leading-relaxed mb-3 last:mb-0"
+            paragraphStyle={{ color: "var(--color-text-muted)" }}
+            linkClassName="underline break-all font-semibold"
+            linkStyle={{ color: "#0369a1" }}
+          />
         </div>
       </div>
     </div>

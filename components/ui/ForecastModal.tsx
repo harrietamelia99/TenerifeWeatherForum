@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, CloudSun, Copy, Check, Facebook } from "lucide-react";
 import type { DailyUpdate } from "@/lib/getDailyUpdate";
+import ForecastBody from "@/components/ui/ForecastBody";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
@@ -198,11 +199,12 @@ export default function ForecastModal() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">
                   Forecast
                 </p>
-                {(update.forecast ?? "").split("\n\n").map((para, i) => (
-                  <p key={i} className="text-white/75 text-sm leading-relaxed mb-2 last:mb-0">
-                    {para}
-                  </p>
-                ))}
+                <ForecastBody
+                  text={update.forecast ?? ""}
+                  paragraphClassName="text-white/75 text-sm leading-relaxed mb-2 last:mb-0"
+                  linkClassName="underline break-all font-semibold"
+                  linkStyle={{ color: "#f7ad19" }}
+                />
               </div>
 
               {/* Hidden textarea for clipboard fallback */}

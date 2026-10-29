@@ -48,16 +48,21 @@ export async function POST(req: NextRequest) {
     // manual forecast exists, so by the time Kevin posts, the cron is already blocked.
     let emailsSent = 0;
     let emailsFailed = 0;
+    let subscribers = 0;
+    let emailError: string | null = null;
     try {
       const result = await sendDailyDigest(forecast, true);
       emailsSent = result.sent;
       emailsFailed = result.failed;
-      console.log(`[admin/forecast] Digest triggered: sent=${result.sent}, failed=${result.failed}`);
+      subscribers = result.subscribers;
+      emailError = result.error ?? null;
+      console.log(`[admin/forecast] Digest triggered: sent=${result.sent}, failed=${result.failed}, subscribers=${result.subscribers}`);
     } catch (err) {
+      emailError = err instanceof Error ? err.message : "Digest send failed";
       console.error("[admin/forecast] Digest send failed (non-fatal):", err);
     }
 
-    return NextResponse.json({ ok: true, emailsSent, emailsFailed });
+    return NextResponse.json({ ok: true, emailsSent, emailsFailed, subscribers, emailError });
   } catch (err) {
     console.error("[admin/forecast] Error:", err);
     return NextResponse.json({ error: "Failed to save forecast." }, { status: 500 });
