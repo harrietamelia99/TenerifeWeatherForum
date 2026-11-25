@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, MapPin } from "lucide-react";
 import StayBookButton from "@/components/ui/StayBookButton";
-import { getStayLink, type StayAreaId } from "@/lib/affiliateLinks";
+import Image from "next/image";
+import TravelLinkButton from "@/components/ui/TravelLinkButton";
+import TravelLinkImage from "@/components/ui/TravelLinkImage";
+import { getStayLink, gettingThereLinks, type StayAreaId } from "@/lib/affiliateLinks";
 
 // Hidden preview: not linked from the navigation or sitemap, and kept out of
 // search results until it is ready to go live.
@@ -16,6 +19,7 @@ const areas: {
   name: string;
   region: string;
   gradient: string;
+  image: string;
   summary: string;
   suits: string;
   highlights: string[];
@@ -25,6 +29,7 @@ const areas: {
     name: "Costa Adeje",
     region: "South-west coast",
     gradient: "linear-gradient(135deg, #053f5c, #429ebd)",
+    image: "/images/hero-coastline.jpg",
     summary:
       "The polished end of the south coast, with large resort hotels, villas and some of the island's best-kept beaches. It is also the closest base for Siam Park.",
     suits: "Families and couples who want a comfortable resort stay.",
@@ -35,6 +40,7 @@ const areas: {
     name: "Playa de las Americas",
     region: "South-west coast",
     gradient: "linear-gradient(135deg, #f7ad19, #e06c00)",
+    image: "/images/palm-promenade.png",
     summary:
       "The busiest resort on the island, with a long seafront promenade, bars, restaurants and nightlife. There is a huge choice of apartments and hotels at every price.",
     suits: "Groups and first-time visitors who want plenty going on.",
@@ -45,6 +51,7 @@ const areas: {
     name: "Los Cristianos",
     region: "South coast",
     gradient: "linear-gradient(135deg, #2d6a4f, #1b4332)",
+    image: "/images/coast-sunset.png",
     summary:
       "A working harbour town with a relaxed feel, a town beach and an easy promenade walk. Ferries leave from here for La Gomera.",
     suits: "Couples and anyone after a quieter, easy-going base.",
@@ -55,6 +62,7 @@ const areas: {
     name: "Puerto de la Cruz",
     region: "North coast",
     gradient: "linear-gradient(135deg, #0f0c29, #302b63)",
+    image: "/images/puerto-de-la-cruz.png",
     summary:
       "A historic seaside town on the green north coast, known for its old streets, the Lago Martianez sea-water pools and the botanical garden. Loro Parque is nearby.",
     suits: "Visitors who want character and scenery over big resorts.",
@@ -65,6 +73,7 @@ const areas: {
     name: "Santa Cruz de Tenerife",
     region: "North-east coast",
     gradient: "linear-gradient(135deg, #b05c2c, #8b2500)",
+    image: "/images/santa-cruz-sunset.png",
     summary:
       "The island's capital, with museums, markets, a lively food scene and the Auditorio. Las Teresitas beach is a short drive away.",
     suits: "City breaks, culture and visitors who want to see local life.",
@@ -75,10 +84,49 @@ const areas: {
     name: "El Medano",
     region: "South-east coast",
     gradient: "linear-gradient(135deg, #c45911, #f7ad19)",
+    image: "/images/playa-teresitas.png",
     summary:
       "A laid-back beach village that is one of Europe's best spots for windsurfing and kitesurfing. It is also about ten minutes from Tenerife South airport.",
     suits: "Watersports fans and anyone wanting a quiet village base.",
     highlights: ["Windsurf and kitesurf schools", "Long town beach", "Near Tenerife South airport", "Relaxed village feel"],
+  },
+];
+
+const gettingThere: {
+  id: string;
+  title: string;
+  summary: string;
+  label: string;
+  category: string;
+  href: string;
+  image?: { src: string; alt: string; width: number; height: number };
+}[] = [
+  {
+    id: 'flights',
+    title: 'Flights to Tenerife',
+    summary: 'Compare flights from UK airports and other departure points, then pick the time and price that suits you.',
+    label: 'Compare flights',
+    category: 'flights',
+    href: gettingThereLinks.skyscanner,
+    image: { src: '/partners/skyscanner-flights.png', alt: 'Skyscanner: compare flights to Tenerife', width: 608, height: 456 },
+  },
+  {
+    id: 'airport-parking',
+    title: 'Airport parking',
+    summary: 'Sort your parking at the UK airport before you fly so you are not looking for a space on the day.',
+    label: 'Book airport parking',
+    category: 'parking',
+    href: gettingThereLinks.holidayExtras,
+    image: { src: '/partners/holiday-extras-parking.jpg', alt: 'Holiday Extras airport parking', width: 600, height: 200 },
+  },
+  {
+    id: 'transfers',
+    title: 'Transfers',
+    summary: 'Arrange a transfer so you are not working out transport after you land.',
+    label: 'Book transfers',
+    category: 'transfers',
+    href: gettingThereLinks.holidayExtras,
+    image: { src: '/partners/holiday-extras-transfers.jpg', alt: 'Holiday Extras airport transfers', width: 600, height: 200 },
   },
 ];
 
@@ -115,7 +163,20 @@ export default function WhereToStayPreviewPage() {
               className="rounded-3xl overflow-hidden shadow-xl flex flex-col"
               style={{ background: "#fff" }}
             >
-              <div className="px-6 py-8 text-white" style={{ background: area.gradient }}>
+              <div className="relative h-56 text-white" style={{ background: area.gradient }}>
+                <Image
+                  src={area.image}
+                  alt={area.name + ", " + area.region}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(to top, rgba(5,63,92,0.85) 0%, rgba(5,63,92,0.25) 60%, rgba(5,63,92,0.05) 100%)" }}
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-x-0 bottom-0 px-6 py-5">
                 <span
                   className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full mb-3"
                   style={{ background: "rgba(0,0,0,0.3)", backdropFilter: "blur(8px)" }}
@@ -123,6 +184,7 @@ export default function WhereToStayPreviewPage() {
                   <MapPin size={11} /> {area.region}
                 </span>
                 <h2 className="text-2xl font-bold">{area.name}</h2>
+                </div>
               </div>
 
               <div className="p-6 flex flex-col flex-1">
@@ -156,6 +218,35 @@ export default function WhereToStayPreviewPage() {
               </div>
             </article>
           ))}
+        </div>
+
+        {/* Getting there */}
+        <div className='mt-16'>
+          <h2 className='text-2xl sm:text-3xl font-bold mb-3' style={{ color: 'var(--color-deep)' }}>
+            Getting there
+          </h2>
+          <p className='text-sm sm:text-base leading-relaxed mb-8 max-w-2xl' style={{ color: 'var(--color-deep)', opacity: 0.8 }}>
+            Flights, airport parking and transfers for your trip.
+          </p>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8'>
+            {gettingThere.map((item) => (
+              <article key={item.id} id={item.id} className='rounded-3xl p-6 shadow-xl flex flex-col' style={{ background: '#fff' }}>
+                {item.image && (
+                  <TravelLinkImage href={item.href} src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} id={item.id} category={item.category} />
+                )}
+                <h3 className='text-xl font-bold mb-3' style={{ color: 'var(--color-deep)' }}>{item.title}</h3>
+                <p className='text-sm sm:text-base leading-relaxed mb-6' style={{ color: 'var(--color-deep)', opacity: 0.8 }}>
+                  {item.summary}
+                </p>
+                <div className='mt-auto'>
+                  <TravelLinkButton href={item.href} label={item.label} id={item.id} category={item.category} />
+                  <p className='text-xs mt-3' style={{ color: 'var(--color-text-muted)', opacity: 0.7 }}>
+                    Affiliate link - we may earn a small commission at no extra cost to you
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         {/* Bottom CTA */}

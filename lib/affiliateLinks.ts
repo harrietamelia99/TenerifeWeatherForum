@@ -17,7 +17,9 @@ export type StayAreaId =
   | "el-medano";
 
 // Used for any area that does not have its own link yet.
-export const defaultStayLink = "";
+// Booking.com UK evergreen link via CJ (property 101721309, link 15734754).
+// Swap an area to its own deep link in stayLinks below when you have one.
+export const defaultStayLink = "https://www.anrdoezrs.net/click-101721309-15734754";
 
 export const stayLinks: Record<StayAreaId, string> = {
   "costa-adeje": "",
@@ -33,3 +35,12 @@ export function getStayLink(id: StayAreaId): string {
   const link = (stayLinks[id] || defaultStayLink || "").trim();
   return link && link !== "#" ? link : "";
 }
+
+// Getting there: flights, parking and transfers.
+// Same rule as above: a blank link renders a disabled "Coming soon" button.
+export const gettingThereLinks = {
+  // Skyscanner via Impact (approved 16 Nov 2026). 40% booking, 20% redirect, 30 day window.
+  skyscanner: "https://skyscanner.pxf.io/KBNkMe",
+  // Holiday Extras via AWIN (approved 3 Nov 2026). Parking, transfers, hotels, lounges, car hire.
+  holidayExtras: "https://www.awin1.com/cread.php?awinmid=3496&awinaffid=3142265",
+};
