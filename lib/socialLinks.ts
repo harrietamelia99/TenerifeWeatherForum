@@ -3,7 +3,7 @@
 // so nothing broken ever goes live.
 
 export const socialLinks = {
-  facebookPage: '',
-  instagram: '',
-  whatsappChannel: '',
+  facebookPage: 'https://www.facebook.com/share/1N6LoAwjeq/',
+  instagram: 'https://www.instagram.com/tenerife_weather_forum',
+  whatsappChannel: 'https://whatsapp.com/channel/0029VbEL41mLI8Ygcy7RJJ2A',
 };
