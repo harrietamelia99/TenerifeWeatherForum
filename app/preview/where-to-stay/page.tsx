@@ -116,7 +116,7 @@ const gettingThere: {
   label: string;
   category: string;
   href: string;
-  image?: { src: string; alt: string; width: number; height: number };
+  image?: { src: string; alt: string; width: number; height: number; position?: string };
 }[] = [
   {
     id: 'flights',
@@ -134,7 +134,7 @@ const gettingThere: {
     label: 'Book airport parking',
     category: 'parking',
     href: gettingThereLinks.holidayExtras,
-    image: { src: '/partners/holiday-extras-parking.jpg', alt: 'Holiday Extras airport parking', width: 600, height: 200 },
+    image: { src: '/partners/holiday-extras-parking.jpg', alt: 'Holiday Extras airport parking', width: 600, height: 200, position: '15% center' },
   },
   {
     id: 'transfers',
@@ -271,7 +271,7 @@ export default function WhereToStayPreviewPage() {
             {gettingThere.map((item) => (
               <article key={item.id} id={item.id} className='rounded-3xl p-6 shadow-xl flex flex-col' style={{ background: '#fff' }}>
                 {item.image && (
-                  <TravelLinkImage href={item.href} src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} id={item.id} category={item.category} />
+                  <TravelLinkImage href={item.href} src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} id={item.id} category={item.category} position={item.image.position} />
                 )}
                 <h3 className='text-xl font-bold mb-3' style={{ color: 'var(--color-deep)' }}>{item.title}</h3>
                 <p className='text-sm sm:text-base leading-relaxed mb-6' style={{ color: 'var(--color-deep)', opacity: 0.8 }}>

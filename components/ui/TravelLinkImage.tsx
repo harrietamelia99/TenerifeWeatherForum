@@ -10,6 +10,7 @@ interface Props {
   height?: number;
   id: string;
   category: string;
+  position?: string;
 }
 
 // A clickable partner banner. Uses the supplier's official banner image and
@@ -21,14 +22,15 @@ interface Props {
 const panelClass = "relative block w-full mb-5 aspect-[4/3] overflow-hidden rounded-xl";
 const panelStyle = {};
 
-export default function TravelLinkImage({ href, src, alt, id, category }: Props) {
+export default function TravelLinkImage({ href, src, alt, id, category, position = 'right center' }: Props) {
   const picture = (
     <Image
       src={src}
       alt={alt}
       fill
       sizes="(min-width: 768px) 33vw, 100vw"
-      className="object-cover object-right"
+      className="object-cover"
+      style={{ objectPosition: position }}
     />
   );
 
