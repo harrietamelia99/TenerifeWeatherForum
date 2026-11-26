@@ -27,7 +27,7 @@ export default function TermsPage() {
       >
         <p className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-3">Legal</p>
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">Terms &amp; Conditions</h1>
-        <p className="text-white/70 text-sm">Last updated: August 2026</p>
+        <p className="text-white/70 text-sm">Last updated: November 2026</p>
       </div>
 
       {/* Content */}
@@ -63,13 +63,20 @@ export default function TermsPage() {
 
         <Section title="Affiliate links">
           <p>
-            Some links on this site — particularly in the Excursions &amp; Activities section — are affiliate links
-            provided by <strong style={{ color: "var(--color-deep)" }}>GetYourGuide</strong>. If you click one of these
-            links and make a booking, we may earn a small commission at no extra cost to you.
+            Some links on this site — including in the Where to Stay, Getting there and Excursions &amp; Activities sections — are affiliate links provided by <strong style={{ color: "var(--color-deep)" }}>Booking.com</strong>, <strong style={{ color: "var(--color-deep)" }}>Skyscanner</strong>, <strong style={{ color: "var(--color-deep)" }}>Holiday Extras</strong> and <strong style={{ color: "var(--color-deep)" }}>GetYourGuide</strong>. If you click one of these links and make a booking, we may earn a small commission at no extra cost to you.
           </p>
           <p>
-            We only recommend activities and experiences we believe are genuinely useful to visitors. Affiliate links
-            are indicated near the section where they appear.
+            When you click an affiliate link the partner, or the affiliate network it uses (CJ, Impact or Awin), may set tracking cookies on your device so a booking can be matched to this site. See our{" "}
+            <Link href="/privacy" className="underline hover:opacity-80" style={{ color: "var(--color-mid)" }}>
+              Privacy Policy
+            </Link>{" "}and{" "}
+            <Link href="/affiliate-disclosure" className="underline hover:opacity-80" style={{ color: "var(--color-mid)" }}>
+              Affiliate Disclosure
+            </Link>
+            .
+          </p>
+          <p>
+            We only recommend places, activities and travel options we believe are genuinely useful to visitors. Your booking is a contract between you and the company you book with, not with us, and we are not responsible for their prices, availability or service. Affiliate links are indicated near the section where they appear.
           </p>
         </Section>
 

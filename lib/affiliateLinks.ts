@@ -44,3 +44,12 @@ export const gettingThereLinks = {
   // Holiday Extras via AWIN (approved 3 Nov 2026). Parking, transfers, hotels, lounges, car hire.
   holidayExtras: "https://www.awin1.com/cread.php?awinmid=3496&awinaffid=3142265",
 };
+
+// GetYourGuide things-to-do links, one per resort. Uses the same partner ID as the Excursions page.
+// These open GetYourGuide search results for the resort. Swap in a specific location page
+// in place of the search link if Kevin has one he prefers.
+export const gygPartnerId = "NHPMSZ1";
+
+export function getThingsToDoLink(areaName: string): string {
+  return "https://www.getyourguide.com/s/?q=" + encodeURIComponent(areaName + " Tenerife") + "&partner_id=" + gygPartnerId;
+}

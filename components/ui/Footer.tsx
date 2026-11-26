@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { Facebook } from "lucide-react";
+import ExtraSocialLinks from "@/components/ui/ExtraSocialLinks";
+import CookieSettingsLink from "@/components/ui/CookieSettingsLink";
+import { WHERE_TO_STAY_HREF } from "@/lib/siteRoutes";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/weather", label: "Weather" },
+  { href: WHERE_TO_STAY_HREF, label: "Where to Stay" },
   { href: "/climate", label: "Climate Info" },
   { href: "/blog", label: "Blog" },
   { href: "/resources", label: "Resources" },
@@ -47,6 +51,7 @@ export default function Footer() {
               >
                 <Facebook size={18} />
               </a>
+              <ExtraSocialLinks size={18} className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-white" />
               <a
                 href="https://www.tiktok.com/@tenerifeweatherforum"
                 target="_blank"
@@ -124,6 +129,10 @@ export default function Footer() {
             <Link href="/terms" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
               Terms &amp; Conditions
             </Link>
+            <Link href="/affiliate-disclosure" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
+              Affiliate Disclosure
+            </Link>
+            <CookieSettingsLink className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2" />
             <Link href="/terms#lucky-spin" className="text-white/40 hover:text-white/70 text-xs transition-colors underline underline-offset-2">
               Lucky Spin T&amp;Cs
             </Link>

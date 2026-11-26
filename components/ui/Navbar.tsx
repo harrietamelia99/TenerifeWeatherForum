@@ -4,12 +4,15 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Facebook, ArrowRight } from "lucide-react";
+import ExtraSocialLinks from "@/components/ui/ExtraSocialLinks";
+import { WHERE_TO_STAY_HREF } from "@/lib/siteRoutes";
 
 // ─── Desktop nav links (shown at ≥ 1024px) ───────────────────────────────────
 const desktopLinks = [
   { href: "/",           label: "Home"       },
   { href: "/weather",    label: "Weather"    },
   { href: "/excursions", label: "Excursions" },
+  { href: WHERE_TO_STAY_HREF, label: "Where to Stay" },
   { href: "/webcams",    label: "Webcams"    },
   { href: "/climate",    label: "Climate"    },
   { href: "/blog",       label: "Blog"       },
@@ -20,6 +23,7 @@ const desktopLinks = [
 const menuLinks = [
   { href: "/weather",    label: "Weather",              emoji: "🌤" },
   { href: "/excursions", label: "Excursions & Activities", emoji: "🏝" },
+  { href: WHERE_TO_STAY_HREF, label: "Where to Stay", emoji: "🏨" },
   { href: "/webcams",    label: "Webcams",              emoji: "📷" },
   { href: "/climate",    label: "Climate Guide",        emoji: "🌡" },
   { href: "/blog",       label: "Blog & Travel Tips",   emoji: "📖" },
@@ -114,14 +118,14 @@ export default function Navbar() {
               </Link>
 
               {/* Desktop nav — hidden below 1024px */}
-              <div className="hidden lg:flex items-center gap-0.5">
+              <div className="hidden xl:flex items-center gap-0.5">
                 {desktopLinks.map((link) => {
                   const isActive = pathname === link.href;
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="px-4 py-2 rounded-full text-sm transition-all duration-200"
+                      className="px-3 2xl:px-4 py-2 rounded-full text-sm whitespace-nowrap transition-all duration-200"
                       style={{
                         background: isActive ? "var(--color-bg)" : "transparent",
                         color:      isActive ? "var(--color-deep)" : "var(--color-text-muted)",
@@ -135,7 +139,7 @@ export default function Navbar() {
               </div>
 
               {/* Desktop right — hidden below 1024px */}
-              <div className="hidden lg:flex items-center gap-2">
+              <div className="hidden xl:flex items-center gap-2">
                 <a
                   href="https://www.facebook.com/groups/1826293804889186"
                   target="_blank"
@@ -145,6 +149,7 @@ export default function Navbar() {
                 >
                   <Facebook size={15} />
                 </a>
+                <ExtraSocialLinks size={15} className="p-2 rounded-full bg-[--color-bg] text-[--color-deep] hover:bg-[--color-sky] transition-all duration-200" />
                 <a
                   href="https://www.tiktok.com/@tenerifeweatherforum"
                   target="_blank"
@@ -169,7 +174,7 @@ export default function Navbar() {
                 ref={openBtnRef}
                 type="button"
                 onClick={() => setMenuOpen(true)}
-                className="lg:hidden p-2 rounded-full bg-[--color-bg] text-[--color-deep] transition-all duration-200"
+                className="xl:hidden p-2 rounded-full bg-[--color-bg] text-[--color-deep] transition-all duration-200"
                 style={{ touchAction: "manipulation" }}
                 aria-label="Open menu"
                 aria-expanded={menuOpen}
@@ -186,7 +191,7 @@ export default function Navbar() {
       {/* Backdrop */}
       {menuOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+          className="xl:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
           aria-hidden="true"
           onClick={() => setMenuOpen(false)}
         />
@@ -201,7 +206,7 @@ export default function Navbar() {
         aria-label="Site navigation"
         onKeyDown={handleMenuKeyDown}
         className={[
-          "lg:hidden fixed inset-y-0 right-0 z-[70] w-full max-w-xs flex flex-col",
+          "xl:hidden fixed inset-y-0 right-0 z-[70] w-full max-w-xs flex flex-col",
           "transition-transform duration-300 ease-out",
           menuOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
@@ -268,6 +273,7 @@ export default function Navbar() {
             >
               <Facebook size={16} />
             </a>
+            <ExtraSocialLinks size={16} className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white" />
             <a
               href="https://www.tiktok.com/@tenerifeweatherforum"
               target="_blank"

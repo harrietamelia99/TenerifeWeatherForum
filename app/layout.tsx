@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -8,6 +7,7 @@ import WeatherTicker from "@/components/ui/WeatherTicker";
 import ForecastModal from "@/components/ui/ForecastModal";
 import CookieBanner from "@/components/ui/CookieBanner";
 import BottomNav from "@/components/ui/BottomNav";
+import AnalyticsLoader from "@/components/ui/AnalyticsLoader";
 
 const GA_ID = "G-4BK6V9K96C";
 
@@ -54,20 +54,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={dmSans.variable}>
-      <head>
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_ID}');
-          `}
-        </Script>
-      </head>
       <body className="font-sans antialiased">
         <WeatherTicker />
         <Navbar />
@@ -83,6 +69,7 @@ export default function RootLayout({
         <Footer />
         <ForecastModal />
         <CookieBanner />
+        <AnalyticsLoader gaId={GA_ID} />
         <BottomNav />
       </body>
     </html>

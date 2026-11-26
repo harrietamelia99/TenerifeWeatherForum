@@ -292,7 +292,7 @@ export async function getTickerData(): Promise<TickerData[]> {
       { label: "North Tenerife", value: `${north.tempCurrent}°C`, icon: "⛅" },
       { label: "El Médano",      value: `${medano.tempCurrent}°C`, icon: "💨" },
       { label: "Sea Temp",       value: `${seaTemp ?? south.seaTemp ?? "–"}°C`, icon: "🌊" },
-      { label: "UV Index",       value: `${south.uv} ${south.uv >= 8 ? "Very High" : south.uv >= 6 ? "High" : "Moderate"}`, icon: "🔆" },
+      { label: "UV Index",       value: `${south.uv} ${uvLabel(south.uv)}`, icon: "🔆" },
       { label: "Humidity",       value: `${south.humidity}%`, icon: "💧" },
       { label: "Wind",           value: `${south.wind} km/h`, icon: "🌬️" },
       { label: "Mount Teide",    value: `${teide.tempCurrent}°C`, icon: "🏔️" },
@@ -322,3 +322,12 @@ export async function getHomepageWeather(): Promise<WeatherData> {
 }
 
 export { wmoToLabel };
+
+// WHO UV index bands: 0-2 Low, 3-5 Moderate, 6-7 High, 8-10 Very High, 11+ Extreme.
+export function uvLabel(uv: number): string {
+  if (uv >= 11) return "Extreme";
+  if (uv >= 8) return "Very High";
+  if (uv >= 6) return "High";
+  if (uv >= 3) return "Moderate";
+  return "Low";
+}

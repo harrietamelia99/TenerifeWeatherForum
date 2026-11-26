@@ -1,16 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, Info, MapPin } from "lucide-react";
 import StayBookButton from "@/components/ui/StayBookButton";
 import Image from "next/image";
 import TravelLinkButton from "@/components/ui/TravelLinkButton";
 import TravelLinkImage from "@/components/ui/TravelLinkImage";
-import { getStayLink, gettingThereLinks, type StayAreaId } from "@/lib/affiliateLinks";
+import TravelTextLink from "@/components/ui/TravelTextLink";
+import { socialLinks } from "@/lib/socialLinks";
+import { getStayLink, getThingsToDoLink, gettingThereLinks, type StayAreaId } from "@/lib/affiliateLinks";
 
 // Hidden preview: not linked from the navigation or sitemap, and kept out of
 // search results until it is ready to go live.
 export const metadata: Metadata = {
-  title: "Preview - Where to Stay",
+  title: "Where to Stay in Tenerife",
+  description:
+    "Compare the main areas to stay in Tenerife, from sunny Costa Adeje to the green north coast, with the typical weather, what each suits and how to get there.",
+  openGraph: {
+    title: "Where to Stay in Tenerife | Tenerife Weather Forum",
+    description:
+      "Compare the main areas to stay in Tenerife by weather and what suits you, plus flights, airport parking and transfers.",
+    type: "website",
+    siteName: "Tenerife Weather Forum",
+  },
   robots: { index: false, follow: false },
 };
 
@@ -19,13 +30,15 @@ const areas: {
   name: string;
   region: string;
   gradient: string;
-  image: string;
+  image?: string;
+  weather: string;
   summary: string;
   suits: string;
   highlights: string[];
 }[] = [
   {
     id: "costa-adeje",
+    weather: "Among the sunniest and driest parts of the island, usually sheltered from the cloud that settles in the north.",
     name: "Costa Adeje",
     region: "South-west coast",
     gradient: "linear-gradient(135deg, #053f5c, #429ebd)",
@@ -37,7 +50,8 @@ const areas: {
   },
   {
     id: "playa-de-las-americas",
-    name: "Playa de las Americas",
+    weather: "Sunny and dry for much of the year like the rest of the south-west, with very little rain.",
+    name: "Playa de las Américas",
     region: "South-west coast",
     gradient: "linear-gradient(135deg, #f7ad19, #e06c00)",
     image: "/images/palm-promenade.png",
@@ -48,6 +62,7 @@ const areas: {
   },
   {
     id: "los-cristianos",
+    weather: "Sunny and dry like the rest of the south coast, and usually warmer and clearer than the north.",
     name: "Los Cristianos",
     region: "South coast",
     gradient: "linear-gradient(135deg, #2d6a4f, #1b4332)",
@@ -59,17 +74,19 @@ const areas: {
   },
   {
     id: "puerto-de-la-cruz",
+    weather: "Greener and a little cooler than the south, with more cloud and the odd shower, especially in winter.",
     name: "Puerto de la Cruz",
     region: "North coast",
     gradient: "linear-gradient(135deg, #0f0c29, #302b63)",
     image: "/images/puerto-de-la-cruz.png",
     summary:
-      "A historic seaside town on the green north coast, known for its old streets, the Lago Martianez sea-water pools and the botanical garden. Loro Parque is nearby.",
+      "A historic seaside town on the green north coast, known for its old streets, the Lago Martiánez sea-water pools and the botanical garden. Loro Parque is nearby.",
     suits: "Visitors who want character and scenery over big resorts.",
-    highlights: ["Historic old town", "Lago Martianez pools", "Close to Loro Parque", "Lush northern scenery"],
+    highlights: ["Historic old town", "Lago Martiánez pools", "Close to Loro Parque", "Lush northern scenery"],
   },
   {
     id: "santa-cruz",
+    weather: "Warm all year, but cloudier than the south, with a little less rain than the green north-west coast.",
     name: "Santa Cruz de Tenerife",
     region: "North-east coast",
     gradient: "linear-gradient(135deg, #b05c2c, #8b2500)",
@@ -81,10 +98,10 @@ const areas: {
   },
   {
     id: "el-medano",
-    name: "El Medano",
+    weather: "Sunny and dry, and one of the windiest spots on the island, which is why watersports fans love it.",
+    name: "El Médano",
     region: "South-east coast",
     gradient: "linear-gradient(135deg, #c45911, #f7ad19)",
-    image: "/images/playa-teresitas.png",
     summary:
       "A laid-back beach village that is one of Europe's best spots for windsurfing and kitesurfing. It is also about ten minutes from Tenerife South airport.",
     suits: "Watersports fans and anyone wanting a quiet village base.",
@@ -155,6 +172,21 @@ export default function WhereToStayPreviewPage() {
 
       {/* Areas */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div
+          className="flex items-start gap-3 rounded-2xl px-5 py-4 mb-8 max-w-3xl"
+          style={{ background: "rgba(66,158,189,0.12)", color: "var(--color-deep)" }}
+          role="note"
+        >
+          <Info size={18} className="flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <p className="text-sm leading-relaxed">
+            Some links on this page are affiliate links. If you book through them we may earn a small commission at no
+            extra cost to you.{" "}
+            <Link href="/affiliate-disclosure" className="font-semibold underline underline-offset-2 hover:opacity-80">
+              Read our affiliate disclosure
+            </Link>
+            .
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {areas.map((area) => (
             <article
@@ -164,6 +196,7 @@ export default function WhereToStayPreviewPage() {
               style={{ background: "#fff" }}
             >
               <div className="relative h-56 text-white" style={{ background: area.gradient }}>
+                {area.image && (
                 <Image
                   src={area.image}
                   alt={area.name + ", " + area.region}
@@ -171,6 +204,7 @@ export default function WhereToStayPreviewPage() {
                   sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   className="object-cover"
                 />
+                )}
                 <div
                   className="absolute inset-0"
                   style={{ background: "linear-gradient(to top, rgba(5,63,92,0.85) 0%, rgba(5,63,92,0.25) 60%, rgba(5,63,92,0.05) 100%)" }}
@@ -190,6 +224,10 @@ export default function WhereToStayPreviewPage() {
               <div className="p-6 flex flex-col flex-1">
                 <p className="text-sm sm:text-base leading-relaxed mb-3" style={{ color: "var(--color-deep)", opacity: 0.8 }}>
                   {area.summary}
+                </p>
+                <p className="text-sm mb-3" style={{ color: "var(--color-deep)" }}>
+                  <span className="font-semibold">Typical weather:</span>{" "}
+                  <span style={{ opacity: 0.8 }}>{area.weather}</span>
                 </p>
                 <p className="text-sm font-semibold mb-5" style={{ color: "var(--color-deep)" }}>
                   Best for: <span className="font-normal">{area.suits}</span>
@@ -211,6 +249,7 @@ export default function WhereToStayPreviewPage() {
 
                 <div className="mt-auto">
                   <StayBookButton href={getStayLink(area.id)} title={area.name} id={area.id} />
+                  <TravelTextLink href={getThingsToDoLink(area.name)} label={"Things to do near " + area.name} id={area.id + "-things-to-do"} category="things-to-do" />
                   <p className="text-xs mt-3" style={{ color: "var(--color-text-muted)", opacity: 0.7 }}>
                     Affiliate link - we may earn a small commission at no extra cost to you
                   </p>
@@ -258,6 +297,34 @@ export default function WhereToStayPreviewPage() {
           <Link href="/weather" className="btn-primary inline-flex items-center gap-2 px-7 py-3.5">
             Today&apos;s Forecast <ArrowRight size={15} />
           </Link>
+        </div>
+
+        {/* WhatsApp channel */}
+        <div className="mt-8 rounded-3xl p-8 sm:p-10 text-center shadow-xl" style={{ background: "#fff" }}>
+          <h2 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: "var(--color-deep)" }}>
+            Get the Tenerife weather on WhatsApp
+          </h2>
+          <p className="text-sm sm:text-base mb-6 max-w-lg mx-auto" style={{ color: "var(--color-deep)", opacity: 0.8 }}>
+            Join the WhatsApp channel for the daily forecast and travel tips, straight to your phone.
+          </p>
+          {socialLinks.whatsappChannel ? (
+            <a
+              href={socialLinks.whatsappChannel}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary inline-flex items-center gap-2 px-7 py-3.5"
+            >
+              Join the WhatsApp channel <ArrowRight size={15} />
+            </a>
+          ) : (
+            <span
+              aria-disabled="true"
+              className="inline-flex items-center justify-center px-7 py-3.5 text-sm font-semibold rounded-full cursor-not-allowed"
+              style={{ background: "rgba(66,158,189,0.12)", color: "var(--color-text-muted)" }}
+            >
+              Channel link coming soon
+            </span>
+          )}
         </div>
       </div>
     </div>
