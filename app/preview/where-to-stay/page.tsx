@@ -54,7 +54,7 @@ const areas: {
     name: "Playa de las Américas",
     region: "South-west coast",
     gradient: "linear-gradient(135deg, #f7ad19, #e06c00)",
-    image: "/images/palm-promenade.png",
+    image: "/images/playa-de-las-americas.jpg",
     summary:
       "The busiest resort on the island, with a long seafront promenade, bars, restaurants and nightlife. There is a huge choice of apartments and hotels at every price.",
     suits: "Groups and first-time visitors who want plenty going on.",
@@ -66,7 +66,7 @@ const areas: {
     name: "Los Cristianos",
     region: "South coast",
     gradient: "linear-gradient(135deg, #2d6a4f, #1b4332)",
-    image: "/images/coast-sunset.png",
+    image: "/images/los-cristianos.jpg",
     summary:
       "A working harbour town with a relaxed feel, a town beach and an easy promenade walk. Ferries leave from here for La Gomera.",
     suits: "Couples and anyone after a quieter, easy-going base.",
@@ -102,6 +102,7 @@ const areas: {
     name: "El Médano",
     region: "South-east coast",
     gradient: "linear-gradient(135deg, #c45911, #f7ad19)",
+    image: "/images/el-medano.jpg",
     summary:
       "A laid-back beach village that is one of Europe's best spots for windsurfing and kitesurfing. It is also about ten minutes from Tenerife South airport.",
     suits: "Watersports fans and anyone wanting a quiet village base.",
