@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook } from "lucide-react";
+import { Users } from "lucide-react";
 import ExtraSocialLinks from "@/components/ui/ExtraSocialLinks";
 import CookieSettingsLink from "@/components/ui/CookieSettingsLink";
 import { WHERE_TO_STAY_HREF } from "@/lib/siteRoutes";
@@ -46,10 +46,10 @@ export default function Footer() {
                 href="https://www.facebook.com/groups/1826293804889186"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Tenerife Weather Forum on Facebook"
+                aria-label="Tenerife Weather Forum Facebook group"
                 className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-white"
               >
-                <Facebook size={18} />
+                <Users size={18} />
               </a>
               <ExtraSocialLinks size={18} className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-white" />
               <a

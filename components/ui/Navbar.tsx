@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Facebook, ArrowRight } from "lucide-react";
+import { Menu, X, Users, ArrowRight } from "lucide-react";
 import ExtraSocialLinks from "@/components/ui/ExtraSocialLinks";
 import { WHERE_TO_STAY_HREF } from "@/lib/siteRoutes";
 
@@ -144,10 +144,10 @@ export default function Navbar() {
                   href="https://www.facebook.com/groups/1826293804889186"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Tenerife Weather Forum on Facebook"
+                  aria-label="Tenerife Weather Forum Facebook group"
                   className="p-2 rounded-full bg-[--color-bg] text-[--color-deep] hover:bg-[--color-sky] transition-all duration-200"
                 >
-                  <Facebook size={15} />
+                  <Users size={15} />
                 </a>
                 <ExtraSocialLinks size={15} className="p-2 rounded-full bg-[--color-bg] text-[--color-deep] hover:bg-[--color-sky] transition-all duration-200" />
                 <a
@@ -268,10 +268,10 @@ export default function Navbar() {
               href="https://www.facebook.com/groups/1826293804889186"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook"
+              aria-label="Tenerife Weather Forum Facebook group"
               className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white"
             >
-              <Facebook size={16} />
+              <Users size={16} />
             </a>
             <ExtraSocialLinks size={16} className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white" />
             <a
