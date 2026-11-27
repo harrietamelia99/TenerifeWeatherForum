@@ -9,8 +9,8 @@ import TravelTextLink from "@/components/ui/TravelTextLink";
 import { socialLinks } from "@/lib/socialLinks";
 import { getStayLink, getThingsToDoLink, gettingThereLinks, type StayAreaId } from "@/lib/affiliateLinks";
 
-// Hidden preview: not linked from the navigation or sitemap, and kept out of
-// search results until it is ready to go live.
+// Where to Stay travel hub: linked from the menu and footer and included in
+// the sitemap.
 export const metadata: Metadata = {
   title: "Where to Stay in Tenerife",
   description:
@@ -22,7 +22,6 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Tenerife Weather Forum",
   },
-  robots: { index: false, follow: false },
 };
 
 const areas: {
@@ -162,7 +161,6 @@ export default function WhereToStayPreviewPage() {
           <Link href="/" className="flex w-fit items-center gap-1.5 text-white/60 text-sm mb-5 hover:text-white transition-colors">
             <ArrowRight size={13} className="rotate-180" /> Home
           </Link>
-          <span className="tag-pill mb-4 inline-block">Preview - not live yet</span>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Where to Stay in Tenerife</h1>
           <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
             Tenerife&apos;s weather changes a lot from one coast to another, so where you stay shapes your holiday.
