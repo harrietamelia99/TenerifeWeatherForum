@@ -12,7 +12,8 @@ export default function AdminForecastPage() {
   const [warningLevel, setWarningLevel] = useState<"yellow" | "amber" | "red">("yellow");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [emailsSent, setEmailsSent] = useState<number | null>(null);
+  const [emailNote, setEmailNote] = useState<string | null>(null);
+  const [emailOk, setEmailOk] = useState(true);
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function AdminForecastPage() {
     e.preventDefault();
     setStatus("saving");
     setErrorMsg("");
+    setEmailNote(null);
 
     try {
       const res = await fetch("/api/admin/forecast", {
@@ -49,9 +51,32 @@ export default function AdminForecastPage() {
 
       localStorage.setItem(STORAGE_KEY, password);
       setAuthed(true);
-      setEmailsSent(data.emailsSent ?? null);
+
+      const sent = data.emailsSent ?? 0;
+      const failed = data.emailsFailed ?? 0;
+      const subs = data.subscribers ?? 0;
+      let note: string;
+      let ok = true;
+      if (sent > 0 && failed === 0) {
+        note = `Newsletter sent to ${sent} subscriber${sent === 1 ? "" : "s"}.`;
+      } else if (sent > 0) {
+        note = `Newsletter sent to ${sent} subscriber${sent === 1 ? "" : "s"}. ${failed} could not be delivered.`;
+        ok = false;
+      } else if (subs === 0 && !data.emailError) {
+        note = "No daily subscribers to email yet.";
+        ok = false;
+      } else {
+        note = data.emailError
+          ? `Forecast is live, but the newsletter did not send. ${data.emailError}`
+          : "Forecast is live, but the newsletter did not send. The backup send will try again.";
+        ok = false;
+      }
+      setEmailNote(note);
+      setEmailOk(ok);
       setStatus("saved");
-      setTimeout(() => { setStatus("idle"); setEmailsSent(null); }, 6000);
+      if (ok) {
+        setTimeout(() => { setStatus("idle"); setEmailNote(null); }, 8000);
+      }
     } catch {
       setStatus("error");
       setErrorMsg("Network error — please try again.");
@@ -96,6 +121,9 @@ export default function AdminForecastPage() {
               className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-y leading-relaxed"
               required
             />
+            <p className="text-slate-500 text-xs mt-2">
+              Web addresses you paste in become clickable links on the site and in the email.
+            </p>
           </div>
 
           {/* Weather warnings */}
@@ -177,11 +205,9 @@ export default function AdminForecastPage() {
               <p className="text-emerald-400 text-sm font-medium">
                 ✓ Forecast saved — it&apos;s now live on the site.
               </p>
-              {emailsSent !== null && (
-                <p className="text-slate-400 text-xs mt-1">
-                  {emailsSent > 0
-                    ? `📧 Newsletter sent to ${emailsSent} subscriber${emailsSent !== 1 ? "s" : ""}`
-                    : "📧 No subscribers to email yet"}
+              {emailNote && (
+                <p className={`text-xs mt-1 ${emailOk ? "text-slate-400" : "text-amber-300"}`}>
+                  {emailNote}
                 </p>
               )}
             </div>
